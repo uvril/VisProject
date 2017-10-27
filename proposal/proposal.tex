@@ -62,16 +62,26 @@ We plan to use Python to pre-process the data into desired format before feeding
 \section{Visualization Design}
 
 The visualization should contain at least four charts: a map chart for the world map, a year chart for selecting a desired year, a information panel that displays the information
-of selected country at selected year, and finally an aggregation view that show some desired aggregation data.
+of selected country at selected year, and finally an aggregation view chart that show some desired aggregation data.
+
+There are two needs for the visualization, which is the need of  ``showing the world at a specific year'' and the need of ``showing the shift of some statistics over years for a specific country''.
+To fulfill these two needs nicely, we would like to integrate the year chart, the map chart and the aggregation view chart into a coherent way so that the user can interact with them easily.
 
 \paragraph{Alternative 1}
-As shown in Figure \ref{}, 
-We place the year chart below the map chart, and place the information panel to the right.
-In addition, there is a standalone aggregation view that we can brush a year range and check a set of countries, and
-show a linechart of some desired statistics.
+As shown in Figure \ref{}. 
+This is a quite straight-forward way.
+Users simply click on the map to select the interested country,
+and brush the year chart to select a year range.
+The aggregation view chart then shows the data based on the selections.
+
+A major drawback of this design is that, sometimes we're hard to select a desired country.
+First, there are some countries that are too small to select, e.g., Liechtenstein. Second, sometimes we are interested to select
+a country, but we don't know where it is, e.g., Palau, which is a famous country but most people can't tell where it is.
 
 \paragraph{Alternative 2}
 As shown in Figure \ref{}.
+We place a standalone aggregation view that we can brush a year range and check a set of countries, and
+show a linechart of some desired statistics.
 
 \paragraph{Alternative 3}
 As shown in Figure \ref{}.
