@@ -1,9 +1,34 @@
-\documentclass{article}
+\documentclass[12pt, fullpage,letterpaper]{article}
+\usepackage[margin=1in]{geometry}
 \title{CS6630 Visualization Fall 2017 Project Proposal\\ A Mirror of History}
-\author{Yanqing Peng, Yuwei Wang \\ u1076076, u1140944 \\ yanqing.utah@gmail.com, yuwei.utah@gmail.com}
+\author{Yanqing Peng, Yuwei Wang}
 \begin{document}
 \maketitle
+
+\section{Basic Information}
+\paragraph{Title} A Mirror of History
+\paragraph{Group members}
+\begin{itemize}
+    \item Yanqing Peng, u1076076, yq.peng@utah.edu
+    \item Yuwei Wang, u1140944, yuwei.utah@gmail.com
+\end{itemize}
+\paragraph{Github link} https://github.com/uvril/VisProject
+
 \section{Background and Motivation}
+
+History is always fascinating.
+It's important to learn lessons from the past, by understanding the causality behind historical events.
+To learn about history is to learn about humanity, which basically means
+developing an understanding of ourselves.
+Therefore, knowledge of history helps us prepare better for future.
+
+We've learned a lot of fragmented
+knowledge from books and the Internet, but they've never been
+put together in a conherent manner.
+The course project of CS6630 gives us a golden opportunity to
+learn better about history.
+We are willing to make a deeper
+insight into history, with the help of tools we've learned from this class.
 
 \section{Project Objectives}
 The objective of this project is to visualize the historical rise and fall.
@@ -11,12 +36,7 @@ We would like to explore the following points:
 \begin{itemize}
     \item {\emph What was the world look like in the past?} To answer that, we would like to visualize the borders of countries at different times.
     \item {\emph How countries develop over time?} To answer that, we would like to visualaize some statistical data for countries, e.g., population, GDP, etc.
-    \item {\emph How past events change the world?} To answer that, we would like to maintain a list of events, and visualize their impacts on the country borders/country statistics/other visualized data.
-    \item Other historical trends that we are interested. We leave these for optional features. Some possible candidates include:
-        \begin{itemize}
-            \item 
-        \end{itemize}
-
+    \item {\emph How past events change the world?} To answer that, we would like to maintain a list of major historical events, and visualize their impacts on the country borders, country statistics or other visualized data.
 \end{itemize}
 \section{Data}
 Historical data are easy to retrieve since they are public to all. Useful resources include:
@@ -25,13 +45,37 @@ Historical data are easy to retrieve since they are public to all. Useful resour
     \item Thenmap.net, generates historical maps with GeoJSON/TopoJSON format.
     \item Strategy games about history, (e.g. Crusader King, Europa Universalis, Heart of Irons, Victoria). Although the data from strategy games are not accurate, they can be use
         as a reference.
-    \item Educational resources and other resources. Again, historical data are public to all, so we can eventually find all we want.
+    \item Educational resources and other resources (e.g. Chronas.org). There are plenty of educational resourses that can help us.
 \end{itemize}
 
 \section{Data Processing}
+Since there are so many candidate data sources, we are unable to make it clear how to do data processing for now.
+Basically, we wish to get the following datasets after data processing:
+\begin{itemize}
+    \item GeoJSON/TopoJSON file for country borders at different time.
+    \item A CSV data for each contry to record its statistics (GDP/population/total area etc.) at different time.
+    \item A data set contains major historical events and their impacts.
+\end{itemize}
+
+We plan to use Python to pre-process the data into desired format before feeding it to Javascript.
 
 \section{Visualization Design}
+
 \section{Must-Have Features}
+\begin{itemize}
+    \item An interactive year chart to choose a desired year. All other contents are based on the selected year.
+    \item A interactive map that we can select countries. When we select a country, a detailed view containing the data of that country should be shown.
+    \item A country list that contains all countries and their statistics. We are able to sort on any attributes so that we can check the largest country, the least developed country, etc.
+\end{itemize}
 \section{Optional Features}
+\begin{itemize}
+    \item A list of major historical events. It should be linked to other related views so that we can see the impact of this event.
+    \item More available data visualization on the map. In addition to show the country borders, we can further add, say, a heat map of population. It makes us easier to learn the density of population for different parts of the world.
+\end{itemize}
 \section{Project Schedule}
+\paragraph{Oct 30-Nov 5} Start data collection and data processing.
+\paragraph{Nov 6-Nov 12} Finish data processing and webpage construction. A simple demo should be made before milestone.
+\paragraph{Nov 13-Nov 19} Complete must-have features.
+\paragraph{Nov 20-Nov 26} Complete optional features.
+\paragraph{Nov 27-Dec 1} Finalize the project.
 \end{document}
