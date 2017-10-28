@@ -51,11 +51,11 @@ knowledge of history with his own interests.
 The course project of CS6630 gives us a golden opportunity to learn better
 about history.  We are willing to make a deeper insight into history, by
 constructing an interactive visualization on history. We believe that the tools
-we've learned from this course will help us fulfill our objective.
+we've learned from this course will help us fulfill our objectives.
 
 
 \section{Project Objectives}
-The objective of this project is to interactively visualize the historical rise
+The main objective of this project is to interactively visualize the historical rise
 and fall.  We would like to answer the following questions:
 \begin{itemize}
     \item Show the historical world map at a specified year.
@@ -90,18 +90,18 @@ Useful resources include:
 \begin{itemize}
     \item Wikipedia, for statistical data (e.g. population).
     \item Thenmap.net, generates historical maps with GeoJSON/TopoJSON format.
+    \item Educational resources and other resources (e.g. Chronas.org). There are plenty of educational resourses that can help us.
     \item Strategy games about history, (e.g. Crusader King, Europa Universalis, Heart of Irons, Victoria). Although the data from strategy games are not accurate, they can be use
         as a reference.
-    \item Educational resources and other resources (e.g. Chronas.org). There are plenty of educational resourses that can help us.
 \end{itemize}
 
 \section{Data Processing}
-Since there are so many candidate data sources, we are unable to make it clear how to do data processing for now.
+Since there are so many candidate data sources, we are unable to make it clear how to process data for now.
 Basically, we wish to get the following datasets after data processing:
 \begin{itemize}
-    \item GeoJSON/TopoJSON file for country borders at different time.
-    \item A CSV data for each contry to record its statistics (GDP/population/total area etc.) at different time.
-    \item A data set contains major historical events and their impacts.
+    \item GeoJSON/TopoJSON files for country borders at different times.
+    \item A CSV data for each contry to record its statistics (GDP/population/total area etc.) at different times.
+    \item A data set that contains major historical events and their impacts.
 \end{itemize}
 
 We plan to use Python to pre-process the data into desired format before feeding it to Javascript.
@@ -111,21 +111,21 @@ We plan to use Python to pre-process the data into desired format before feeding
 The visualization should contain the following parts:
 
 \begin{itemize}
-    \item A year chart that we can select a desired year from.
+    \item A year chart that we can select a desired year from it.
         Basically it should be a row of years, and we can click on a desired year to select it.
         It should support zooming and sliding to help select a specific year.
-    \item A map chart that covers the most area of the webpage.
-        It shows the world map at the year selected by the year chart.
+    \item A map chart which covers the most area of the webpage.
+        It shows the world map at the selected year.
         A country can be selected with a mouse click.
         We plan to add zooming functionality to make it easier to click on small countries.
-    \item An information panel that displays the detailed information of selected country at the selected year.
+    \item An information panel that displays the detailed information of the selected country at the selected year.
     \item An aggregation view chart that show some desired aggregation data based on the selection on countries and years.
     \item (Optional) A list that shows major historical events (e.g. wars). We can choose an interested event to see the details.
 \end{itemize}
 
-If we simply want to show the information for some country in some year, the
-first three parts are already sufficient. The aggregation view chart is intend
-to show the results of complicated questions, show complicated questions such
+If we simply want to show the information for one country in one year, the
+first three parts are already sufficient. The aggregation view chart answer
+complicated questions such
 as ``show a comparison between the economic of N. Korea and S. Korea from 1946
 to 2012''.  Basically, these questions contain a set of countries, a set of
 years, and a specified attribute.  We need to aggregate data based on the
