@@ -5,6 +5,13 @@
 \begin{document}
 \maketitle
 
+The title \textbf{A mirror of history} comes from the epitaph of Wei Zhen,
+a famous Chinese historian:
+
+{\emph ``Using copper as a mirror allows one to keep his clothes neat. Using
+history as a mirror allows one to see the future trends. Using a person as a
+mirror allows one to see what is right and what is wrong.''}
+
 \section{Basic Information}
 \paragraph{Title} A Mirror of History
 \paragraph{Group members}
@@ -13,6 +20,7 @@
     \item Yuwei Wang, u1140944, yuwei.utah@gmail.com
 \end{itemize}
 \paragraph{Github link} https://github.com/uvril/VisProject
+
 
 \section{Background and Motivation}
 
@@ -34,16 +42,17 @@ is much more clearer. Therefore, visualization is essential for learning history
 
 Our textbooks already contain plenty of figures to visualize history. However,
 it's not enough. While learning history, people have different focuses.  Alice
-is interested in the border of British Empire at 1913, while Bob wants to see a
-map of French colonies at 1908. Charlie would like to know the comparison
+is interested in the border of British Empire in 1913, while Bob wants to see a
+map of French colonies in 1908. Charlie would like to know the comparison
 between Japan and Singapore, while Eve is curious about the comparison between
 India and Pakistan.  Only with interactive visualizations can one develops the
-knowledge of history with his interests.
+knowledge of history with his own interests.
 
 The course project of CS6630 gives us a golden opportunity to learn better
 about history.  We are willing to make a deeper insight into history, by
 constructing a interactive visualization on history. We believe that the tools
 we've learned from this course will help us fulfill our objective.
+
 
 \section{Project Objectives}
 The objective of this project is to interactively visualize the historical rise
@@ -84,11 +93,23 @@ We plan to use Python to pre-process the data into desired format before feeding
 
 \section{Visualization Design}
 
-The visualization should contain at least four charts: a map chart for the world map, a year chart for selecting a desired year, a information panel that displays the information
-of selected country at selected year, and finally an aggregation view chart that show some desired aggregation data.
+The visualization should contain at least four parts:
 
-There are two needs for the visualization, which is the need of  ``showing the world at a specific year'' and the need of ``showing the shift of some statistics over years for a specific country''.
-To fulfill these two needs nicely, we would like to integrate the year chart, the map chart and the aggregation view chart into a coherent way so that the user can interact with them easily.
+\begin{itemize}
+    \item A year chart that we can select a desired year from.
+        Basically it should be a row of years, and we can click on a desired year to select it.
+        It should support zooming and sliding to help select a specific year.
+    \item A map chart that covers the most area of the webpage.
+        It shows the world map at the year selected by the year chart.
+        A country can be selected with a mouse click.
+        We plan to add zooming functionality to make it easier to click on small countries.
+    \item A information panel that displays the detailed information of selected country at the selected year.
+    \item An aggregation view chart that show some desired aggregation data. We will discuss it below in detail.
+\end{itemize}
+
+If we simply want to show the information for some country in some year, the first three parts are already sufficient.
+However, the challenging thing is to show aggregation data.
+In below, we designed three alternative designs for aggregation data:
 
 \paragraph{Alternative 1}
 As shown in Figure \ref{}. 
