@@ -21,7 +21,6 @@ mirror allows one to see what is right and what is wrong.''}
 \end{itemize}
 \paragraph{Github link} https://github.com/uvril/VisProject
 
-
 \section{Background and Motivation}
 
 History is always fascinating.  It's important to learn lessons from the past,
@@ -50,7 +49,7 @@ knowledge of history with his own interests.
 
 The course project of CS6630 gives us a golden opportunity to learn better
 about history.  We are willing to make a deeper insight into history, by
-constructing a interactive visualization on history. We believe that the tools
+constructing an interactive visualization on history. We believe that the tools
 we've learned from this course will help us fulfill our objective.
 
 
@@ -58,11 +57,29 @@ we've learned from this course will help us fulfill our objective.
 The objective of this project is to interactively visualize the historical rise
 and fall.  We would like to answer the following questions:
 \begin{itemize}
-    \item Show the historical world map.
-    \item For some desired attribute (e.g. population), visualize this attribute on different countries in some specific year.
-    \item For a specific country, visualize a desired attribute (e.g. population) over a time range.
-    \item For a desired attribute (e.g. population), a set of countries and a set of years, show the aggregation result.
-    \item (Optional) Show how historical events change the world.
+    \item Show the historical world map at a specified year.
+
+        Example: ``What is the world look like in 1939?.''
+
+    \item For some desired attribute, visualize it on different countries in a specified year.
+
+        Example: ``Show the population of all contries in 1945.''
+
+    \item For a specified country, visualize a desired attribute over a specified time range.
+
+        Example: ``Show the GDP of India from 1945 to 2017.''
+
+    \item For a specified attribute, some specified countries and a specified time range, visualize the aggregated data.
+
+        Example: ``Show the GDP of Brazil, India, China, Russia and South Africa from 1945 to 2017.''
+
+    \item (Optional) Similar to the above question, but select the country by condition instead of directly specify the set of countries.
+
+        Example: ``Show the Top 10 countries by GDP from 1945 to 2017.''
+
+    \item (Optional) Show the impact of historical events.
+
+        Example: ``For the event \emph{World War II}, highlight the envolved countries and the corresponding year range.
 \end{itemize}
 
 \section{Data}
@@ -100,16 +117,15 @@ The visualization should contain at least four parts:
         It shows the world map at the year selected by the year chart.
         A country can be selected with a mouse click.
         We plan to add zooming functionality to make it easier to click on small countries.
-    \item A information panel that displays the detailed information of selected country at the selected year.
+    \item An information panel that displays the detailed information of selected country at the selected year.
     \item An aggregation view chart that show some desired aggregation data. We will discuss it below in detail.
 \end{itemize}
 
 If we simply want to show the information for some country in some year, the
 first three parts are already sufficient.  However, the challenging thing is to
-show complicated questions, such as ``show a comparison between the economic of
-N. Korea and S. Korea from 1946 to 2012'', or ``show the top 10 countries by 
-population in 2017''. Basically, such a question contains a set of countries, a
-set of years, and a desired attribute.  We answer these questions in the
+show complicated questions such as ``show a comparison between the economic of
+N. Korea and S. Korea from 1946 to 2012''. Basically, such a question contains a set of countries, a
+set of years, and a specified attribute.  We answer these questions in the
 aggregation view chart with aggregated data. The design of the aggregation
 vie chart and the interact scheme need to be carefully considered.
 In what follows, we designed three alternatives for our visualization.
@@ -156,6 +172,7 @@ A user should be able to:
 A user may also be able to:
 \begin{itemize}
     \item Zoom the map in order to see small countries.
+    \item Select all countries that satifies a specified condition.
     \item Select from a list of major historical events. The impact of the selected event is somehow shown on the map chart and the information panel.
     \item Select other views of the map, e.g., a heat map of population. In this case an additional layer of heat map is shown above the map.
 \end{itemize}
