@@ -8,7 +8,7 @@
 The title \textbf{A mirror of history} comes from the epitaph of Wei Zhen,
 a famous Chinese historian:
 
-{\emph ``Using copper as a mirror allows one to keep his clothes neat. Using
+\emph{``Using copper as a mirror allows one to keep his clothes neat. Using
 history as a mirror allows one to see the future trends. Using a person as a
 mirror allows one to see what is right and what is wrong.''}
 
@@ -58,12 +58,12 @@ we've learned from this course will help us fulfill our objective.
 The objective of this project is to interactively visualize the historical rise
 and fall.  We would like to explore the following points:
 \begin{itemize}
-    \item {\emph What was the world look like in the past?} To answer that, we
+    \item \emph{What was the world look like in the past?} To answer that, we
         would like to visualize the borders of countries at different times.
-    \item {\emph How countries develop over time?} To answer that, we would
+    \item \emph{How countries develop over time?} To answer that, we would
         like to visualaize some statistical data for countries, e.g.,
         population, GDP, etc.
-    \item {\emph How past events change the world?} To answer that, we would
+    \item \emph{How past events change the world?} To answer that, we would
         like to maintain a list of major historical events, and visualize their
         impacts on the country borders, country statistics or other visualized
         data.
@@ -107,9 +107,17 @@ The visualization should contain at least four parts:
     \item An aggregation view chart that show some desired aggregation data. We will discuss it below in detail.
 \end{itemize}
 
-If we simply want to show the information for some country in some year, the first three parts are already sufficient.
-However, the challenging thing is to show aggregation data.
-In below, we designed three alternative designs for aggregation data:
+If we simply want to show the information for some country in some year, the
+first three parts are already sufficient.  However, the challenging thing is to
+show complicated questions, such as ``show a comparison between the economic of
+N. Korea and S. Korea from 1946 to 2012'', or ``show the top 10 countries by 
+population in 2017''. Basically, such a question contains a set of countries, a
+set of years, and a desired attribute.  We answer these questions in the
+aggregation view chart with aggregated data. The design of the aggregation
+vie chart and the interact scheme need to be carefully considered.
+In what follows, we designed three alternatives for our visualization.
+The design of year chart, map chart and information panel is straight-forward,
+so we only present them in Alternative 1 for simplicity.
 
 \paragraph{Alternative 1}
 As shown in Figure \ref{}. 
@@ -149,7 +157,7 @@ As shown in Figure \ref{}.
 \section{Project Schedule}
 \paragraph{Oct 30-Nov 5} Start data collection and data processing.
 \paragraph{Nov 6-Nov 12} Finish data processing and webpage construction. A simple demo should be made before milestone.
-\paragraph{Nov 13-Nov 19} Complete must-have features.
-\paragraph{Nov 20-Nov 26} Complete optional features.
+\paragraph{Nov 13-Nov 19} Complete most must-have features.
+\paragraph{Nov 20-Nov 26} Complete must-have features. If time permits, complete optional features.
 \paragraph{Nov 27-Dec 1} Finalize the project.
 \end{document}
