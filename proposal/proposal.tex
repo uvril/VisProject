@@ -1,5 +1,6 @@
 \documentclass[12pt, fullpage,letterpaper]{article}
 \usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
 \title{CS6630 Visualization Fall 2017 Project Proposal\\ A Mirror of History}
 \author{Yanqing Peng, Yuwei Wang}
 \begin{document}
@@ -107,7 +108,7 @@ We plan to use Python to pre-process the data into desired format before feeding
 
 \section{Visualization Design}
 
-The visualization should contain at least four parts:
+The visualization should contain the following parts:
 
 \begin{itemize}
     \item A year chart that we can select a desired year from.
@@ -118,43 +119,28 @@ The visualization should contain at least four parts:
         A country can be selected with a mouse click.
         We plan to add zooming functionality to make it easier to click on small countries.
     \item An information panel that displays the detailed information of selected country at the selected year.
-    \item An aggregation view chart that show some desired aggregation data. We will discuss it below in detail.
+    \item An aggregation view chart that show some desired aggregation data based on the selection on countries and years.
+    \item (Optional) A list that shows major historical events (e.g. wars). We can choose an interested event to see the details.
 \end{itemize}
 
 If we simply want to show the information for some country in some year, the
-first three parts are already sufficient.  However, the challenging thing is to
-show complicated questions such as ``show a comparison between the economic of
-N. Korea and S. Korea from 1946 to 2012''. Basically, such a question contains a set of countries, a
-set of years, and a specified attribute.  We answer these questions in the
-aggregation view chart with aggregated data. The design of the aggregation
-vie chart and the interact scheme need to be carefully considered.
-In what follows, we designed three alternatives for our visualization.
-The design of year chart, map chart and information panel is straight-forward,
-so we only present them in Alternative 1 for simplicity.
+first three parts are already sufficient. The aggregation view chart is intend
+to show the results of complicated questions, show complicated questions such
+as ``show a comparison between the economic of N. Korea and S. Korea from 1946
+to 2012''.  Basically, these questions contain a set of countries, a set of
+years, and a specified attribute.  We need to aggregate data based on the
+selections and show an appropriate visualization of the aggregated data in the
+aggregation view chart.
 
-\paragraph{Alternative 1}
-As shown in Figure \ref{}. 
-This is a quite straight-forward way.
-Users simply click on the map to select the interested country,
-and brush the year chart to select a year range.
-The aggregation view chart then shows the data based on the selections.
-
-A major drawback of this design is that, sometimes we're hard to select a desired country.
-First, there are some countries that are too small to select, e.g., Liechtenstein. Second, sometimes we are interested to select
-a country, but we don't know where it is, e.g., Palau, which is a famous country but most people can't tell where it is.
-
-\paragraph{Alternative 2}
-As shown in Figure \ref{}.
-We place a standalone aggregation view that we can brush a year range and check a set of countries, and
-show a linechart of some desired statistics.
-
-\paragraph{Alternative 3}
-As shown in Figure \ref{}.
+We designed three alternatives for our visualization.  The designs are show in
+Figures \ref{fig:alt1}, \ref{fig:alt2} and \ref{fig:alt3} respectively in the
+last pages of this report.  Please kindly refer to them.
 
 \paragraph{Final Decision}
 
-
-
+Based on the three alternatives, we present the final decision of visualization
+design in Figure \ref{fig:final}. The final design incorporates the best
+of the three alternatives.
 
 \section{Must-Have Features}
 A user should be able to:
@@ -183,4 +169,29 @@ A user may also be able to:
 \paragraph{Nov 13-Nov 19} Complete most must-have features.
 \paragraph{Nov 20-Nov 26} Complete must-have features. If time permits, complete optional features.
 \paragraph{Nov 27-Dec 1} Finalize the project.
+
+\section{Figures}
+\begin{figure}[h!]
+    \begin{center}
+        \includegraphics[width=\textwidth]{alternative1.JPG}
+        \caption{Alternative 1}
+        \label{fig:alt1}
+    \end{center}
+\end{figure}
+
+\begin{figure}[h!]
+    \begin{center}
+        \includegraphics[width=\textwidth]{alternative2.JPG}
+        \caption{Alternative 2}
+        \label{fig:alt2}
+    \end{center}
+\end{figure}
+
+\begin{figure}[h!]
+    \begin{center}
+        \includegraphics[width=\textwidth]{alternative3.JPG}
+        \caption{Alternative 3}
+        \label{fig:alt3}
+    \end{center}
+\end{figure}
 \end{document}
