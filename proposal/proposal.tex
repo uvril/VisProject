@@ -56,18 +56,15 @@ we've learned from this course will help us fulfill our objective.
 
 \section{Project Objectives}
 The objective of this project is to interactively visualize the historical rise
-and fall.  We would like to explore the following points:
+and fall.  We would like to answer the following questions:
 \begin{itemize}
-    \item \emph{What was the world look like in the past?} To answer that, we
-        would like to visualize the borders of countries at different times.
-    \item \emph{How countries develop over time?} To answer that, we would
-        like to visualaize some statistical data for countries, e.g.,
-        population, GDP, etc.
-    \item \emph{How past events change the world?} To answer that, we would
-        like to maintain a list of major historical events, and visualize their
-        impacts on the country borders, country statistics or other visualized
-        data.
+    \item Show the historical world map.
+    \item For some desired attribute (e.g. population), visualize this attribute on different countries in some specific year.
+    \item For a specific country, visualize a desired attribute (e.g. population) over a time range.
+    \item For a desired attribute (e.g. population), a set of countries and a set of years, show the aggregation result.
+    \item (Optional) Show how historical events change the world.
 \end{itemize}
+
 \section{Data}
 Historical data are easy to retrieve, since they are actually public data that available to all.
 Useful resources include:
@@ -144,16 +141,25 @@ As shown in Figure \ref{}.
 
 
 \section{Must-Have Features}
+A user should be able to:
 \begin{itemize}
-    \item An interactive year chart to choose a desired year. All other contents are based on the selected year.
-    \item A interactive map that we can select countries. When we select a country, a detailed view containing the data of that country should be shown.
-    \item A country list that contains all countries and their statistics. We are able to sort on any attributes so that we can check the largest country, the least developed country, etc.
+    \item Zoom and slide the year chart.
+    \item Choose a desired year in the year chart. 
+    \item See the world map of the selected year in the map chart.
+    \item Select a country in the map chart.
+    \item See the detailed information about the selected country in the information panel.
+    \item Select several contries and select several years.
+    \item Select a desired statistics (e.g. population), show the aggregated data based on the selections in the aggregation view chart.
 \end{itemize}
+
 \section{Optional Features}
+A user may also be able to:
 \begin{itemize}
-    \item A list of major historical events. It should be linked to other related views so that we can see the impact of this event.
-    \item More available data visualization on the map. In addition to show the country borders, we can further add, say, a heat map of population. It makes us easier to learn the density of population for different parts of the world.
+    \item Zoom the map in order to see small countries.
+    \item Select from a list of major historical events. The impact of the selected event is somehow shown on the map chart and the information panel.
+    \item Select other views of the map, e.g., a heat map of population. In this case an additional layer of heat map is shown above the map.
 \end{itemize}
+
 \section{Project Schedule}
 \paragraph{Oct 30-Nov 5} Start data collection and data processing.
 \paragraph{Nov 6-Nov 12} Finish data processing and webpage construction. A simple demo should be made before milestone.
