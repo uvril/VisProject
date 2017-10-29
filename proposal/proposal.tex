@@ -119,18 +119,18 @@ The visualization should contain the following parts:
         A country can be selected with a mouse click.
         We plan to add zooming functionality to make it easier to click on small countries.
     \item An information panel that displays the detailed information of the selected country at the selected year.
-    \item An aggregation view chart that shows some desired aggregation data based on the selection on countries and years.
+    \item An aggregation panel that shows some desired aggregation data based on the selection on countries and years.
     \item (Optional) A list that shows major historical events (e.g. wars). We can choose an interested event to see the details.
 \end{itemize}
 
 If we simply want to show the information for one country in one year, the
-first three parts are already sufficient. The aggregation view chart answers
+first three parts are already sufficient. The aggregation panel answers
 complicated questions such
 as ``show a comparison between the economic of N. Korea and S. Korea from 1946
 to 2012''.  Basically, these questions contain a set of countries, a set of
 years, and a specified attribute.  We need to aggregate data based on the
 selections and show an appropriate visualization of the aggregated data in the
-aggregation view chart.
+aggregation panel.
 
 We designed three alternatives for our visualization.  The designs are show in
 Figures \ref{fig:alt1}, \ref{fig:alt2} and \ref{fig:alt3} respectively in the
@@ -139,7 +139,9 @@ last section of this report.  Please kindly refer to them.
 \paragraph{Final Decision}
 
 Based on the three alternatives, we present the final decision of visualization
-design in Figure \ref{fig:final}, which shows a snapshot of our design.
+design in Figure \ref{fig:final}, which shows a snapshot of our design. Note that
+this design contains several optional features that we may have to remove in our
+final implementation.
 
 \begin{figure}[h!]
     \begin{center}
@@ -150,10 +152,36 @@ design in Figure \ref{fig:final}, which shows a snapshot of our design.
 \end{figure}
 
 \begin{itemize}
-    \item \textbf{Year chart}
-    \item \textbf{Map chart}
-    \item \textbf{Information panel}
-    \item \textbf{Aggregation view chart}
+    \item \textbf{Year chart} The year chart is placed between the map chart and the aggregation panel.
+        it supports zooming to show different tick granularities on it. One can click a tick to choose
+        a desired year for the map chart. One can also brush a time range that will reflect on
+        the range of the aggregation panel. An auxiliary bar that contains shortcuts of different
+        epoches is attached beneath the year chart, as shown in the figure.
+
+    \item \textbf{Map chart} The map chart shows the world map at the selected year. Countries can
+        be selected by clicking on it. Besides, there are some auxiliary tools on the map:
+        \begin{itemize}
+            \item Three buttoms for zooming in, zooming out and resetting.
+            \item A search box for searching a country.
+            \item An additional layer button. Just like in Google Map app we can add an additional layer of traffic,
+                in our design we allow to add additional layers about religion, population or other attributes on the map.
+        \end{itemize}
+
+    \item \textbf{Information panel} The information panel is placed at the right side of our visualization.
+        It presents a high-level introduction of the selected country.
+        The statistics that change over time (e.g., population) will be shown as a row of squares with their saturation as the channel.
+        A tooltip will be shown on hovering to show the value. Furthermore, there is an `Add' bottom that add the current country
+        into the aggregation panel.
+
+    \item \textbf{Aggregation panel} The aggregation panel is placed below the year chart. It shows how an attribute value
+        changes within the selected years for the selected countries. The years are selected via the brush of year chart.
+        The countries are added via the `Add' bottom. One can choose a desired attribute (e.g. population) and a desired visualization (e.g. list or line chart)
+        and the visualization will displayed below.
+
+    \item \textbf{Historical events panel} This panel is placed in the bottom of the visualization. It shows all events that occur within the brushed time range as circles.
+        The circles are located corresponding its time, and are colored corresponding to its catagory.
+        The name of an event will be shown on mouse hovering.
+        By clicking a circle, a mark will shown on the map to indicate its location.
 \end{itemize}
 
 \section{Must-Have Features}
@@ -165,7 +193,7 @@ A user should be able to:
     \item Select a country in the map chart.
     \item See the detailed information about the selected country in the information panel.
     \item Select several contries and select several years.
-    \item Select a desired statistics (e.g. population), show the aggregated data based on the selections in the aggregation view chart.
+    \item Select a desired statistics (e.g. population), show the aggregated data based on the selections in the aggregation panel.
 \end{itemize}
 
 \section{Optional Features}
