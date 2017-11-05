@@ -5,15 +5,18 @@ class Map {
 
     }
 
-    drawMap() {
+    drawMap(year) {
         let path = d3.geoPath()
             .projection(this.projection);
+			
+		let filename = "data/cntry" + year + ".json"
 
-        d3.json("data/cntry1945.json", function (geoData) {
+        d3.json(filename, function (geoData) {
 
             d3.select("#map")
+				.html("")
                 .selectAll("path")
-                .data(geoData.features)
+                .data(geoData["geo"].features)
                 .enter()
                 .append("path")
                 .attr("d", path)

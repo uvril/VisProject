@@ -1,3 +1,4 @@
 let map = new Map();
-map.drawMap();
+let yearChart = new YearChart(map);
+map.drawMap(2015);
 
