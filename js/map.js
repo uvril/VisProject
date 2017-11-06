@@ -1,8 +1,8 @@
 class Map {
 
-    constructor() {
+    constructor(infoPanel) {
         this.projection = d3.geoPatterson();
-
+        this.infoPanel = infoPanel;
     }
 
     drawMap(year) {
@@ -55,7 +55,10 @@ class Map {
                 .datum(graticule)
                 .attr('class', "grat")
                 .attr('d', path)
-                .attr('fill', 'none');
+                .attr('fill', 'none')
+                .on("click", function(d){
+                    console.log(d);
+                });
 
         });
 
