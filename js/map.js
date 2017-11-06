@@ -31,7 +31,10 @@ class Map {
                 .enter()
                 .append("path")
                 .attr("d", path)
-                .classed("countries", true);
+                .classed("countries", true)
+                .on("click", function(d){
+                    this.infoPanel.updateInfo(d.properties, year);
+                }.bind(this));
 				
             d3.select("#map")
 				.append("g")
@@ -52,16 +55,11 @@ class Map {
             let graticule = d3.geoGraticule();
             d3.select("#map")
                 .append('path')
+                .attr("id", "grat")
                 .datum(graticule)
                 .attr('class', "grat")
                 .attr('d', path)
-                .attr('fill', 'none')
-                .on("click", function(d){
-                    console.log(d);
-                });
-
-        });
-
-
+                .attr('fill', 'none');
+        }.bind(this));
     }
 }

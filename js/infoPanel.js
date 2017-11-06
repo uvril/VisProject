@@ -2,7 +2,8 @@ class InfoPanel {
 	constructor() {
 	}
 
-	updateInfo(oneCountry, year) {
-		
+	updateInfo(oneCountryInfo, year) {
+		console.log("!!!");
+		console.log(oneCountryInfo);
 	}
 }
