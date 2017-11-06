@@ -1,3 +1,11 @@
+.countryLabel {
+    text-anchor: middle;
+    fill: #777;
+    fill-opacity: .8;
+    font-size: 20px;
+    font-width: 300;
+}
+
 .ticks {
   font: 10px sans-serif;
 }
@@ -79,24 +87,12 @@
     opacity: .2;
 }
 
-@font-face {
-    font-family: 'font2';
-    src: url('assets/font2.ttf');
-}
-
-@font-face {
-    font-family: 'font1';
-    src: url('assets/font1.ttf');
-}
-
 h1 {
     margin-top: 0;
-    font-family: 'font2';
     color: #d20a11;
 }
 
 h2 {
-    font-family: 'font2';
     color: #d20a11;
     padding-bottom: 0;
     margin-top: 3px;
@@ -108,9 +104,6 @@ h3 {
     margin-bottom: 0px;
 }
 
-* {
-    font-family: 'font1';
-}
 
 header {
     padding: 0.5em;
