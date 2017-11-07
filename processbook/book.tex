@@ -77,8 +77,31 @@ As shown in Figure \ref{fig:nov6}, now it looks better, isn't it?
     \begin{center}
         \includegraphics[width=0.7\textwidth]{figs/Nov6.png}
         \caption{Current state of our project, Nov 6.}
-        \label{fig:nov5}
+        \label{fig:nov6}
     \end{center}
 \end{figure}
+
+As shown in the above figure, the information of the capital of a given country
+can already be successfully shown. We use Wikidata to retrieve all such information.
+The query uses SPARQL. As an example, if we want to know the current capital of Russia,
+the language looks like the following:
+
+\begin{verbatim}
+SELECT ?name WHERE {
+            wd:Q159 wdt:P36 ?link.
+            ?link rdfs:label ?name.
+            filter (lang(?name) = "en").
+}
+\end{verbatim}
+
+Where wd:Q159 is the wikidata id of Russia, wdt:P36 is the wikidata id of the property ``capital is'',
+and the variable ?link becomes the capital of Russia. Note that ?link itself is also a wikidata id,
+which is Q649 in this case. We want to know what Q649 is, so we use the second line in the where clause to retrieve
+the label of it, and use the third line to restrict the answer to be in English.
+
+For the label placement, we devised a smarter way to put the labels. We first decompose
+each country into continous polygons, and pick the polygon with largest area (e.g. for the U.S., only the continent part will remain).
+Then we calculate the longest segment within the polygon, and place the label on that line.
+The font size will be dynamically adjusted according to the ratio between the segment length and the label length.
 
 \end{document}
