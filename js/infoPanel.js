@@ -1,5 +1,6 @@
 class InfoPanel {
     constructor() {
+    	this.tmp = 0;
     }
 
     updateInfo(oneCountryInfo, year) {
@@ -14,12 +15,22 @@ class InfoPanel {
                 headers: { Accept: 'application/sparql-results+json' },
                 data: { query: sparqlQuery }
             };
+        $.ajax( endpointUrl, settings ).then( function ( data ) {
+            document.getElementById("wikipage").setAttribute("src", data.results.bindings[0].article.value+"?printable=yes");
+        });
+
+        sparqlQuery = "SELECT ?capital WHERE {\n" +
+        "    wd:Q" + oneCountryInfo.wikidata + " wdt:P36 ?caplink.\n" +
+        "    ?caplink rdfs:label ?capital.\n" +
+        "    filter (lang(?capital) = \"en\")\n" +
+        "}";
+        settings = {
+            headers: { Accept: 'application/sparql-results+json' },
+            data: { query: sparqlQuery }
+        };
 
         $.ajax( endpointUrl, settings ).then( function ( data ) {
-            $( 'body' ).append( ( $('<pre>').text( JSON.stringify( data) ) ) );
-            console.log( data.results.bindings[0].article.value );
-        } );
-
-
+            document.getElementById("capital").innerHTML = data.results.bindings[0].capital.value;
+        });
     }
 }
