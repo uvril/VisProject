@@ -43,33 +43,8 @@
     height: 15px;
 }
 
-.team {
-    fill: #fee8c8;
-}
-
-.team-html {
-    background-color: #fee8c8;
-}
-
-.host {
-    fill: #2b8cbe;
-}
-
-.gold {
-    fill: #FFD700;
-    opacity: .8;
-    stroke: #252525;
-    stroke-width: 2px;
-}
-
-.silver {
-    fill: #d9d9d9;
-    opacity: .8;
-    stroke: #252525;
-}
-
 .selected {
-    fill: #d20a11;
+    fill: #2b8cbe;
 }
 
 /*Map grid style*/

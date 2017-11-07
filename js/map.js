@@ -6,6 +6,9 @@ class Map {
             .projection(this.projection);		
         this.infoPanel = infoPanel;
         this.svg = d3.select("#map");
+        this.svgDefs = this.svg.append("defs");
+        this.svgPath = this.svg.append("g");
+        this.svgGra = this.svg.append("g");
     }
 
     calc_dist(c) {
@@ -78,8 +81,6 @@ class Map {
 
 
 
-                this.svg
-                    .html("");
 
                 let lCntry = geoData.features.filter(function (d) {
                     if (this.path.area(d) < 400) return false;
@@ -91,8 +92,8 @@ class Map {
                 }.bind(this));
 
 
-                this.svg
-                    .append("defs")
+                this.svgDefs
+                    .html("")
                     .selectAll("path")
                     .data(lCntry)
                     .enter()
@@ -103,8 +104,9 @@ class Map {
                         return "M " + p.join(" L ");
                     }.bind(this));
 
-                this.svg
-                    .append("g")
+
+                this.svgPath
+                    .html("")
                     .selectAll("path")
                     .data(geoData.features)
                     .enter()
@@ -112,11 +114,14 @@ class Map {
                     .attr("d", this.path)
                     .classed("countries", true)
                     .on("click", function(d){
+                        this.svgPath.selectAll("path").classed("selected", d1 => d1.properties.wikidata === d.properties.wikidata);
                         this.infoPanel.updateInfo(d.properties, year);
                     }.bind(this));
 
                 let graticule = d3.geoGraticule();
-                this.svg
+
+                this.svgGra
+                    .html("")
                     .append('path')
                     .attr("id", "grat")
                     .datum(graticule)
