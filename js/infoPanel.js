@@ -55,12 +55,13 @@ class InfoPanel {
             document.getElementById("head").innerHTML = data.results.bindings[0].name.value;
         });
 
-        sparqlQuery = "SELECT ?population ?date WHERE {\n" +
+        sparqlQuery = "SELECT ?population ?year WHERE {\n" +
         "    wd:Q" + oneCountryInfo.wikidata + " p:P1082 ?poplink.\n" +
         "    ?poplink ps:P1082 ?population.\n" +
-        "    ?poplink pq:P585 ?date\n" +
+        "    ?poplink pq:P585 ?date.\n" +
+        "    bind (year(?date) as ?year).\n" +
         "}\n" +
-        "order by ?date\n",
+        "order by ?year\n",
         settings = {
             headers: { Accept: 'application/sparql-results+json' },
             data: { query: sparqlQuery }
@@ -74,7 +75,7 @@ class InfoPanel {
                 .selectAll("li")
                 .data(data.results.bindings)
                 .enter().append("li")
-                .text(d=>d.date.value+"  "+d.population.value);
+                .text(d=>d.year.value+"  "+d.population.value);
         });
     }
 }
