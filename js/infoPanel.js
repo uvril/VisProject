@@ -1,6 +1,8 @@
 class InfoPanel {
     constructor() {
-    	this.tmp = 0;
+        this.svgBounds = d3.select("#details").node().getBoundingClientRect();
+        this.svgWidth = this.svgBounds.width;
+        this.svgHeight = this.svgBounds.width;
     }
 
     updateInfo(oneCountryInfo, year) {
@@ -20,7 +22,9 @@ class InfoPanel {
             };
         $.ajax( endpointUrl, settings ).then( function ( data ) {
             document.getElementById("wikipage").setAttribute("src", data.results.bindings[0].article.value+"?printable=yes");
-        });
+            document.getElementById("wikipage").setAttribute("height", this.svgHeight/2);
+            document.getElementById("wikipage").setAttribute("width", this.svgWidth);
+        }.bind(this));
 
         let labelQuery = function (wikidata, domain) {
             let sparqlQuery = "SELECT ?name WHERE {\n" +
@@ -59,7 +63,6 @@ class InfoPanel {
 
         domain = 1081;
         $.ajax( endpointUrl, labelQuery(oneCountryInfo.wikidata, domain.toString()) ).then( function ( data ) {
-            console.log(data);
             document.getElementById("humanIndex").innerHTML = data.results.bindings[0].name.value;
         });
 
@@ -80,7 +83,6 @@ class InfoPanel {
 
         domain = 1082;
         $.ajax( endpointUrl, statsQuery(oneCountryInfo.wikidata, domain.toString()) ).then( function ( data ) {
-            console.log(data);
             d3.select("#population")
                 .html("");
             d3.select("#population")
