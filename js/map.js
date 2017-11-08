@@ -9,58 +9,22 @@ class Map {
         this.svgDefs = this.svg.append("defs");
         this.svgPath = this.svg.append("g");
         this.svgGra = this.svg.append("g");
+        this.svgText = this.svg.append("g");
     }
 
     calc_dist(c) {
-        return Math.sqrt(Math.pow(c[0][0]-c[1][0], 2)+Math.pow(c[0][1]-c[1][1], 2));
+        let d1 = Math.sqrt(Math.pow(c[0][0]-c[2][0], 2)+Math.pow(c[0][1]-c[2][1], 2));
+        let d2 = Math.sqrt(Math.pow(c[1][0]-c[2][0], 2)+Math.pow(c[1][1]-c[2][1], 2));
+        return d1 + d2;
     }
 
     getPath(d) {
         var geom=d.geometry; 
         var props=d.properties;
-        let maxp = null;
-        let maxa = 0;
-        if (geom.type === 'MultiPolygon'){
-
-            for (var i=0; i < geom.coordinates.length; i++){
-                var p = {
-                    'type':'Feature',
-                    'geometry' : {
-                        'type':'Polygon', 
-                        'coordinates':geom.coordinates[i]
-                    },
-                    'properties': props};
-                let pa = this.path.area(p);
-                if (pa > maxa) {
-                    maxa = pa;
-                    maxp = p;
-                }
-            }
-        }		
-
-        if (maxp == null) maxp = d;
-
-        let polygon = maxp.geometry.coordinates[0];
-
-        let mdist = 0;
-        let mc1 = null;
-        let mc2 = null;
-        for (let i = 0; i < polygon.length; ++i) {
-            for (let j = i + 1; j < polygon.length; ++j) {
-                let c1 = this.projection(polygon[i]);
-                let c2 = this.projection(polygon[j]);
-                let dist = this.calc_dist([c1, c2]);
-                if (dist > mdist) {
-                    mdist = dist;
-                    mc1 = c1;
-                    mc2 = c2;
-                }
-            }
-        }
-        if (mc1[0] > mc2[0]) {
-            return [mc2, mc1];
-        }
-        return [mc1, mc2];
+        var p1 = this.projection([+props.x1, +props.y1]);
+        var p2 = this.projection([+props.x2, +props.y2]);
+        var c = this.projection([+props.c1, +props.c2]);
+        return [p1, p2, c];
     }
 
     drawMap(year) {
@@ -79,16 +43,16 @@ class Map {
 
             d3.json(filename, function (geoData) {
 
-
-
-
                 let lCntry = geoData.features.filter(function (d) {
                     if (this.path.area(d) < 400) return false;
                     let box = this.getPath(d);
-                    let l = 0.8*this.calc_dist(box);
-                    let str = "name" in d.properties ? d.properties.name : d.properties.NAME;
-                    let w = str.length;
-                    return l/w > 4;
+                    let l = 0.9*this.calc_dist(box);
+                    if ("NAME" in d.properties){
+                        let str = d.properties.NAME;
+                        let w = str.length;
+                        return l/w > 4;
+                    }
+                    return false;
                 }.bind(this));
 
 
@@ -101,7 +65,8 @@ class Map {
                     .attr("id", d => d.properties.wikidata)
                     .attr("d", function (d) {
                         let p = this.getPath(d);
-                        return "M " + p.join(" L ");
+                        let line = d3.line().x(d => d[0]).y(d => d[1]).curve(d3.curveCatmullRom.alpha(0.5));
+                        return line([p[0], p[2], p[1]]);
                     }.bind(this));
 
 
@@ -129,8 +94,8 @@ class Map {
                     .attr('d', this.path)
                     .attr('fill', 'none'); 
 
-                this.svg
-                    .append("g")
+                this.svgText
+                    .html("")
                     .selectAll("text")
                     .data(lCntry)
                     .enter()
@@ -141,10 +106,10 @@ class Map {
                     .attr("xlink:href", d => "#"+d.properties.wikidata)				
                     .attr("textLength", function (d) {
                         let box = this.getPath(d);
-                        return 0.8*this.calc_dist(box);
+                        return 0.9*this.calc_dist(box);
                     }.bind(this))
                 .text(function (d) {
-                    let str = "name" in d.properties ? d.properties.name : d.properties.NAME;
+                    let str = d.properties.NAME;
                     if (str == "unclaimed") str = "";
                     return str.toUpperCase();
                 }.bind(this))
@@ -174,7 +139,6 @@ class Map {
     }
 
     arrangeLabels() {
-        let svg = this.svg;
         var move = 1;
         console.log(d3.select("#map").selectAll("text"));
         while(move > 0) {
