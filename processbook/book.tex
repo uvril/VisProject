@@ -46,7 +46,7 @@ It looks like the follwing (Figure \ref{fig:nov5}):
 
 \begin{figure}[h!]
     \begin{center}
-        \includegraphics[width=0.7\textwidth]{figs/Nov5.jpg}
+        \includegraphics[width=0.9\textwidth]{figs/Nov5.jpg}
         \caption{Current state of our project, Nov 5.}
         \label{fig:nov5}
     \end{center}
@@ -75,7 +75,7 @@ As shown in Figure \ref{fig:nov6}, now it looks better, isn't it?
 
 \begin{figure}[h!]
     \begin{center}
-        \includegraphics[width=0.7\textwidth]{figs/Nov6.png}
+        \includegraphics[width=0.8\textwidth]{figs/Nov6.png}
         \caption{Current state of our project, Nov 6.}
         \label{fig:nov6}
     \end{center}
@@ -104,4 +104,22 @@ each country into continous polygons, and pick the polygon with largest area (e.
 Then we calculate the longest segment within the polygon, and place the label on that line.
 The font size will be dynamically adjusted according to the ratio between the segment length and the label length.
 
+
+\newpage
+\paragraph{Information retrieval ready} (Nov 7)
+
+We finished most information retrieval part, as well as the css style for selected country.
+We also did a little improvement on label placing:
+instead of just placing the text on the diameter of the polygon, not the text is placed on a curve
+go from one end of the diameter to the centroid, then to the other end of the diameter.
+As shown in Figure \ref{fig:nov7}, it significantly improve the effect for countries with trapezoidal shapes such as U.S. and China, compared
+to Figure \ref{fig:nov6}.
+
+\begin{figure}[h!]
+    \begin{center}
+        \includegraphics[width=\textwidth]{figs/Nov7.jpg}
+        \caption{Current state of our project, Nov 7.}
+        \label{fig:nov7}
+    \end{center}
+\end{figure}
 \end{document}
