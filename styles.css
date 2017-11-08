@@ -45,6 +45,7 @@
 
 .selected {
     fill: #2b8cbe;
+    fill-opacity: 0.5;
 }
 
 /*Map grid style*/

@@ -79,8 +79,11 @@ class Map {
                     .attr("d", this.path)
                     .classed("countries", true)
                     .on("click", function(d){
-                        this.svgPath.selectAll("path").classed("selected", d1 => d1.properties.wikidata === d.properties.wikidata);
-                        this.infoPanel.updateInfo(d.properties, year);
+                        if ("wikidata" in d.properties && +d.properties.wikidata >= 0) {
+                            this.svgPath.selectAll("path").classed("selected", d1 => d1.properties.wikidata === d.properties.wikidata);
+                            this.svgText.selectAll("textPath").style("fill-opacity", d1 => d1.properties.wikidata === d.properties.wikidata ? 1 : 0.4);
+                            this.infoPanel.updateInfo(d.properties, year);
+                        }
                     }.bind(this));
 
                 let graticule = d3.geoGraticule();
@@ -114,8 +117,8 @@ class Map {
                     return str.toUpperCase();
                 }.bind(this))
                 .attr("startOffset", "5%")
-                    .style("fill", "#777")
-                    .style("fill-opacity", ".8")
+                .style("fill", "black")
+                .style("fill-opacity", ".4")
                     .style("font-size", function (d) {
                         let node = d3.select(this);
                         let l = node.attr("textLength");
@@ -131,7 +134,8 @@ class Map {
                         if (r < 30) return "20px";
                         if (r < 40) return "30px";
                         return "40px";
-                    });
+                    })
+                ;
 
                 //this.arrangeLabels();
 
