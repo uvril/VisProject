@@ -15,7 +15,7 @@ from two different data sets:
 \begin{itemize}
     \item For maps after World War II (1946-2017), we collect from www.thenmap.net.
         Although this website doesn't provide the off-the-shelf dataset, one of its
-        API support querying for the world map at a specific year after WW2. The API
+        APIs supports querying for the world map at a specific year after WW2. The API
         we used looks like following:
 
         \begin{verbatim}
@@ -33,9 +33,9 @@ from two different data sets:
 
 \end{itemize}
 
-For other data (e.g. population), it seems promising to retrieve data from Wikidata.
+For other data (e.g. population), it seems promising to retrieve them from Wikidata.
 We plan to explore the possibility for that.
-The first dataset already include the Wikidata ID for all countries.
+The first dataset already includes the Wikidata ID for all countries.
 We may have to do some data processing on the second dataset to add the Wikidata ID information to it.
 
 \newpage
@@ -58,13 +58,13 @@ and draw it on the screen. The projection we currently use is d3.geoPatterson().
 
 Adding label is quite challenging. If we simply put all labels on the map,
 then there will be a mess in Europe. Currently we only show the labels for countries
-with area larger than a threshold. That doesn't work for countries with large area and extremely
+with areas larger than a threshold. That doesn't work for countries with large area but extremely
 long names (e.g. Democratic Republic of the Congo). Whether or not a label is shown
 should depend on both country area and the length of country name. We should think carefully about it.
 
 The location of the labels is another issue. Currently we put the label
 at the centroid of the corresponding path. But it doesn't work for some countries like the U.S.
-The label of U.S. is actually located inside Canada. We think it's because of Alaska.
+The label of U.S. is actually located inside Canada because of Alaska.
 We have to find a smarter way to locate the labels.
 
 \newpage
