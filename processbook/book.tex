@@ -82,7 +82,7 @@ As shown in Figure \ref{fig:nov6}, now it looks better, isn't it?
 \end{figure}
 
 As shown in the above figure, the information of the capital of a given country
-can already be successfully shown. We use Wikidata to retrieve all such information.
+has already been successfully shown. We use Wikidata to retrieve all such information.
 The query uses SPARQL. As an example, if we want to know the current capital of Russia,
 the language looks like the following:
 
@@ -97,11 +97,11 @@ SELECT ?name WHERE {
 Where wd:Q159 is the wikidata id of Russia, wdt:P36 is the wikidata id of the property ``capital is'',
 and the variable ?link becomes the capital of Russia. Note that ?link itself is also a wikidata id,
 which is Q649 in this case. We want to know what Q649 is, so we use the second line in the where clause to retrieve
-the label of it, and use the third line to restrict the answer to be in English.
+the its label, and use the third line to restrict the answer to be in English.
 
 For the label placement, we devised a smarter way to put the labels. We first decompose
 each country into continous polygons, and pick the polygon with largest area (e.g. for the U.S., only the continent part will remain).
-Then we calculate the longest segment within the polygon, and place the label on that line.
+Then we calculated the longest segment within the polygon, and place the label on that line.
 The font size will be dynamically adjusted according to the ratio between the segment length and the label length.
 
 
@@ -110,8 +110,8 @@ The font size will be dynamically adjusted according to the ratio between the se
 
 We finished most information retrieval part, as well as the css style for selected country.
 We also did a little improvement on label placing:
-instead of just placing the text on the diameter of the polygon, not the text is placed on a curve
-go from one end of the diameter to the centroid, then to the other end of the diameter.
+instead of just placing the text on the diameter of the polygon, now the text is placed on a curve
+going from one end of the diameter to the centroid, then to the other end of the diameter.
 As shown in Figure \ref{fig:nov7}, it significantly improve the effect for countries with trapezoidal shapes such as U.S. and China, compared
 to Figure \ref{fig:nov6}.
 
@@ -123,3 +123,16 @@ to Figure \ref{fig:nov6}.
     \end{center}
 \end{figure}
 \end{document}
+
+\newpage
+\paragraph{InfoPanel design} (Nov 8)
+
+For info panel, currently there are eight parts including selected country name, capital, continents the country belongs to, head of state, population, human development index, territory and description from Wiki.
+We retrieved all the data from Wikidata and just put them as original way without any vitualization.
+In this way, we found that some data are redundant so deduplicating is necessary.
+For example, the continents Russia belongs to include Europe, Asia and Eurasia but Eurasia means Europe and Asia.
+In addtion, we decided to label each tile when the mouse hovoring over it since the population data are quite sparse in some areas.
+
+For the description from Wiki, we first tried to bind the source of link with the direct search result from Wikidata.
+However, in this way irrelevant infomation takes too much space like the nav bar of Wikipedia. 
+We took into account the limitation of the page size and got rid of these infomation by adding "printable=yes" at the end of the link.
