@@ -1,0 +1,38 @@
+\documentclass[12pt, fullpage,letterpaper]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\title{CS6630 Visualization Fall 2017 Project \\ Feedback exercise}
+\author{Yanqing Peng, Yuwei Wang}
+\begin{document}
+\maketitle
+
+In the peer feedback session, we met with the team of \textbf{Zhuoyue Zhao} and \textbf{Ya Gao}.
+Their feedbacks include the following points:
+
+\begin{enumerate}
+    \item It seems that the data collection process can take a lot of time. Maybe the project should
+        focus on a small time range, e.g., data since World War II.
+    \item It's strange to use ``Add'' button to select countries. Using mouse click to select/unselect
+        countries is more straight-forward.
+    \item For the aggregation view, when a user selects a large set of countries, using line chart
+        to represent countries may be hard to distinguish between countries.
+    \item Colors and animations are not considered.
+\end{enumerate}
+
+We appreciate the concerns and suggestions they pointed out. We would like to answer and address
+them in the following ways, respectively:
+\begin{enumerate}
+    \item The data collection work is indeed time-consuming. We decide to first implement the features
+        on a small dataset, then extend the dataset if we have time. The extended dataset should be processed
+        into the same format as the small dataset, so that it can fit the system without modifying any code.
+    \item We think this suggestion is reasonable. We decide to adopt it.
+    \item We plan to add multiple visualization views in aggregation panel. Users can choose
+        an appropriate visualization that efficiently visualize the results.
+    \item We plan to use color to highlight the selected country. Plus, if we implement the heat map
+        feature, the saturation of color will be the channel. Animation can be used to show the change
+        of country borders.
+\end{enumerate}
+
+We thank Zhuoyue and Ya for their useful comments.
+
+\end{document}
