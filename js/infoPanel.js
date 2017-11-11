@@ -27,10 +27,27 @@ class InfoPanel {
         document.getElementById("country").innerHTML = oneCountryInfo.NAME;
         console.log(wd);
         d3.json("data/stat/" + wd + ".json", function(err, data) {
-            document.getElementById("capital").innerHTML = data.capital[0];
-            document.getElementById("headState").innerHTML = data.headState[0];
-            document.getElementById("headGov").innerHTML = data.headGov[0];
-            d3.select("#continent").text(data.continent.join(", "));
+            let basicInfo = [{"title":"Capital", "value":data.capital[0]}, {"title":"Continet", "value":data.continent.join(", ")}, {"title":"Head of State", "value":data.headState[0]}, {"title":"Head of Gov", "value":data.headGov[0]}];
+            //document.getElementById("capital").innerHTML = data.capital[0];
+            //document.getElementById("headState").innerHTML = data.headState[0];
+            //document.getElementById("headGov").innerHTML = data.headGov[0];
+            //d3.select("#continent").text(data.continent.join(", "));
+            d3.select("#basicInfo")
+                .append("tbody")
+                .html("");
+            d3.select("tbody")
+                .selectAll("tr")
+                .data(basicInfo)
+                .enter().append("tr")
+                .append("th")
+                .text(d=>d.title)
+                .style("font-size", "25px")
+                .style("font-weight", "bold");
+            d3.selectAll("tr")
+                .append("td")
+                .text(d=>d.value)
+                .style("font-size", "20px")
+                .style("font-weight", "normal");
             let xScale = d3.scaleLinear()
                 .domain([d3.min(data.pop, d => +d.year), d3.max(data.pop, d => +d.year)])
                 .range([80, d3.select("#population").node().getBoundingClientRect().width-30]);
