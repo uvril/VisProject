@@ -8,13 +8,13 @@ class InfoPanel {
                             .attr("height", 30);
         this.humanIndex = d3.select("#population")
                             .attr("width", this.svgBounds.width)
-                            .attr("height", 200);
+                            .attr("height", 250);
         this.remain = null;
     }
 
     updateInfo(oneCountryInfo, year) {
         console.log(oneCountryInfo);
-        if (oneCountryInfo.wikidata == -1) {
+        if (oneCountryInfo.wikidata < 0) {
             this.remain = document.getElementById("details").innerHTML;
             document.getElementById("details").innerHTML = "<h1 id=\"country\"></h1>";
             document.getElementById("country").innerHTML = oneCountryInfo.NAME;
@@ -97,10 +97,10 @@ class InfoPanel {
         $.ajax( endpointUrl, statsQuery(oneCountryInfo.wikidata, domain.toString()) ).then( function ( data ) {
             let xScale = d3.scaleBand()
                 .domain(data.results.bindings.map(d=>+d.year.value))
-                .range([20, d3.select("#population").node().getBoundingClientRect().width-20]);
+                .range([120, d3.select("#population").node().getBoundingClientRect().width]);
             let yScale = d3.scaleLinear()
                 .domain([d3.min(data.results.bindings, d=>+d.stats.value), d3.max(data.results.bindings, d=>+d.stats.value)])
-                .range([0, d3.select("#population").node().getBoundingClientRect().height]);
+                .range([d3.select("#population").node().getBoundingClientRect().height-50, 0]);
             let lineGenerator = d3.line()
                                     .x(function(d) {
                                         console.log(d.year.value, xScale(d.year.value));
@@ -120,6 +120,27 @@ class InfoPanel {
                 .style("fill", "none")
                 .style("stroke", "black");
 
+            let xAxis = d3.axisBottom();
+            xAxis.scale(xScale)
+                .ticks(10);
+
+            let yAxis = d3.axisLeft();
+            yAxis.scale(yScale)
+                .ticks(3);
+
+            d3.select("#popShow")
+                .append("g")
+                .attr("transform", "translate(" + (-xScale.bandwidth()/2) + ", 200)")
+                .style("fill", "none")
+                .style("stroke", "black")
+                .call(xAxis);
+
+            d3.select("#popShow")
+                .append("g")
+                .attr("transform", "translate(" + (120-xScale.bandwidth()/2) + ", 0)")
+                .style("fill", "none")
+                .style("stroke", "black")
+                .call(yAxis);
             /*d3.select("#population")
                 .html("");
             d3.select("#population")
