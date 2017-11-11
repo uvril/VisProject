@@ -2,19 +2,27 @@ class InfoPanel {
     constructor() {
         this.svgBounds = d3.select("#details").node().getBoundingClientRect();
         this.svgWidth = this.svgBounds.width;
-        this.svgHeight = 30;
+        this.svgHeight = this.svgBounds.width;
         this.humanIndex = d3.select("#humanIndex")
                             .attr("width", this.svgBounds.width)
-                            .attr("height", this.svgHeight);
+                            .attr("height", 30);
+        this.remain = null;
     }
 
     updateInfo(oneCountryInfo, year) {
         console.log(oneCountryInfo);
-        if (oneCountryInfo == -1) {
-
+        if (oneCountryInfo.wikidata == -1) {
+            this.remain = document.getElementById("details").innerHTML;
+            document.getElementById("details").innerHTML = "<h1 id=\"country\"></h1>";
+            document.getElementById("country").innerHTML = oneCountryInfo.NAME;
+            return;
         }
-        document.getElementById("country").innerHTML = oneCountryInfo.NAME;
+        else if (this.remain != null) {
+             document.getElementById("details").innerHTML = this.remain;
+             this.remain = null;
+        }
 
+        document.getElementById("country").innerHTML = oneCountryInfo.NAME;
         console.log(oneCountryInfo.wikidata);
         let endpointUrl = 'https://query.wikidata.org/bigdata/namespace/wdq/sparql',
             sparqlQuery = "SELECT ?countryLabel ?article WHERE {\n" +
