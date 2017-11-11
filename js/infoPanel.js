@@ -95,12 +95,12 @@ class InfoPanel {
 
         domain = 1082;
         $.ajax( endpointUrl, statsQuery(oneCountryInfo.wikidata, domain.toString()) ).then( function ( data ) {
-            let xScale = d3.scaleBand()
-                .domain(data.results.bindings.map(d=>+d.year.value))
-                .range([120, d3.select("#population").node().getBoundingClientRect().width]);
+            let xScale = d3.scaleLinear()
+                .domain([d3.min(data.results.bindings, d=>+d.year.value), d3.max(data.results.bindings, d=>+d.year.value)])
+                .range([80, d3.select("#population").node().getBoundingClientRect().width-30]);
             let yScale = d3.scaleLinear()
                 .domain([d3.min(data.results.bindings, d=>+d.stats.value), d3.max(data.results.bindings, d=>+d.stats.value)])
-                .range([d3.select("#population").node().getBoundingClientRect().height-50, 0]);
+                .range([d3.select("#population").node().getBoundingClientRect().height-20, 0]);
             let lineGenerator = d3.line()
                                     .x(function(d) {
                                         console.log(d.year.value, xScale(d.year.value));
@@ -122,22 +122,22 @@ class InfoPanel {
 
             let xAxis = d3.axisBottom();
             xAxis.scale(xScale)
-                .ticks(10);
+                .ticks(data.results.bindings.length > 10? 10 : data.results.bindings.length);
 
             let yAxis = d3.axisLeft();
             yAxis.scale(yScale)
-                .ticks(3);
+                .ticks(5);
 
             d3.select("#popShow")
                 .append("g")
-                .attr("transform", "translate(" + (-xScale.bandwidth()/2) + ", 200)")
+                .attr("transform", "translate(0, 230)")
                 .style("fill", "none")
                 .style("stroke", "black")
                 .call(xAxis);
 
             d3.select("#popShow")
                 .append("g")
-                .attr("transform", "translate(" + (120-xScale.bandwidth()/2) + ", 0)")
+                .attr("transform", "translate(80, 0)")
                 .style("fill", "none")
                 .style("stroke", "black")
                 .call(yAxis);
