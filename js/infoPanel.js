@@ -6,6 +6,9 @@ class InfoPanel {
         this.humanIndex = d3.select("#humanIndex")
                             .attr("width", this.svgBounds.width)
                             .attr("height", 30);
+        this.humanIndex = d3.select("#population")
+                            .attr("width", this.svgBounds.width)
+                            .attr("height", 200);
         this.remain = null;
     }
 
@@ -92,14 +95,39 @@ class InfoPanel {
 
         domain = 1082;
         $.ajax( endpointUrl, statsQuery(oneCountryInfo.wikidata, domain.toString()) ).then( function ( data ) {
-            d3.select("#population")
+            let xScale = d3.scaleBand()
+                .domain(data.results.bindings.map(d=>+d.year.value))
+                .range([20, d3.select("#population").node().getBoundingClientRect().width-20]);
+            let yScale = d3.scaleLinear()
+                .domain([d3.min(data.results.bindings, d=>+d.stats.value), d3.max(data.results.bindings, d=>+d.stats.value)])
+                .range([0, d3.select("#population").node().getBoundingClientRect().height]);
+            let lineGenerator = d3.line()
+                                    .x(function(d) {
+                                        console.log(d.year.value, xScale(d.year.value));
+                                        return xScale(d.year.value);
+                                    })
+                                    .y(function(d){
+                                        console.log(d.stats.value, yScale(d.stats.value));
+                                        return yScale(d.stats.value);
+                                    });
+
+            d3.select("#popShow")
+                .html("");
+
+            d3.select("#popShow")
+                .append("path")
+                .attr("d", lineGenerator(data.results.bindings))
+                .style("fill", "none")
+                .style("stroke", "black");
+
+            /*d3.select("#population")
                 .html("");
             d3.select("#population")
                 .append("ul")
                 .selectAll("li")
                 .data(data.results.bindings)
                 .enter().append("li")
-                .text(d=>d.year.value+"  "+d.stats.value);
+                .text(d=>d.year.value+"  "+d.stats.value);*/
         });
 
         domain = 1081;
@@ -133,7 +161,6 @@ class InfoPanel {
                 .attr("y", 30) 
                 .attr("text-anchor", "middle")
                 .text(d=>d.year.value);
-                
         }); 
     }
 }
