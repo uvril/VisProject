@@ -2,15 +2,17 @@ class InfoPanel {
     constructor() {
         this.svgBounds = d3.select("#details").node().getBoundingClientRect();
         this.svgWidth = this.svgBounds.width;
-        this.svgHeight = this.svgBounds.width;
-        d3.select("#humanIndex")
-            .append("svg")
-            .attr("id", "showIndex")
-            .attr("width", this.svgBounds.width)
-            .attr("height", 20);
+        this.svgHeight = 30;
+        this.humanIndex = d3.select("#humanIndex")
+                            .attr("width", this.svgBounds.width)
+                            .attr("height", this.svgHeight);
     }
 
     updateInfo(oneCountryInfo, year) {
+        console.log(oneCountryInfo);
+        if (oneCountryInfo == -1) {
+
+        }
         document.getElementById("country").innerHTML = oneCountryInfo.NAME;
 
         console.log(oneCountryInfo.wikidata);
@@ -101,11 +103,11 @@ class InfoPanel {
                 .range(range);
             let xScale = d3.scaleBand()
                 .domain(data.results.bindings.map(d=>+d.year.value).sort(d3.ascending))
-                .range([0, d3.select("#showIndex").node().getBoundingClientRect().width-40])
+                .range([20, d3.select("#humanIndex").node().getBoundingClientRect().width-20])
                 .paddingInner(0.01);
-            d3.select("#showIndex")
+            d3.select("#humanIndex")
                 .html("");
-            d3.select("#showIndex")
+            d3.select("#humanIndex")
                 .selectAll("rect")
                 .data(data.results.bindings)
                 .enter().append("rect")
@@ -114,7 +116,16 @@ class InfoPanel {
                 .attr("width", xScale.bandwidth())
                 .attr("height", 10)
                 .style("fill", d=>colorScale(d.stats.value));
+            let textArray = [data.results.bindings[0], data.results.bindings[data.results.bindings.length-1]]
+            d3.select("#humanIndex")
+                .selectAll("text")
+                .data(textArray)
+                .enter().append("text")
+                .attr("x", d=>xScale(d.year.value) + xScale.bandwidth()/2)
+                .attr("y", 30) 
+                .attr("text-anchor", "middle")
+                .text(d=>d.year.value);
+                
         }); 
-
     }
 }
