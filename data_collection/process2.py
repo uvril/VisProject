@@ -62,6 +62,7 @@ dd = {
     "Sicily" : 188586
     }
 
+notf = {}
 
 for root, dirs, files in os.walk("."):
     for osfn in files:
@@ -81,6 +82,8 @@ for root, dirs, files in os.walk("."):
             if name in dd:
                 jp["wikidata"] = str(dd[name])
             else:
+                if name in notf:
+                    continue
 
                 q = """SELECT ?child ?childLabel
                 WHERE {
@@ -96,13 +99,14 @@ for root, dirs, files in os.walk("."):
                 results = sparql.query().convert()["results"]["bindings"]
 
                 if (len(results) == 1):
-                    ddname = results[0]["child"]["value"][31:]
+                    ddv = results[0]["child"]["value"]
+                    ddname = ddv[(ddv.find("Q") + 1) :]
                     dd[name] = ddname
                     jp["wikidata"] = ddname
                 elif (len(results) == 0):
                     q = """SELECT ?child ?childLabel
                     WHERE {
-                  {?child wdt:P31 [wdt:P279 wd:Q6256]} union {?child wdt:P31 wd:Q6256} union {?child wdt:P31 [wdt:P279 wd:Q7275]}.
+                  {?child wdt:P31 [wdt:P279 wd:Q6256]} .
                   ?child  rdfs:label ?childLabel.
                   filter (lang(?childLabel) = "en").
                   filter (contains(?childLabel, """
@@ -113,13 +117,15 @@ for root, dirs, files in os.walk("."):
                     sparql.setReturnFormat(JSON)
                     results = sparql.query().convert()["results"]["bindings"]
                     if (len(results) == 1):
-                        ddname = results[0]["child"]["value"][31:]
-                        dd[name] = ddname
+                        ddv = results[0]["child"]["value"]
+                        ddname = ddv[(ddv.find("Q") + 1) :]
                         jp["wikidata"] = ddname
                     else:
+                        notf[name] = 1
                         print("Oops %s" % name)
 
                 else:
+                    notf[name] = 1
                     print("Oops %s" % name)
 
 

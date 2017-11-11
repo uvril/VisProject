@@ -85,7 +85,7 @@ class Map {
                     .attr("d", this.path)
                     .classed("countries", true)
                     .on("click", function(d){
-                        if ("wikidata" in d.properties && +d.properties.wikidata >= 0) {
+                        if (d.properties.NAME != "unclaimed") {
                             this.svgPath.selectAll("path").classed("selected", d1 => d1.properties.wikidata === d.properties.wikidata);
                             this.svgText.selectAll("textPath").style("fill-opacity", d1 => d1.properties.wikidata === d.properties.wikidata ? 1 : 0.4);
                             this.infoPanel.updateInfo(d.properties, year);
