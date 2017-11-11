@@ -45,7 +45,7 @@ class Map {
         }
 
         year = years[i];
-        let filename = "data/cntry" + year + ".json"
+        let filename = "data/map/cntry" + year + ".json"
 
             d3.json(filename, function (geoData) {
 
