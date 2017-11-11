@@ -8,7 +8,7 @@ class InfoPanel {
                             .attr("height", 30);
         this.humanIndex = d3.select("#population")
                             .attr("width", this.svgBounds.width)
-                            .attr("height", 250);
+                            .attr("height", 260);
         this.remain = null;
     }
 
@@ -100,7 +100,7 @@ class InfoPanel {
                 .range([80, d3.select("#population").node().getBoundingClientRect().width-30]);
             let yScale = d3.scaleLinear()
                 .domain([d3.min(data.results.bindings, d=>+d.stats.value), d3.max(data.results.bindings, d=>+d.stats.value)])
-                .range([d3.select("#population").node().getBoundingClientRect().height-20, 0]);
+                .range([d3.select("#population").node().getBoundingClientRect().height-30, 0]);
             let lineGenerator = d3.line()
                                     .x(function(d) {
                                         console.log(d.year.value, xScale(d.year.value));
@@ -126,7 +126,7 @@ class InfoPanel {
 
             let yAxis = d3.axisLeft();
             yAxis.scale(yScale)
-                .ticks(5);
+                .ticks(3);
 
             d3.select("#popShow")
                 .append("g")
