@@ -58,7 +58,7 @@ class InfoPanel {
 
             let xAxis = d3.axisBottom();
             xAxis.scale(xScale)
-                .ticks(data.pop.length > 10? 10 : data.pop.length);
+                .ticks(Math.min(data.pop.length,10));
 
             let yAxis = d3.axisLeft();
             yAxis.scale(yScale)
