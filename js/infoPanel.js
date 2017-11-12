@@ -25,20 +25,31 @@ class InfoPanel {
         }
 
         document.getElementById("country").innerHTML = oneCountryInfo.NAME;
-
-		
-
-
-
-		
-        d3.json("data/stat/" + wd + ".json", function(err, data) {
+        console.log(wd);
+        d3.json("data/stat/" + wd + ".json", function(err, data) { 
             document.getElementById("wikipage").setAttribute("src", data.wiki+"?printable=yes");
             document.getElementById("wikipage").setAttribute("height", this.svgHeight/2);
             document.getElementById("wikipage").setAttribute("width", this.svgWidth);			
-            document.getElementById("capital").innerHTML = data.capital[0];
-            document.getElementById("headState").innerHTML = data.headState[0];
-            document.getElementById("headGov").innerHTML = data.headGov[0];
-            d3.select("#continent").text(data.continent.join(", "));
+//basicInfo
+            let basicInfo = [{"title":"Capital", "value":data.capital[0]}, {"title":"Continet", "value":data.continent.join(", ")}, {"title":"Head of State", "value":data.headState[0]}, {"title":"Head of Gov", "value":data.headGov[0]}];
+            d3.select("#basicInfo")
+                .append("tbody")
+                .html("");
+            d3.select("tbody")
+                .selectAll("tr")
+                .data(basicInfo)
+                .enter().append("tr")
+                .append("th")
+                .text(d=>d.title)
+                .style("font-size", "25px")
+                .style("font-weight", "bold");
+            d3.selectAll("tr")
+                .append("td")
+                .text(d=>d.value)
+                .style("font-size", "20px")
+                .style("font-weight", "normal");
+
+//polulation
             let xScale = d3.scaleLinear()
                 .domain([d3.min(data.pop, d => +d.year), d3.max(data.pop, d => +d.year)])
                 .range([80, d3.select("#population").node().getBoundingClientRect().width-30]);
@@ -46,18 +57,11 @@ class InfoPanel {
                 .domain([d3.min(data.pop, d => +d.stats), d3.max(data.pop, d => +d.stats)])
                 .range([d3.select("#population").node().getBoundingClientRect().height-30, 0]);
             let lineGenerator = d3.line()
-                                    .x(function(d) {
-                                        return xScale(+d.year);
-                                    })
-                                    .y(function(d){
-                                        return yScale(+d.stats);
-                                    });
-
+                                    .x(d=>xScale(+d.year))
+                                    .y(d=>yScale(+d.stats));
             d3.select("#popShow")
                 .html("");
-
             let pop_s = data.pop.sort((a, b) => parseInt(a.year) - parseInt(b.year));
-
             d3.select("#popShow")
                 .append("path")
                 .attr("d", lineGenerator(pop_s))
@@ -66,7 +70,7 @@ class InfoPanel {
 
             let xAxis = d3.axisBottom();
             xAxis.scale(xScale)
-                .ticks(data.pop.length > 10? 10 : data.pop.length);
+                .ticks(Math.min(data.pop.length,10));
 
             let yAxis = d3.axisLeft();
             yAxis.scale(yScale)
@@ -86,6 +90,14 @@ class InfoPanel {
                 .style("stroke", "black")
                 .call(yAxis);
 
+//humanIndex
+           let tip = d3.tip()
+                .offset(function() {
+                    return [0,0];
+                })
+                .html(function(d){
+                    console.log(d);
+                });
             let xdomain = [0, 0.5, 1];
             let range = ['red', "yellow", 'green'];
             let colorScale = d3.scaleLinear()
@@ -98,6 +110,10 @@ class InfoPanel {
             d3.select("#humanIndex")
                 .html("");
             d3.select("#humanIndex")
+                .append("g")
+                .attr("id", "indexShow")
+                .call(tip);
+            d3.select("#indexShow")
                 .selectAll("rect")
                 .data(data.hdi)
                 .enter().append("rect")
@@ -105,7 +121,12 @@ class InfoPanel {
                 .attr("y", 5)
                 .attr("width", hdiXScale.bandwidth())
                 .attr("height", 10)
-                .style("fill", d=>colorScale(+d.stats));
+                .style("fill", d=>colorScale(+d.stats))
+                .on("mouseover", function(d){
+                    console.log("!!!");
+                    tip.show;
+                })
+                .on("mouseout", tip.hide);
             let textArray = [d3.min(data.hdi, d=>+d.year), d3.max(data.hdi, d=>+d.year)];
             d3.select("#humanIndex")
                 .selectAll("text")
