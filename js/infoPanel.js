@@ -25,8 +25,16 @@ class InfoPanel {
         }
 
         document.getElementById("country").innerHTML = oneCountryInfo.NAME;
-        console.log(wd);
+
+		
+
+
+
+		
         d3.json("data/stat/" + wd + ".json", function(err, data) {
+            document.getElementById("wikipage").setAttribute("src", data.wiki+"?printable=yes");
+            document.getElementById("wikipage").setAttribute("height", this.svgHeight/2);
+            document.getElementById("wikipage").setAttribute("width", this.svgWidth);			
             document.getElementById("capital").innerHTML = data.capital[0];
             document.getElementById("headState").innerHTML = data.headState[0];
             document.getElementById("headGov").innerHTML = data.headGov[0];
@@ -107,7 +115,7 @@ class InfoPanel {
                 .attr("y", 30) 
                 .attr("text-anchor", "middle")
                 .text(d=>d);
-        });
+        }.bind(this));
 
     }
 }
