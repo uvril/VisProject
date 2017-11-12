@@ -5,7 +5,7 @@ class InfoPanel {
         this.svgHeight = this.svgBounds.width;
         this.humanIndex = d3.select("#humanIndex")
                             .attr("width", this.svgBounds.width)
-                            .attr("height", 30);
+                            .attr("height", 100);
         this.humanIndex = d3.select("#population")
                             .attr("width", this.svgBounds.width)
                             .attr("height", 260);
@@ -47,6 +47,10 @@ class InfoPanel {
                 .style("font-weight", "normal");
 
 //polulation
+            d3.select("#popTitle")
+                .text("Population")
+                .style("font-size", "25px")
+                .style("font-weight", "bold");
             let xScale = d3.scaleLinear()
                 .domain([d3.min(data.pop, d => +d.year), d3.max(data.pop, d => +d.year)])
                 .range([80, d3.select("#population").node().getBoundingClientRect().width-30]);
@@ -88,6 +92,10 @@ class InfoPanel {
                 .call(yAxis);
 
 //humanIndex
+            d3.select("#indexTitle")
+                .text("Human Development Index")
+                .style("font-size", "25px")
+                .style("font-weight", "bold");
            let tip = d3.tip()
                 .offset(function() {
                     return [0,0];
@@ -133,6 +141,12 @@ class InfoPanel {
                 .attr("y", 30) 
                 .attr("text-anchor", "middle")
                 .text(d=>d);
+
+//wikiPage Title
+            d3.select("#wikiTitle")
+                .text("Description from Wiki")
+                .style("font-size", "25px")
+                .style("font-weight", "bold");
         });
 
     }
