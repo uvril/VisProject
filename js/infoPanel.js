@@ -27,6 +27,9 @@ class InfoPanel {
         document.getElementById("country").innerHTML = oneCountryInfo.NAME;
         console.log(wd);
         d3.json("data/stat/" + wd + ".json", function(err, data) { 
+            document.getElementById("wikipage").setAttribute("src", data.wiki+"?printable=yes");
+            document.getElementById("wikipage").setAttribute("height", this.svgHeight/2);
+            document.getElementById("wikipage").setAttribute("width", this.svgWidth);			
 //basicInfo
             let basicInfo = [{"title":"Capital", "value":data.capital[0]}, {"title":"Continet", "value":data.continent.join(", ")}, {"title":"Head of State", "value":data.headState[0]}, {"title":"Head of Gov", "value":data.headGov[0]}];
             d3.select("#basicInfo")
@@ -141,6 +144,7 @@ class InfoPanel {
                 .attr("y", 30) 
                 .attr("text-anchor", "middle")
                 .text(d=>d);
+<<<<<<< HEAD
 
 //wikiPage Title
             d3.select("#wikiTitle")
@@ -148,6 +152,9 @@ class InfoPanel {
                 .style("font-size", "25px")
                 .style("font-weight", "bold");
         });
+=======
+        }.bind(this));
+>>>>>>> 13596d687396e3d0615faf6f348e6356a0527f48
 
     }
 }

@@ -1,8 +1,10 @@
 import json
 import os
 from SPARQLWrapper import SPARQLWrapper, JSON
-
+import codecs
 from osgeo import ogr
+
+ff = codecs.open("missed", "w", "utf-8")
 
 def get_dist(p1, p2):
     xd = p1[0] - p2[0]
@@ -44,10 +46,10 @@ def calc(d):
     max_pt.append(cen)
     return max_pt
 
-
 dd = {
     "Cyprus" : 229,
     "unclaimed" : -1,
+    "Unclaimed" : -1,
     "Puerto Rico" : 1183,
     "Greenland" : 223,
     "Antarctica" : 51,
@@ -59,7 +61,25 @@ dd = {
     "Sinhalese kingdom" : 7524320,
     "Shoa" : 971375,
     "Bornu-Kanem" : 1139762,
-    "Sicily" : 188586
+    "Sicily" : 188586,
+    "Han Empire" : 7209,
+    "Qin" : 7183,
+    "Liao" : 4958,
+    "Great Zimbabwe" : 209217,
+    "Tibet" : 17269,
+    "Song Empire" : 7462,
+    "Ming Chinese Empire" : 9903,
+    "Byzantine Empire" : 12544,
+    "Aztec Empire" : 2608489,
+    "Manchu Empire" : 8733,
+    "Quebec" : 176,
+    "Cocin China" : 505503,
+    "USSR" : 15180,
+    "Empire of Alexander" : 83958,
+    "Xixia" : 7427,
+    "White Russia" : 184,
+    "Korea, Rebpulic of" : 884,
+    "Korea, Democratic People's Rebpulic of" : 423
     }
 
 notf = {}
@@ -98,12 +118,12 @@ for root, dirs, files in os.walk("."):
                 sparql.setReturnFormat(JSON)
                 results = sparql.query().convert()["results"]["bindings"]
 
-                if (len(results) == 1):
+                if (len(results) > 0):
                     ddv = results[0]["child"]["value"]
                     ddname = ddv[(ddv.find("Q") + 1) :]
                     dd[name] = ddname
                     jp["wikidata"] = ddname
-                elif (len(results) == 0):
+                else:
                     q = """SELECT ?child ?childLabel
                     WHERE {
                   {?child wdt:P31 [wdt:P279 wd:Q6256]} .
@@ -116,17 +136,16 @@ for root, dirs, files in os.walk("."):
                     sparql.setQuery(q)
                     sparql.setReturnFormat(JSON)
                     results = sparql.query().convert()["results"]["bindings"]
-                    if (len(results) == 1):
+                    if (len(results) > 0):
                         ddv = results[0]["child"]["value"]
                         ddname = ddv[(ddv.find("Q") + 1) :]
                         jp["wikidata"] = ddname
                     else:
                         notf[name] = 1
-                        print("Oops %s" % name)
+                        ff.write(name)
+                        ff.write("\n")
+                        print("%s" % name)
 
-                else:
-                    notf[name] = 1
-                    print("Oops %s" % name)
 
 
             jl = calc(j)
@@ -142,3 +161,4 @@ for root, dirs, files in os.walk("."):
         of = open(fn, "w")
         json.dump(d, of)
 
+ff.close()

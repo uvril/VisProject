@@ -22,6 +22,18 @@ def query(q):
         errf.write("\n")
     return []
 
+def articleQuery(wd):
+    q = """
+        SELECT ?url WHERE {
+            ?url schema:about wd:Q%d.
+            ?url schema:isPartOf <https://en.wikipedia.org/>. }
+        """ % wd
+    res = query(q)
+    ret = []
+    for i in res:
+        ret.append(i["url"]["value"])
+    return ret
+
 def labelQuery(wd, dom):
     q = """
         SELECT ?name WHERE {
@@ -70,6 +82,8 @@ for root, dirs, files in os.walk("."):
                 if wd>0:
                     if not os.path.isfile(fn):
                         rec = {}
+                        articleQuery(wd)
+                        rec["wiki"] = articleQuery(wd)
                         rec["capital"] = labelQuery(wd, 36)
                         rec["continent"] = labelQuery(wd, 30)
                         rec["headState"] = labelQuery(wd, 35)
