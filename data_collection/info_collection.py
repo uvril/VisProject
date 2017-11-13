@@ -82,7 +82,6 @@ for root, dirs, files in os.walk("."):
                 if wd>0:
                     if not os.path.isfile(fn):
                         rec = {}
-                        articleQuery(wd)
                         rec["wiki"] = articleQuery(wd)
                         rec["capital"] = labelQuery(wd, 36)
                         rec["continent"] = labelQuery(wd, 30)
