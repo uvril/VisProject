@@ -151,6 +151,9 @@ td {
 .focus circle {
   fill: red;
 }
+.focus rect {
+  fill: yellow;
+}
 .overlay {
   fill: none;
   pointer-events: all;

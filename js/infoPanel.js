@@ -107,6 +107,9 @@ class InfoPanel {
                             .append("g")
                             .attr("class", "focus")
                             .style("display", "none");
+            focus.append("rect")
+                .attr("width", 2)
+                .attr("height", d3.select("#population").node().getBoundingClientRect().height-30);
             focus.append("circle")
                 .attr("r", 4);
             focus.append("text")
@@ -130,7 +133,13 @@ class InfoPanel {
                     d1 = pop_s[i],
                     d = x0 - d0.year > d1.year - x0? d1:d0;
                     console.log(d, popyScale(d.stats), popxScale(d.year));
-                focus.attr("transform", "translate(" + popxScale(d.year)+","+(popyScale(d.stats)+5)+")");
+                focus.attr("transform", "translate(0,5)");
+                focus.select("circle")
+                    .attr("cx", popxScale(d.year))
+                    .attr("cy", popyScale(d.stats))
+                focus.selectAll("rect")
+                    .attr("x", popxScale(d.year)-1)
+                    .attr("y", 0);
             }
 
 //humanIndex
