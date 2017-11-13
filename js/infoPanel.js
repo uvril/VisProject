@@ -95,8 +95,13 @@ class InfoPanel {
                 .attr("transform", "translate(80, 0)")
                 .style("fill", "none")
                 .style("stroke", "black")
-                .call(yAxis);
-
+                .call(yAxis)
+                .append("text")
+                .attr("transform", "rotate(-90)")
+                .attr("y", 6)
+                .attr("dy", ".71em")
+                .style("text-anchor", "end")
+                .text("Population");
 //humanIndex
             d3.select("#indexTitle")
                 .text("Human Development Index")
