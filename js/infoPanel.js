@@ -60,7 +60,7 @@ class InfoPanel {
 //population scale
             let popxScale = d3.scaleLinear()
                 .domain([d3.min(data.pop, d => +d.year), d3.max(data.pop, d => +d.year)])
-                .range([80, d3.select("#population").node().getBoundingClientRect().width-30]);
+                .range([80, d3.select("#population").node().getBoundingClientRect().width-60]);
             let popyScale = d3.scaleLinear()
                 .domain([d3.min(data.pop, d => +d.stats), d3.max(data.pop, d => +d.stats)])
                 .range([d3.select("#population").node().getBoundingClientRect().height-30, 0]);
@@ -80,7 +80,7 @@ class InfoPanel {
 //population axes
             let xAxis = d3.axisBottom();
             xAxis.scale(popxScale)
-                .ticks(Math.min(data.pop.length,10));
+                .ticks(Math.min(data.pop.length,7));
             let yAxis = d3.axisLeft();
             yAxis.scale(popyScale)
                 .ticks(3);
@@ -113,14 +113,17 @@ class InfoPanel {
             focus.append("circle")
                 .attr("r", 4);
             focus.append("text")
-                .attr("x", 9)
+                .attr("id", "pop_year")
                 .attr("dy", ".35em");
+            focus.append("text")
+                .attr("id", "pop_stats")
+                .attr("dy", "1.35em");
             d3.select("#population")
                 .append("rect")
                 .attr("class", "overlay")
                 .attr("x", 80)
-                .attr("y", 0)
-                .attr("width", d3.select("#population").node().getBoundingClientRect().width-110)
+                .attr("y", 5)
+                .attr("width", d3.select("#population").node().getBoundingClientRect().width-140)
                 .attr("height", d3.select("#population").node().getBoundingClientRect().height-30)
                 .on("mouseover", function() {focus.style("display", null);})
                 .on("mouseout", function() {focus.style("display", "none");})
@@ -131,15 +134,26 @@ class InfoPanel {
                     i = bisectorDate(pop_s, x0, 1),
                     d0 = pop_s[i-1],
                     d1 = pop_s[i],
+                    d = d0;
+                if (i != pop_s.length)
                     d = x0 - d0.year > d1.year - x0? d1:d0;
-                    console.log(d, popyScale(d.stats), popxScale(d.year));
                 focus.attr("transform", "translate(0,5)");
                 focus.select("circle")
                     .attr("cx", popxScale(d.year))
                     .attr("cy", popyScale(d.stats))
-                focus.selectAll("rect")
+                focus.select("rect")
                     .attr("x", popxScale(d.year)-1)
                     .attr("y", 0);
+                focus.select("#pop_year")
+                    .attr("x", popxScale(d.year)+10)
+                    .attr("y", d.year == d3.max(data.pop, d => +d.year)? popyScale(d.stats)+10:popyScale(d.stats))
+                    .style("text-anchor", d.year == d3.max(data.pop, d => +d.year)? "end":"start")
+                    .text(d.year);
+                focus.select("#pop_stats")
+                    .attr("x", popxScale(d.year)+10)
+                    .attr("y", d.year == d3.max(data.pop, d => +d.year)? popyScale(d.stats)+10:popyScale(d.stats))
+                    .style("text-anchor", d.year == d3.max(data.pop, d => +d.year)? "end":"start")
+                    .text(d.stats);
             }
 
 //humanIndex
@@ -148,7 +162,7 @@ class InfoPanel {
                 .style("font-size", "25px")
                 .style("font-weight", "bold");
 //humanIndex tip
-           let tip = d3.tip()
+           let hdiTip = d3.tip()
                 .attr('class', 'd3-tip')
                 .direction('s')
                 .offset(function() {
@@ -180,7 +194,7 @@ class InfoPanel {
             d3.select("#humanIndex")
                 .append("g")
                 .attr("id", "indexShow")
-                .call(tip);
+                .call(hdiTip);
             d3.select("#indexShow")
                 .selectAll("rect")
                 .data(data.hdi)
@@ -190,8 +204,8 @@ class InfoPanel {
                 .attr("width", hdiXScale.bandwidth())
                 .attr("height", 10)
                 .style("fill", d=>this.colorScale(+d.stats))
-                .on("mouseover", tip.show)
-                .on("mouseout", tip.hide);
+                .on("mouseover", hdiTip.show)
+                .on("mouseout", hdiTip.hide);
 
 //wikiPage Title
             d3.select("#wikiTitle")

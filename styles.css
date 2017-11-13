@@ -64,7 +64,7 @@ th {
     text-align: left;
     padding-right: 6px;
     min-width: 125px;
-    width:33%;
+    width:50%;
 }
 
 tbody tr:hover {
@@ -74,7 +74,7 @@ tbody tr:hover {
 td {
     padding-right: 5px;
     padding-left: 5px;
-    width:40%;
+    width:50%;
 }
 
 #header {
