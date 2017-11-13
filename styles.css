@@ -148,6 +148,13 @@ td {
     font-family: "Arial Black";
 
 }
+.focus circle {
+  fill: red;
+}
+.overlay {
+  fill: none;
+  pointer-events: all;
+}
 
 /* Creates a small triangle extender for the tooltip */
 .d3-tip:after {

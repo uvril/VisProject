@@ -6,7 +6,7 @@ class InfoPanel {
         this.humanIndex = d3.select("#humanIndex")
                             .attr("width", this.svgBounds.width)
                             .attr("height", 80);
-        this.humanIndex = d3.select("#population")
+        this.population = d3.select("#population")
                             .attr("width", this.svgBounds.width)
                             .attr("height", 260);
         this.remain = document.getElementById("details").innerHTML;
@@ -57,15 +57,17 @@ class InfoPanel {
                 .text("Population")
                 .style("font-size", "25px")
                 .style("font-weight", "bold");
-            let xScale = d3.scaleLinear()
+//population scale
+            let popxScale = d3.scaleLinear()
                 .domain([d3.min(data.pop, d => +d.year), d3.max(data.pop, d => +d.year)])
                 .range([80, d3.select("#population").node().getBoundingClientRect().width-30]);
-            let yScale = d3.scaleLinear()
+            let popyScale = d3.scaleLinear()
                 .domain([d3.min(data.pop, d => +d.stats), d3.max(data.pop, d => +d.stats)])
                 .range([d3.select("#population").node().getBoundingClientRect().height-30, 0]);
+//population line
             let lineGenerator = d3.line()
-                                    .x(d=>xScale(+d.year))
-                                    .y(d=>yScale(+d.stats));
+                                    .x(d=>popxScale(+d.year))
+                                    .y(d=>popyScale(+d.stats));
             d3.select("#popShow")
                 .html("");
             let pop_s = data.pop.sort((a, b) => parseInt(a.year) - parseInt(b.year));
@@ -73,23 +75,21 @@ class InfoPanel {
                 .append("path")
                 .attr("d", lineGenerator(pop_s))
                 .style("fill", "none")
-                .style("stroke", "black");
-
+                .style("stroke", "steelblue")
+                .style("stroke-width", "2px");
+//population axes
             let xAxis = d3.axisBottom();
-            xAxis.scale(xScale)
+            xAxis.scale(popxScale)
                 .ticks(Math.min(data.pop.length,10));
-
             let yAxis = d3.axisLeft();
-            yAxis.scale(yScale)
+            yAxis.scale(popyScale)
                 .ticks(3);
-
             d3.select("#popShow")
                 .append("g")
                 .attr("transform", "translate(0, 230)")
                 .style("fill", "none")
                 .style("stroke", "black")
                 .call(xAxis);
-
             d3.select("#popShow")
                 .append("g")
                 .attr("transform", "translate(80, 0)")
@@ -102,6 +102,37 @@ class InfoPanel {
                 .attr("dy", ".71em")
                 .style("text-anchor", "end")
                 .text("Population");
+//population focus point
+            let focus = d3.select("#population")
+                            .append("g")
+                            .attr("class", "focus")
+                            .style("display", "none");
+            focus.append("circle")
+                .attr("r", 4);
+            focus.append("text")
+                .attr("x", 9)
+                .attr("dy", ".35em");
+            d3.select("#population")
+                .append("rect")
+                .attr("class", "overlay")
+                .attr("x", 80)
+                .attr("y", 0)
+                .attr("width", d3.select("#population").node().getBoundingClientRect().width-110)
+                .attr("height", d3.select("#population").node().getBoundingClientRect().height-30)
+                .on("mouseover", function() {focus.style("display", null);})
+                .on("mouseout", function() {focus.style("display", "none");})
+                .on("mousemove", mousemove);
+            let bisectorDate = d3.bisector(function(d) { return d.year; }).left;
+            function mousemove() {
+                let x0 = popxScale.invert(d3.mouse(this)[0]),
+                    i = bisectorDate(pop_s, x0, 1),
+                    d0 = pop_s[i-1],
+                    d1 = pop_s[i],
+                    d = x0 - d0.year > d1.year - x0? d1:d0;
+                    console.log(d, popyScale(d.stats), popxScale(d.year));
+                focus.attr("transform", "translate(" + popxScale(d.year)+","+(popyScale(d.stats)+5)+")");
+            }
+
 //humanIndex
             d3.select("#indexTitle")
                 .text("Human Development Index")
