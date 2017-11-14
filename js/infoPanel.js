@@ -60,7 +60,7 @@ class InfoPanel {
 //population scale
             let popxScale = d3.scaleLinear()
                 .domain([d3.min(data.pop, d => +d.year), d3.max(data.pop, d => +d.year)])
-                .range([80, d3.select("#population").node().getBoundingClientRect().width-60]);
+                .range([50, d3.select("#population").node().getBoundingClientRect().width-60]);
             let popyScale = d3.scaleLinear()
                 .domain([d3.min(data.pop, d => +d.stats), d3.max(data.pop, d => +d.stats)])
                 .range([d3.select("#population").node().getBoundingClientRect().height-30, 0]);
@@ -80,10 +80,11 @@ class InfoPanel {
 //population axes
             let xAxis = d3.axisBottom();
             xAxis.scale(popxScale)
-                .ticks(Math.min(data.pop.length,7));
+                .ticks(Math.min(data.pop.length,7))
+                .tickFormat(d3.timeFormat("%Y"));
             let yAxis = d3.axisLeft();
             yAxis.scale(popyScale)
-                .ticks(3);
+                .ticks(3, "s");
             d3.select("#popShow")
                 .append("g")
                 .attr("transform", "translate(0, 230)")
@@ -92,7 +93,7 @@ class InfoPanel {
                 .call(xAxis);
             d3.select("#popShow")
                 .append("g")
-                .attr("transform", "translate(80, 0)")
+                .attr("transform", "translate(50, 0)")
                 .style("fill", "none")
                 .style("stroke", "black")
                 .call(yAxis)
