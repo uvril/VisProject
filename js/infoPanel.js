@@ -30,11 +30,21 @@ class InfoPanel {
         document.getElementById("country").innerHTML = oneCountryInfo.NAME;
         console.log(wd);
         d3.json("data/stat/" + wd + ".json", function(err, data) { 
+            console.log(data);
             document.getElementById("wikipage").setAttribute("src", data.wiki+"?printable=yes");
             document.getElementById("wikipage").setAttribute("height", this.svgHeight/2);
             document.getElementById("wikipage").setAttribute("width", this.svgWidth);			
 //basicInfo
-            let basicInfo = [{"title":"Capital", "value":data.capital[0]}, {"title":"Continet", "value":data.continent.join(", ")}, {"title":"Head of State", "value":data.headState[0]}, {"title":"Head of Gov", "value":data.headGov[0]}];
+            let tableTitle = [{"title":"Capital", "value":"capital"}, {"title":"Continet", "value":"continent"}, {"title":"Head of State", "value":"headState"}, {"title":"Head of Gov", "value":"headGov"}];
+            let basicInfo = []
+            tableTitle.forEach(function(d){
+                if (data[d.value].length != 0) {
+                    if (d.value != "continent")
+                        basicInfo.push({"title":d.title, "value":data[d.value]});
+                    else
+                        basicInfo.push({"title":d.title, "value":data[d.value].join(", ")});
+                }
+            });
             d3.select("#basicInfo")
                 .append("tbody")
                 .html("");
