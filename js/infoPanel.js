@@ -30,7 +30,7 @@ class InfoPanel {
         document.getElementById("country").innerHTML = oneCountryInfo.NAME;
         console.log(wd);
         d3.json("data/stat/" + wd + ".json", function(err, data) { 
-            //console.log(data);
+            console.log(data);
             document.getElementById("wikipage").setAttribute("src", data.wiki+"?printable=yes");
             document.getElementById("wikipage").setAttribute("height", this.svgHeight/2);
             document.getElementById("wikipage").setAttribute("width", this.svgWidth);			
@@ -271,6 +271,7 @@ class InfoPanel {
                 d3.select("#wikiTitle")
                     .html("");
                 d3.select("#wikipage")
+                    .style("display", "none")
                     .html("");
             }
         }.bind(this));
