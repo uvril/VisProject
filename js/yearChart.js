@@ -7,25 +7,13 @@ class YearChart {
 
         this.svg = d3.select("#yearChart")
             .append("svg")
-            .attr("height", 100)
-            .attr("width", 1000);
+            .attr("height", d3.select("#yearChartRow").node().getBoundingClientRect().height)
+            .attr("width", d3.select("#yearChartRow").node().getBoundingClientRect().width);
 
-        let margin = {right:50, left:50};
-        let width = this.svg.attr("width") - margin.left - margin.right;
-
-        this.x = d3.scaleLinear()
-            .domain([-2001, 2017])
-            .range([0, width])
-            .clamp(true);
-
-        this.yearText = this.svg.append("text")
-            .attr("x", 20)
-            .attr("y", 20)
-            .text(this.x.domain()[1]);
-
-
-
-        var slider = this.svg.append("g")
+        this.margin = {right:50, left:50, top:50, bottom:50};
+        this.width = this.svg.attr("width") - this.margin.left - this.margin.right;
+        this.height = this.svg.attr("height") - this.margin.top - this.margin.bottom;
+        /*var slider = this.svg.append("g")
             .attr("class", "slider")
             .attr("transform", "translate(" + margin.left + "," + this.svg.attr("height") / 2 + ")");
 
@@ -54,9 +42,53 @@ class YearChart {
         this.handle = slider.insert("circle", ".track-overlay")
             .attr("class", "handle")
             .attr("cx", this.x.range()[1])
-            .attr("r", 9);
+            .attr("r", 9);*/
 
     };
+
+    update() {
+        this.mapChart.drawMap(2015);
+
+        let xScale = d3.scaleLinear()
+            .domain([-2001, 2017])
+            .range([0, this.width])
+            .clamp(true);
+
+        let yearText = this.svg.append("text")
+            .attr("x", 20)
+            .attr("y", 20)
+            .text(xScale.domain()[1]);
+
+        let zoom = d3.zoom()
+            .scaleExtent([1, 100])
+            .translateExtent([[0, 0], [this.width, this.height]])
+            .extent([[0, 0], [this.width, this.height]])
+            .on("zoom", zoomed);
+
+        let xAxis = d3.axisBottom();
+        xAxis.scale(xScale)
+            .ticks(30)
+            .tickFormat(d3.format("d"));
+
+        let focus = this.svg.append("g")
+                            .attr("class", "xAxis")
+                            .attr("transform", "translate(50, 100)")
+                            .style("fill", "none")
+                            .style("stroke", "black")        
+                            .call(xAxis);
+
+        this.svg.append("rect")
+                .attr("class", "zoom")
+                .attr("width", this.width)
+                .attr("height", this.height)
+                .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")")
+                .call(zoom);
+
+        function zoomed() {
+                let t = d3.event.transform;
+                focus.call(xAxis.scale(t.rescaleX(xScale)));
+        }
+    }
 
     changeYear(h) {
         this.handle.attr("cx", this.x(h));
