@@ -9,7 +9,11 @@ class InfoPanel {
         this.humanIndex = d3.select("#population")
                             .attr("width", this.svgBounds.width)
                             .attr("height", 260);
-        this.remain = document.getElementById("details").innerHTML;
+        this.infoTable = d3.select("#basicInfoTable");
+        this.wikipage = d3.select("#wikipage");
+        this.wikipage
+        .attr("height", this.svgHeight)
+        .attr("width", this.svgWidth);
         this.colorScale = d3.scaleLinear()
             .domain([0, 0.5, 1])
             .range(['red', "yellow", 'green']);
@@ -17,24 +21,46 @@ class InfoPanel {
 
     updateInfo(oneCountryInfo, year) {
         console.log(oneCountryInfo);
-        let wd = oneCountryInfo.wikidata;
+        let wd = +oneCountryInfo.wikidata;
+        console.log(wd);
+        d3.select("#countryNameLabel").text(oneCountryInfo.NAME);
         if (wd < 0) {
-            document.getElementById("details").innerHTML = "<h1 id=\"country\"></h1>";
-            document.getElementById("country").innerHTML = oneCountryInfo.NAME;
+            d3.select("#countryInfo").style("visibility", "hidden");
+            this.wikipage.attr("src", "");
             return;
         }
         else {
-             document.getElementById("details").innerHTML = this.remain;
+            d3.select("#countryInfo").style("visibility", "visible");
         }
 
-        document.getElementById("country").innerHTML = oneCountryInfo.NAME;
-        console.log(wd);
         d3.json("data/stat/" + wd + ".json", function(err, data) { 
-            document.getElementById("wikipage").setAttribute("src", data.wiki+"?printable=yes");
-            document.getElementById("wikipage").setAttribute("height", this.svgHeight/2);
-            document.getElementById("wikipage").setAttribute("width", this.svgWidth);			
+            this.wikipage.attr("src", data.wiki+"?printable=yes");
+            this.infoTable.select("#table-capital").html(data.capital[0]);
+            this.infoTable.select("#table-continent").html(data.continent.join(', '));
+            this.infoTable.select("#table-hos").html(data.headState[0]);
+            this.infoTable.select("#table-hog").html(data.headGov[0]);
+            if (data.pop.length > 0) {
+                let latestPopYear = d3.max(data.pop, d => +d.year);
+                let latestPop = data.pop.filter(d => +d.year === latestPopYear)[0]
+                this.infoTable.select("#table-population").html(latestPop.stats+" ("+latestPop.year+")");
+            }
+            else {
+                this.infoTable.select("#table-population").html("");
+            }
+            if (data.hdi.length > 0) {
+                let latestHDIYear = d3.max(data.hdi, d => +d.year);
+                let latestHDI = data.hdi.filter(d => +d.year === latestHDIYear)[0]
+                this.infoTable.select("#table-hdi").html(latestHDI.stats+" ("+latestHDI.year+")");
+            }
+            else {
+                this.infoTable.select("#table-hdi").html("");
+            }
+            /*
 //basicInfo
-            let basicInfo = [{"title":"Capital", "value":data.capital[0]}, {"title":"Continet", "value":data.continent.join(", ")}, {"title":"Head of State", "value":data.headState[0]}, {"title":"Head of Gov", "value":data.headGov[0]}];
+            let basicInfo = [{"title":"Capital", "value":data.capital[0]},
+            {"title":"Continet", "value":data.continent.join(", ")},
+            {"title":"Head of State", "value":data.headState[0]},
+            {"title":"Head of Gov", "value":data.headGov[0]}];
             d3.select("#basicInfo")
                 .append("tbody")
                 .html("");
@@ -51,7 +77,8 @@ class InfoPanel {
                 .text(d=>d.value)
                 .style("font-size", "20px")
                 .style("font-weight", "normal");
-
+                */
+/*
 //polulation
             d3.select("#popTitle")
                 .text("Population")
@@ -147,12 +174,7 @@ class InfoPanel {
                 .style("fill", d=>this.colorScale(+d.stats))
                 .on("mouseover", tip.show)
                 .on("mouseout", tip.hide);
-
-//wikiPage Title
-            d3.select("#wikiTitle")
-                .text("Description from Wiki")
-                .style("font-size", "25px")
-                .style("font-weight", "bold");
+*/
         }.bind(this));
     }
 }

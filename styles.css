@@ -55,27 +55,6 @@
     opacity: .2;
 }
 
-h1 {
-    color: #d20a11;
-}
-
-th {
-    font-weight: bold;
-    text-align: left;
-    padding-right: 6px;
-    min-width: 125px;
-    width:33%;
-}
-
-tbody tr:hover {
-  background-color: #f0f0f0;
-}
-
-td {
-    padding-right: 5px;
-    padding-left: 5px;
-    width:40%;
-}
 
 #header {
     background-color:lightgrey;
@@ -89,47 +68,6 @@ td {
     text-align:center;
 }
 
-#toolBox {
-    width: 15vw;
-    padding:0.5px;
-    float:left;
-    border-width: 1px;
-    border-color: #d9d9d9;
-    border-style: solid; 
-}
-
-#middleWare {
-    width: 68vw;
-    padding:0.5px;
-    float:left;
-    border-width: 1px;
-    border-color: #d9d9d9;
-    border-style: solid; 
-}
-
-#details {
-    width: 28vw;
-    padding: 0.5px;
-    float: left;
-    border-width: 1px;
-    border-color: #d9d9d9;
-    border-style: solid;
-}
-
-#bar-chart {
-    width: 500px;
-    margin-right: 20px;
-    float: left;
-
-}
-
-#map-view {
-    margin-left: 750px;
-    width: 910px;
-    border-width: 1px;
-    border-color: #d9d9d9;
-    border-left-style: solid;
-}
 
 .d3-tip {
     /*line-height: 5;*/
