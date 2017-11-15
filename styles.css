@@ -55,7 +55,6 @@
     opacity: .2;
 }
 
-
 #header {
     background-color:lightgrey;
     color:darkred;
@@ -84,7 +83,20 @@
 .tooltip-title{
     font-size:18px;
     font-family: "Arial Black";
-
+}
+.focus circle {
+  fill: red;
+}
+.focus rect {
+  fill: yellow;
+}
+.focus text {
+    font-size: 15px;
+    font-weight: bold;
+}
+.overlay {
+  fill: none;
+  pointer-events: all;
 }
 
 /* Creates a small triangle extender for the tooltip */

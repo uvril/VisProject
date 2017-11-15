@@ -6,7 +6,7 @@ class InfoPanel {
         this.humanIndex = d3.select("#humanIndex")
                             .attr("width", this.svgBounds.width)
                             .attr("height", 80);
-        this.humanIndex = d3.select("#population")
+        this.population = d3.select("#population")
                             .attr("width", this.svgBounds.width)
                             .attr("height", 260);
         this.infoTable = d3.select("#basicInfoTable");
@@ -117,12 +117,29 @@ class InfoPanel {
                 .style("stroke", "black")
                 .call(xAxis);
 
-            d3.select("#popShow")
-                .append("g")
-                .attr("transform", "translate(80, 0)")
-                .style("fill", "none")
-                .style("stroke", "black")
-                .call(yAxis);
+            if (data.hdi.length != 0) {
+    //humanIndex
+                d3.select("#indexTitle")
+                    .text("Human Development Index")
+                    .style("font-size", "25px")
+                    .style("font-weight", "bold");
+    //humanIndex tip
+               let hdiTip = d3.tip()
+                    .attr('class', 'd3-tip')
+                    .direction('s')
+                    .offset(function() {
+                        return [0,0];
+                    })
+                    .html(function(d){
+                        let tooltip_data = {"result":[{"year": d.year,"stats": d.stats}]};
+                        return "<text>Year: "+d.year+"<br>HDI: "+d.stats+"</text>";
+                    });
+    //humanIndex scale
+                let hdiXScale = d3.scaleBand()
+                    .domain(data.hdi.map(d=>+d.year).sort(d3.ascending))
+                    .range([20, d3.select("#humanIndex").node().getBoundingClientRect().width-20])
+                    .paddingInner(0.01);
+
 
 //humanIndex
             d3.select("#indexTitle")
