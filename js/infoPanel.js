@@ -130,11 +130,14 @@ class InfoPanel {
                     .attr("class", "overlay")
                     .attr("x", 50)
                     .attr("y", 5)
+                    .attr("height", this.popHeight-30)
+                    .attr("width", this.svgWidth-60)
                     .on("mouseover", function() {focus.style("display", null);})
                     .on("mouseout", function() {focus.style("display", "none");})
                     .on("mousemove", mousemove);
                 let bisectorDate = d3.bisector(function(d) { return d.year; }).left;
                 function mousemove() {
+                    console.log("!!!");
                     let x0 = popxScale.invert(d3.mouse(this)[0]),
                         i = bisectorDate(pop_s, x0, 1),
                         d0 = pop_s[i-1],
