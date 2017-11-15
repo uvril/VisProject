@@ -207,3 +207,9 @@ td {
     top: 50%;
     left: 100%;
 }
+
+.zoom {
+  cursor: move;
+  fill: none;
+  pointer-events: all;
+}
