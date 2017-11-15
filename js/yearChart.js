@@ -46,7 +46,7 @@ class YearChart {
 
         let focus = this.svg.append("g")
                             .attr("class", "xAxis")
-                            .attr("transform", "translate(50, 100)")
+                            .attr("transform", "translate(0, 100)")
                             .style("fill", "none")
                             .style("stroke", "black")        
                             .call(xAxis);
