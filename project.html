@@ -4,65 +4,82 @@
 <head>
     <meta charset="UTF-8">
     <title>Visualization - Project </title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
     <link rel="stylesheet" href="styles.css"/>
-    <script src="https://d3js.org/d3.v4.js"></script>
-    <script type="text/javascript" src="bower_components/d3-tip/index.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.9.0/d3-legend.js"></script>
-	<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>	
-	<script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
 </head>
 
 <body>
 
 
-<div class="container">
-    <div id="header">
-        <h1>Project</h1>
-        <div>Name: Yanqing Peng; E-Mail: yq.peng@utah.edu; UID: u1076076</div>
-        <div>Name: Yuwei Wang; E-Mail: u1140944@utah.edu; UID: u1140944</div>
+
+<div class="container-fluid">
+    <div class="row">
+        <div id="yearChart" height="2000"></div>
+        <div id="currentYear"></div>
     </div>
+    <div class="row">
+        <div class="col-8" id="middleWare">
+            <svg id="map"></svg>
+        </div>
+        <div class="col-4">
+            <div id="details" class="nav nav-tabs">
 
-
-<div id="yearChart" height="2000"></div>
-
-<div id="middleWare">
-    <h2>World Map</h2>
-    <svg id="map">
-    </svg>
+                <ul class="nav nav-tabs" role="tablist">
+                    <li class="nav-item"><a class="nav-link active" id="info-tab" href="#nav-info" data-toggle="tab" role="tab" aria-controls="nav-info" aria-selected="true">Basic Information</a></li>
+                    <li class="nav-item"><a class="nav-link" id="wiki-tab" href="#nav-wiki" data-toggle="tab" role="tab" aria-controls="nav-wiki" aria-selected="false">Wikipedia</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="nav-info" role="tabpanel" aria-labelledby="info-tab">
+                        <h1 id="countryNameLabel"></h1>
+                        <div id="countryInfo" style="visibility:hidden">
+                            <table class="table" id="basicInfoTable">
+                                <tbody>
+                                    <tr>
+                                        <th scope="row">Capital</th>
+                                        <td id="table-capital"></td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Continent</th>
+                                        <td id="table-continent"></td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Head of State</th>
+                                        <td id="table-hos"></td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Head of Gov</th>
+                                        <td id="table-hog"></td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Population</th>
+                                        <td id="table-population"></td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">HDI</th>
+                                        <td id="table-hdi"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="nav-wiki" role="tabpanel" aria-labelledby="wiki-tab">
+                        <iframe style="border:none" id="wikipage"></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
-<div id="currentYear"></div>
-<div id="details" height="2000">
-    <h1 id="country"></h1>
-    <talbe id="basicInfo"></talbe>
-    <br>
-    <!--<h2>Capital</h2>
-    <text id="capital"></text>
-    <h2>Continent</h2>
-    <span id="continent"></span>
-    <h2>Head of State</h2>
-    <text id="headState"></text>
-    <h2>Head of Government</h2>
-    <text id="headGov"></text>-->
-    <text id="popTitle"></text>
-    <svg id="population">
-        <g transform="translate(0,5)" id="popShow">
-    </svg>
-    <text id="indexTitle"></text>
-    <svg id="humanIndex"></svg>
-    <!--<h2>GDP</h2>
-    <svg id="gdp"></svg>
-    <h2>Territory</h2>
-    <svg id="territory"></svg>-->
-    <br>
-    <text id="wikiTitle"></text>
-    <iframe style="border:none" id="wikipage"></iframe>
-</div>
-
+<script src="https://d3js.org/d3.v4.js"></script>
+<script type="text/javascript" src="bower_components/d3-tip/index.js"></script>
+<script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
 <script type="application/javascript" src="js/yearChart.js"></script>
 <script type="application/javascript" src="js/map.js"></script>
 <script type="application/javascript" src="js/infoPanel.js"></script>
 <script type="application/javascript" src="js/script.js"></script>
-
 </body>
 </html>
