@@ -15,36 +15,6 @@ class YearChart {
         this.height = this.svg.attr("height") - this.margin.top - this.margin.bottom;
         this.years = [];
         for (let i = -2001; i <= 2017; i++) this.years.push(i);
-        /*var slider = this.svg.append("g")
-            .attr("class", "slider")
-            .attr("transform", "translate(" + margin.left + "," + this.svg.attr("height") / 2 + ")");
-
-        slider.append("line")
-            .attr("class", "track")
-            .attr("x1", this.x.range()[0])
-            .attr("x2", this.x.range()[1])
-            .select(function() { return this.parentNode.appendChild(this.cloneNode(true)); })
-            .attr("class", "track-inset")
-            .select(function() { return this.parentNode.appendChild(this.cloneNode(true)); })
-            .attr("class", "track-overlay")
-            .call(d3.drag()
-                .on("start.interrupt", function() { slider.interrupt(); })
-                .on("start drag", function() { this.changeYear(this.x.invert(d3.event.x)); }.bind(this)));
-
-        slider.insert("g", ".track-overlay")
-            .attr("class", "ticks")
-            .attr("transform", "translate(0," + 18 + ")")
-            .selectAll("text")
-            .data(this.x.ticks(30))
-            .enter().append("text")
-            .attr("x", d => this.x(d))
-            .attr("text-anchor", "middle")
-            .text(d => d);
-
-        this.handle = slider.insert("circle", ".track-overlay")
-            .attr("class", "handle")
-            .attr("cx", this.x.range()[1])
-            .attr("r", 9);*/
 
     };
 
@@ -56,7 +26,9 @@ class YearChart {
             .range([0, this.width])
             .clamp(true);
 
-        let yearText = this.svg.append("text")
+        window.yearChart.curScale = xScale;
+
+        let yearText = d3.select("#currentYear")
             .attr("x", 20)
             .attr("y", 20)
             .text(xScale.domain()[1]);
@@ -97,8 +69,9 @@ class YearChart {
                 .attr("height", this.height);
 
         function zoomed() {
-                let tmp = d3.event.transform;
-                focus.call(xAxis.scale(tmp.rescaleX(xScale)));
+                let yearChart = window.yearChart;
+                yearChart.curScale = d3.event.transform.rescaleX(xScale);
+                focus.call(xAxis.scale(yearChart.curScale));
         }
 
         function onclick() {
@@ -106,19 +79,15 @@ class YearChart {
                 d3.select("#mouseclick")
                     .style("display", null);
                 let bisectorDate = d3.bisector(function(d) { return d.year; }).left;
-                console.log(xScale.invert(tmp.clientX));
+                let yearChart = window.yearChart;
+                let selectedYear = Math.round(yearChart.curScale.invert(tmp.clientX));
+                d3.select("#currentYear").text(selectedYear);
+                this.mapChart.drawMap(selectedYear);
                 clickrect.attr("x", tmp.clientX)
                         .attr("y", this.margin.top);
 
         }
     }
-
-    changeYear(h) {
-        this.handle.attr("cx", this.x(h));
-        let year = Math.round(h);
-        this.yearText.text(year);
-        this.mapChart.drawMap(year);
-    };
 
 
 };
