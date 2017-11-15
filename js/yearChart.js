@@ -13,6 +13,8 @@ class YearChart {
         this.margin = {right:50, left:50, top:50, bottom:50};
         this.width = this.svg.attr("width") - this.margin.left - this.margin.right;
         this.height = this.svg.attr("height") - this.margin.top - this.margin.bottom;
+        this.years = [];
+        for (let i = -2001; i <= 2017; i++) this.years.push(i);
         /*var slider = this.svg.append("g")
             .attr("class", "slider")
             .attr("transform", "translate(" + margin.left + "," + this.svg.attr("height") / 2 + ")");
@@ -50,7 +52,7 @@ class YearChart {
         this.mapChart.drawMap(2015);
 
         let xScale = d3.scaleLinear()
-            .domain([-2001, 2017])
+            .domain(d3.extent(this.years))
             .range([0, this.width])
             .clamp(true);
 
@@ -77,16 +79,37 @@ class YearChart {
                             .style("stroke", "black")        
                             .call(xAxis);
 
-        this.svg.append("rect")
+        this.svg.append("g")
+                .append("rect")
                 .attr("class", "zoom")
                 .attr("width", this.width)
                 .attr("height", this.height)
                 .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")")
-                .call(zoom);
+                .call(zoom)
+                .on("click", onclick.bind(this));
+
+        this.svg.append("g")
+                .attr("id", "mouseclick")
+                .style("display", "none");
+        let clickrect = d3.select("#mouseclick")
+                .append("rect") 
+                .attr("width", 5)
+                .attr("height", this.height);
 
         function zoomed() {
-                let t = d3.event.transform;
-                focus.call(xAxis.scale(t.rescaleX(xScale)));
+                let tmp = d3.event.transform;
+                focus.call(xAxis.scale(tmp.rescaleX(xScale)));
+        }
+
+        function onclick() {
+                let tmp = d3.event;
+                d3.select("#mouseclick")
+                    .style("display", null);
+                let bisectorDate = d3.bisector(function(d) { return d.year; }).left;
+                console.log(xScale.invert(tmp.clientX));
+                clickrect.attr("x", tmp.clientX)
+                        .attr("y", this.margin.top);
+
         }
     }
 
