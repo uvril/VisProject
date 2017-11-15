@@ -8,14 +8,23 @@ class Map {
         this.path = d3.geoPath()
             .projection(this.projection);		
         this.infoPanel = infoPanel;
-        this.svg = d3.select("#map");
+        let mapSvg = d3.select("#map")
+            .attr("width", this.svgWidth)
+            .attr("height", this.svgHeight);
+        this.svgDefs = mapSvg.append("defs");
+        this.svgPath = mapSvg.append("g");
+        this.svgGra = mapSvg.append("g");
+        this.svgText = mapSvg.append("g");
+        let mapZoom = d3.zoom()
+            .scaleExtent([1, 8])
+            .on("zoom", this.zoomed);
+        mapSvg.call(mapZoom);
+        this.currentMouse = null;
+    }
 
-        this.svg.attr("width", this.svgWidth)
-                .attr("height", this.svgHeight);
-        this.svgDefs = this.svg.append("defs");
-        this.svgPath = this.svg.append("g");
-        this.svgGra = this.svg.append("g");
-        this.svgText = this.svg.append("g");
+    zoomed() {
+        d3.select("#map").selectAll("g").style("stroke-width", 1.5 / d3.event.transform.k + "px");
+        d3.select("#map").selectAll("g").attr("transform", d3.event.transform); // updated for d3 v4
     }
 
     calc_dist(c) {
@@ -84,6 +93,21 @@ class Map {
                     .append("path")
                     .attr("d", this.path)
                     .classed("countries", true)
+                    .on("mouseover", function(d, i, n) {
+                        let map = window.map;
+                        if (map.currentMouse != null) {
+                            d3.select(map.currentMouse).classed("cntryMouseOver", false);
+                        }
+                        map.currentMouse = this;
+                        d3.select(this).classed("cntryMouseOver", true);
+                    })
+                    .on("mouseout", function(d) {
+                        let map = window.map;
+                        if (map.currentMouse != null) {
+                            d3.select(map.currentMouse).classed("cntryMouseOver", false);
+                            map.currentMouse = null;
+                        }
+                    })
                     .on("click", function(d){
                         if (d.properties.NAME != "unclaimed") {
                             this.svgPath.selectAll("path").classed("selected", d1 => d1.properties.wikidata === d.properties.wikidata);

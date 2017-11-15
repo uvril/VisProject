@@ -21,11 +21,11 @@
         <div class="col-8" id="middleWare">
             <svg id="map"></svg>
         </div>
-        <div class="col-4">
-            <div id="details" class="nav nav-tabs">
+        <div class="col-4" id="details">
 
                 <ul class="nav nav-tabs" role="tablist">
                     <li class="nav-item"><a class="nav-link active" id="info-tab" href="#nav-info" data-toggle="tab" role="tab" aria-controls="nav-info" aria-selected="true">Basic Information</a></li>
+                    <li class="nav-item"><a class="nav-link" id="stat-tab" href="#nav-stat" data-toggle="tab" role="tab" aria-controls="nav-stat" aria-selected="false">Statistics</a></li>
                     <li class="nav-item"><a class="nav-link" id="wiki-tab" href="#nav-wiki" data-toggle="tab" role="tab" aria-controls="nav-wiki" aria-selected="false">Wikipedia</a></li>
                 </ul>
                 <div class="tab-content">
@@ -62,11 +62,18 @@
                             </table>
                         </div>
                     </div>
+                    <div class="tab-pane fade" id="nav-stat" role="tabpanel" aria-labelledby="stat-tab">
+                        <text id="popTitle"></text>
+                        <svg id="population">
+                            <g transform="translate(0,5)" id="popShow">
+                        </svg>
+                        <text id="indexTitle"></text>
+                        <svg id="humanIndex"></svg>
+                    </div>
                     <div class="tab-pane fade" id="nav-wiki" role="tabpanel" aria-labelledby="wiki-tab">
                         <iframe style="border:none" id="wikipage"></iframe>
                     </div>
                 </div>
-            </div>
         </div>
     </div>
 </div>

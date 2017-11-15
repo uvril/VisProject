@@ -43,10 +43,17 @@
     height: 15px;
 }
 
+.cntryMouseOver {
+    fill: #2b8cbe;
+    fill-opacity: 0.2;
+}
+
+
 .selected {
     fill: #2b8cbe;
     fill-opacity: 0.5;
 }
+
 
 /*Map grid style*/
 .grat {
