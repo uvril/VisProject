@@ -1,14 +1,16 @@
 class InfoPanel {
     constructor() {
         this.svgBounds = d3.select("#details").node().getBoundingClientRect();
+        this.statBounds = this.svgBounds;
+        console.log(this.statBounds);
         this.svgWidth = this.svgBounds.width;
         this.svgHeight = this.svgBounds.width;
         this.humanIndex = d3.select("#humanIndex")
-                            .attr("width", this.svgWidth)
+                            .attr("width", this.statBounds.width)
                             .attr("height", 80);
         this.popHeight = 260;
         this.population = d3.select("#population")
-                            .attr("width", this.svgWidth)
+                            .attr("width", this.statBounds.width)
                             .attr("height", this.popHeight);
         this.infoTable = d3.select("#basicInfoTable");
         this.wikipage = d3.select("#wikipage");
@@ -18,13 +20,15 @@ class InfoPanel {
         this.colorScale = d3.scaleLinear()
             .domain([0, 0.5, 1])
             .range(['red', "yellow", 'green']);
+        this.lastSection = null;
+
     }
 
     updateInfo(oneCountryInfo, year) {
         console.log(oneCountryInfo);
         let wd = +oneCountryInfo.wikidata;
         console.log(wd);
-        d3.select("#countryNameLabel").text(oneCountryInfo.NAME);
+        d3.selectAll(".countryNameLabel").text(oneCountryInfo.NAME);
         if (wd < 0) {
             d3.select("#countryInfo").style("visibility", "hidden");
             this.wikipage.attr("src", "");
@@ -63,10 +67,6 @@ class InfoPanel {
               let popLeftMargin = 30;
               d3.select("#popShow").attr("transform", "translate(" + popLeftMargin + "," + popTopMargin + ")");
     //population
-                d3.select("#popTitle")
-                    .text("Population")
-                    .style("font-size", "25px")
-                    .style("font-weight", "bold");
 
                 d3.select("#population")
                     .style("display", null);
@@ -181,12 +181,6 @@ class InfoPanel {
             }
 
             if (data.hdi.length != 0) {
-    //humanIndex
-                d3.select("#indexTitle")
-                    .text("Human Development Index")
-                    .style("font-size", "25px")
-                    .style("font-weight", "bold");
-
                 d3.select("#humanIndex")
                     .style("display", null);
     //humanIndex tip
@@ -240,6 +234,23 @@ class InfoPanel {
                     .html("");
                 d3.select("#humanIndex")
                     .style("display", "none");
+            }
+
+            d3.select("#dropbox")
+                .on("change", onchange.bind(this));
+
+            function onchange(){
+                console.log("!!!");
+                let sect = document.getElementById("dropbox");
+                let section = sect.options[sect.selectedIndex].value;
+                d3.select("#"+section)
+                .style("visibility", "visible");
+                if (this.lastSection != null) {
+                    d3.select("#"+this.lastSection)
+                    .style("visibility", "hidden");
+                }
+                console.log(this.lastSection);
+                this.lastSection = section;
             }
         }.bind(this));
     }
