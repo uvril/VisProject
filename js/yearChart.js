@@ -23,7 +23,7 @@ class YearChart {
 
         let xScale = d3.scaleLinear()
             .domain(d3.extent(this.years))
-            .range([0, this.width])
+            .range([this.margin.left, this.margin.left+this.width])
             .clamp(true);
 
         window.yearChart.curScale = xScale;
@@ -34,19 +34,19 @@ class YearChart {
             .text(xScale.domain()[1]);
 
         let zoom = d3.zoom()
-            .scaleExtent([1, 100])
-            .translateExtent([[0, 0], [this.width, this.height]])
-            .extent([[0, 0], [this.width, this.height]])
+            .scaleExtent([1, 300])
+            .translateExtent([[this.margin.left, 0], [this.margin.left+this.width, this.height]])
+            .extent([[this.margin.left, 0], [this.margin.left+this.width, this.height]])
             .on("zoom", zoomed);
 
         let xAxis = d3.axisBottom();
         xAxis.scale(xScale)
-            .ticks(30)
+            .ticks(10)
             .tickFormat(d3.format("d"));
 
         let focus = this.svg.append("g")
                             .attr("class", "xAxis")
-                            .attr("transform", "translate(0, 100)")
+                            .attr("transform", "translate(0, " + (this.margin.top + this.height/2) +")")
                             .style("fill", "none")
                             .style("stroke", "black")        
                             .call(xAxis);
@@ -56,7 +56,7 @@ class YearChart {
                 .attr("class", "zoom")
                 .attr("width", this.width)
                 .attr("height", this.height)
-                .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")")
+                .attr("transform", "translate(" + this.margin.left + "," + (this.margin.top + this.height/2) + ")")
                 .call(zoom)
                 .on("click", onclick.bind(this));
 
@@ -78,9 +78,9 @@ class YearChart {
                 let tmp = d3.event;
                 d3.select("#mouseclick")
                     .style("display", null);
-                let bisectorDate = d3.bisector(function(d) { return d.year; }).left;
                 let yearChart = window.yearChart;
                 let selectedYear = Math.round(yearChart.curScale.invert(tmp.clientX));
+                console.log(tmp.clientX, selectedYear);
                 d3.select("#currentYear").text(selectedYear);
                 this.mapChart.drawMap(selectedYear);
                 clickrect.attr("x", tmp.clientX)
