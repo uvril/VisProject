@@ -1,6 +1,7 @@
 class Map {
 
     constructor(infoPanel) {
+        this.curData = null;
         this.svgBounds = d3.select("#middleWare").node().getBoundingClientRect();
         this.svgWidth = this.svgBounds.width;
         this.svgHeight = this.svgWidth/875*500;
@@ -16,15 +17,18 @@ class Map {
         this.svgGra = mapSvg.append("g");
         this.svgText = mapSvg.append("g");
         let mapZoom = d3.zoom()
-            .scaleExtent([1, 8])
-            .on("zoom", this.zoomed);
+            .scaleExtent([1, 16])
+            .on("zoom", this.zoomed.bind(this));
         mapSvg.call(mapZoom);
         this.currentMouse = null;
+        this.curScale = 1;
     }
 
     zoomed() {
         d3.select("#map").selectAll("g").style("stroke-width", 1.5 / d3.event.transform.k + "px");
-        d3.select("#map").selectAll("g").attr("transform", d3.event.transform); // updated for d3 v4
+        d3.select("#map").selectAll("g").attr("transform", d3.event.transform); 
+        this.curScale = d3.event.transform.k;
+        this.updateText();
     }
 
     calc_dist(c) {
@@ -40,6 +44,79 @@ class Map {
         var p2 = this.projection([+props.x2, +props.y2]);
         var c = this.projection([+props.c1, +props.c2]);
         return [p1, p2, c];
+    }
+    
+    updateText() {
+        if (this.curData == null) return;
+        let lCntry = this.curData.features.filter(function (d) {
+            if (this.path.area(d) < 400 / this.curScale) return false;
+            let box = this.getPath(d);
+            let l = 0.9*this.calc_dist(box);
+            if ("NAME" in d.properties){
+                let str = d.properties.NAME;
+                let w = str.length;
+                return l/w > 4 / this.curScale;
+            }
+            return false;
+        }.bind(this));
+        this.drawText(lCntry);
+    }
+
+    drawText(lCntry) {
+        this.svgDefs
+            .html("")
+            .selectAll("path")
+            .data(lCntry)
+            .enter()
+            .append("path")
+            .attr("id", d => d.properties.wikidata)
+            .attr("d", function (d) {
+                let p = this.getPath(d);
+                let line = d3.line().x(d => d[0]).y(d => d[1]).curve(d3.curveCatmullRom.alpha(0.5));
+                return line([p[0], p[2], p[1]]);
+            }.bind(this));
+
+        this.svgText
+            .html("")
+            .selectAll("text")
+            .data(lCntry)
+            .enter()
+            .append("text")
+            .attr("transform", "translate(0,0)")
+            //.style("text-anchor", "middle")				
+            .append("textPath")
+            .attr("xlink:href", d => "#"+d.properties.wikidata)				
+            .attr("textLength", function (d) {
+                let box = this.getPath(d);
+                return 0.9*this.calc_dist(box);
+            }.bind(this))
+        .text(function (d) {
+            let str = d.properties.NAME;
+            if (str == "unclaimed") str = "";
+            return str.toUpperCase();
+        }.bind(this))
+        .attr("startOffset", "5%")
+        .style("fill", "black")
+        .style("fill-opacity", ".4")
+            .style("font-size", function (d, i, n) {
+                let node = d3.select(n[i]);
+                let l = node.attr("textLength");
+                let w = node.text().length;
+                let r = l/w;
+                if (r < 2) return "1px";
+                if (r < 3) return "2px";
+                if (r < 4) return "4px";
+                if (r < 5) return "6px";
+                if (r < 6) return "8px";
+                if (r < 9) return "10px";
+                if (r < 12) return "12px";
+                if (r < 15) return "14px";
+                if (r < 20) return "18px";
+                if (r < 30) return "20px";
+                if (r < 40) return "30px";
+                return "40px";
+            }.bind(this))
+        ;
     }
 
     drawMap(year) {
@@ -58,32 +135,7 @@ class Map {
 
             d3.json(filename, function (geoData) {
 
-                let lCntry = geoData.features.filter(function (d) {
-                    if (this.path.area(d) < 400) return false;
-                    let box = this.getPath(d);
-                    let l = 0.9*this.calc_dist(box);
-                    if ("NAME" in d.properties){
-                        let str = d.properties.NAME;
-                        let w = str.length;
-                        return l/w > 4;
-                    }
-                    return false;
-                }.bind(this));
-
-
-                this.svgDefs
-                    .html("")
-                    .selectAll("path")
-                    .data(lCntry)
-                    .enter()
-                    .append("path")
-                    .attr("id", d => d.properties.wikidata)
-                    .attr("d", function (d) {
-                        let p = this.getPath(d);
-                        let line = d3.line().x(d => d[0]).y(d => d[1]).curve(d3.curveCatmullRom.alpha(0.5));
-                        return line([p[0], p[2], p[1]]);
-                    }.bind(this));
-
+                this.curData = geoData;
 
                 this.svgPath
                     .html("")
@@ -98,8 +150,14 @@ class Map {
                         if (map.currentMouse != null) {
                             d3.select(map.currentMouse).classed("cntryMouseOver", false);
                         }
-                        map.currentMouse = this;
-                        d3.select(this).classed("cntryMouseOver", true);
+                        if (d.properties.NAME != "unclaimed") {
+                            map.currentMouse = this;
+                            d3.select(this).classed("cntryMouseOver", true);
+                        }
+                        else {
+                            map.currentMouse = null;
+                        }
+
                     })
                     .on("mouseout", function(d) {
                         let map = window.map;
@@ -127,45 +185,9 @@ class Map {
                     .attr('d', this.path)
                     .attr('fill', 'none'); 
 
-                this.svgText
-                    .html("")
-                    .selectAll("text")
-                    .data(lCntry)
-                    .enter()
-                    .append("text")
-                    .attr("transform", "translate(0,0)")
-                    //.style("text-anchor", "middle")				
-                    .append("textPath")
-                    .attr("xlink:href", d => "#"+d.properties.wikidata)				
-                    .attr("textLength", function (d) {
-                        let box = this.getPath(d);
-                        return 0.9*this.calc_dist(box);
-                    }.bind(this))
-                .text(function (d) {
-                    let str = d.properties.NAME;
-                    if (str == "unclaimed") str = "";
-                    return str.toUpperCase();
-                }.bind(this))
-                .attr("startOffset", "5%")
-                .style("fill", "black")
-                .style("fill-opacity", ".4")
-                    .style("font-size", function (d) {
-                        let node = d3.select(this);
-                        let l = node.attr("textLength");
-                        let w = node.text().length;
+                this.updateText();
 
-                        let r = l/w;
-                        if (r < 5) return "6px";
-                        if (r < 6) return "8px";
-                        if (r < 9) return "10px";
-                        if (r < 12) return "12px";
-                        if (r < 15) return "14px";
-                        if (r < 20) return "18px";
-                        if (r < 30) return "20px";
-                        if (r < 40) return "30px";
-                        return "40px";
-                    })
-                ;
+           
 
                 //this.arrangeLabels();
 
