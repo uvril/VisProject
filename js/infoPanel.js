@@ -57,7 +57,12 @@ class InfoPanel {
                 this.infoTable.select("#table-hdi").html("");
             }
           if (data.pop.length != 0) {
-    //polulation
+              let popTopMargin = 30;
+              let popBotMargin = 30;
+              let popRightMargin = 120;
+              let popLeftMargin = 30;
+              d3.select("#popShow").attr("transform", "translate(" + popLeftMargin + "," + popTopMargin + ")");
+    //population
                 d3.select("#popTitle")
                     .text("Population")
                     .style("font-size", "25px")
@@ -68,10 +73,10 @@ class InfoPanel {
     //population scale
                 let popxScale = d3.scaleLinear()
                     .domain([d3.min(data.pop, d => +d.year), d3.max(data.pop, d => +d.year)])
-                    .range([50, this.svgWidth-60]);
+                    .range([0, this.svgWidth-popRightMargin-popLeftMargin]);
                 let popyScale = d3.scaleLinear()
                     .domain([d3.min(data.pop, d => +d.stats), d3.max(data.pop, d => +d.stats)])
-                    .range([this.popHeight-30, 0]);
+                    .range([this.popHeight-popTopMargin-popBotMargin, 0]);
     //population line
                 let lineGenerator = d3.line()
                                         .x(d=>popxScale(+d.year))
@@ -96,13 +101,12 @@ class InfoPanel {
                     .tickFormat(d3.format(".2s"));
                 d3.select("#popShow")
                     .append("g")
-                    .attr("transform", "translate(0, 230)")
+                    .attr("transform", "translate(0, " + popyScale.range()[0]+")")
                     .style("fill", "none")
                     .style("stroke", "black")
                     .call(xAxis);
                 d3.select("#popShow")
                     .append("g")
-                    .attr("transform", "translate(50, 0)")
                     .style("fill", "none")
                     .style("stroke", "black")
                     .call(yAxis)
@@ -113,7 +117,7 @@ class InfoPanel {
                     .style("text-anchor", "end")
                     .text("Population");
     //population focus point
-                let focus = d3.select("#population")
+                let focus = d3.select("#popShow")
                                 .append("g")
                                 .attr("class", "focus")
                                 .style("display", "none");
@@ -131,23 +135,22 @@ class InfoPanel {
                 d3.select("#population")
                     .append("rect")
                     .attr("class", "overlay")
-                    .attr("x", 50)
-                    .attr("y", 5)
-                    .attr("height", this.popHeight-30)
-                    .attr("width", this.svgWidth-60)
+                    .attr("x", popTopMargin)
+                    .attr("y", popLeftMargin)
+                    .attr("height", popyScale.range()[0])
+                    .attr("width", popxScale.range()[1])
                     .on("mouseover", function() {focus.style("display", null);})
                     .on("mouseout", function() {focus.style("display", "none");})
                     .on("mousemove", mousemove);
                 let bisectorDate = d3.bisector(function(d) { return d.year; }).left;
                 function mousemove() {
-                    let x0 = popxScale.invert(d3.mouse(this)[0]),
+                    let x0 = popxScale.invert(d3.mouse(this)[0] - popLeftMargin),
                         i = bisectorDate(pop_s, x0, 1),
                         d0 = pop_s[i-1],
                         d1 = pop_s[i],
                         d = d0;
                     if (i != pop_s.length)
                         d = x0 - d0.year > d1.year - x0? d1:d0;
-                    focus.attr("transform", "translate(0,5)");
                     focus.select("circle")
                         .attr("cx", popxScale(d.year))
                         .attr("cy", popyScale(d.stats))
@@ -164,31 +167,10 @@ class InfoPanel {
                         .attr("y", popyScale(d.stats))
                         .style("text-anchor", "start")
                         .text(d.stats);
-                    /*
-                    if (d3.select("#pop_year").node().getBoundingClientRect().y >= this.popHeight-30 || d3.select("#pop_stats").node().getBoundingClientRect().y >= this.popHeight -30) {
-                    */
-                        focus.select("#pop_year")
-                            .attr("y", popyScale(d.stats)-20);
-                        focus.select("#pop_stats")
-                            .attr("y", popyScale(d.stats)-20);
-                    /*
-                    }
-                    if (d3.select("#pop_year").node().getBoundingClientRect().y <= 0 || d3.select("#pop_stats").node().getBoundingClientRect().y <= 0) {
-                        console.log("!!!");
-                        focus.select("#pop_year")
-                            .attr("y", popyScale(d.stats)+20);
-                        focus.select("#pop_stats")
-                            .attr("y", popyScale(d.stats)+20);
-                    }
-                    */
-                    //console.log(d3.select("#pop_year").node().getBoundingClientRect());
-                    /*if (d3.select("#pop_year").node().getBoundingClientRect().x >= d3.select("#population").node().getBoundingClientRect().width-60 || d3.select("#pop_stats").node().getBoundingClientRect().x >= d3.select("#population").node().getBoundingClientRect().width-60) {
-                        console.log(d3.select("#pop_year").node().getBoundingClientRect().x, d3.select("#population").node().getBoundingClientRect().width-60);
-                        focus.select("#pop_year")
-                            .attr("x", popyScale(d.stats)-20);
-                        focus.select("#pop_stats")
-                            .attr("x", popyScale(d.stats)-20);
-                    }*/
+                    focus.select("#pop_year")
+                        .attr("y", popyScale(d.stats)-20);
+                    focus.select("#pop_stats")
+                        .attr("y", popyScale(d.stats)-20);
                 }                
             }
             else {
