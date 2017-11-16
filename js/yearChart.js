@@ -62,7 +62,7 @@ class YearChart {
             .data(years)
             .enter()
             .append("circle")
-            .attr("class", "yearCircle")
+            .attr("class", "yearContextCircle")
             .attr("cx", x2)
             .attr("cy", height2);
 
@@ -79,7 +79,7 @@ class YearChart {
             .attr("cx", x)
             .attr("cy", height)
             .on("click", function (d, i, n) {
-                svg.selectAll("circle").attr("class", "yearCircle");
+                svg.select(".yearFocus").selectAll("circle").attr("class", "yearCircle");
                 d3.select(n[i]).attr("class", "yearCircleSelected");
                 this.mapChart.drawMap(d);
             }.bind(this));

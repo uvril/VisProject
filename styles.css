@@ -168,12 +168,19 @@
     fill : steelblue;
     stroke: black;
     stroke-width : 2px;
-    r : 5;
+    r : 8;
 }
 
 .yearCircleSelected {
     fill : red;
     stroke: black;
     stroke-width : 2px;
-    r : 10;
+    r : 15;
+}
+
+.yearContextCircle {
+    fill : steelblue;
+    stroke: black;
+    stroke-width : 2px;
+    r : 3;
 }

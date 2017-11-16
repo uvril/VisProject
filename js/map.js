@@ -122,7 +122,12 @@ class Map {
 
     drawMap(year) {
 
-        this.svgCurYear.text(year);
+        if (year > 0) {
+            this.svgCurYear.text(year);
+        }
+        else {
+            this.svgCurYear.text(-year + " BC");
+        }
 
         let filename = "data/map/cntry" + year + ".json"
 
