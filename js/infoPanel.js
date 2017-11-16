@@ -62,6 +62,9 @@ class InfoPanel {
                     .text("Population")
                     .style("font-size", "25px")
                     .style("font-weight", "bold");
+
+                d3.select("#population")
+                    .style("display", null);
     //population scale
                 let popxScale = d3.scaleLinear()
                     .domain([d3.min(data.pop, d => +d.year), d3.max(data.pop, d => +d.year)])
@@ -137,7 +140,6 @@ class InfoPanel {
                     .on("mousemove", mousemove);
                 let bisectorDate = d3.bisector(function(d) { return d.year; }).left;
                 function mousemove() {
-                    console.log("!!!");
                     let x0 = popxScale.invert(d3.mouse(this)[0]),
                         i = bisectorDate(pop_s, x0, 1),
                         d0 = pop_s[i-1],
@@ -193,9 +195,7 @@ class InfoPanel {
                 d3.select("#popTitle")
                     .html("");
                 d3.select("#population")
-                    .attr("height", 0)
-                    .attr("width", 0)
-                    .html("");
+                    .style("display", "none");
             }
 
             if (data.hdi.length != 0) {
@@ -204,6 +204,9 @@ class InfoPanel {
                     .text("Human Development Index")
                     .style("font-size", "25px")
                     .style("font-weight", "bold");
+
+                d3.select("#humanIndex")
+                    .style("display", null);
     //humanIndex tip
                let hdiTip = d3.tip()
                     .attr('class', 'd3-tip')
@@ -254,9 +257,7 @@ class InfoPanel {
                 d3.select("#indexTitle")
                     .html("");
                 d3.select("#humanIndex")
-                    .attr("height", 0)
-                    .attr("width", 0)
-                    .html("");
+                    .style("display", "none");
             }
         }.bind(this));
     }
