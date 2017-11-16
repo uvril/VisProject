@@ -5,9 +5,11 @@ class InfoPanel {
         console.log(this.statBounds);
         this.svgWidth = this.svgBounds.width;
         this.svgHeight = this.svgBounds.width;
+        this.hdiHeight = 200;
+        this.hdiLeftMargin = 20;
         this.humanIndex = d3.select("#humanIndex")
                             .attr("width", this.statBounds.width)
-                            .attr("height", 80);
+                            .attr("height", this.hdiHeight);
         this.popHeight = 260;
         this.population = d3.select("#population")
                             .attr("width", this.statBounds.width)
@@ -197,19 +199,21 @@ class InfoPanel {
     //humanIndex scale
                 let hdiXScale = d3.scaleBand()
                     .domain(data.hdi.map(d=>+d.year).sort(d3.ascending))
-                    .range([20, this.svgWidth-20])
+                    .range([this.hdiLeftMargin, this.svgWidth-this.hdiLeftMargin])
                     .paddingInner(0.01);
 
                 d3.select("#humanIndex")
                     .html("");
     //humanIndex Title
-                let textArray = [d3.min(data.hdi, d=>+d.year), d3.max(data.hdi, d=>+d.year)];
+                let hdiInterval = 100;
+                let hdilegendX = 10;
+                let hdilegendY = 10;
                 d3.select("#humanIndex")
                     .selectAll("text")
-                    .data(textArray)
+                    .data(d3.extent(data.hdi, d=>+d.year))
                     .enter().append("text")
                     .attr("x", d=>hdiXScale(d) + hdiXScale.bandwidth()/2)
-                    .attr("y", 20) 
+                    .attr("y", hdiInterval-10) 
                     .attr("text-anchor", "middle")
                     .text(d=>d);
     //humanIndex Visualization
@@ -222,12 +226,33 @@ class InfoPanel {
                     .data(data.hdi)
                     .enter().append("rect")
                     .attr("x", d=>hdiXScale(+d.year))
-                    .attr("y", 30)
+                    .attr("y", hdiInterval)
                     .attr("width", hdiXScale.bandwidth())
-                    .attr("height", 10)
+                    .attr("height", hdiXScale.bandwidth())
                     .style("fill", d=>this.colorScale(+d.stats))
                     .on("mouseover", hdiTip.show)
                     .on("mouseout", hdiTip.hide);
+                d3.select("#humanIndex")
+                    .append("g")
+                    .attr("id", "scaleShow");
+                let scaleshow = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0];
+                d3.select("#scaleShow")
+                    .selectAll("rect")
+                    .data(scaleshow)
+                    .enter().append("rect")
+                    .attr("x", d=>d*500+hdilegendX)
+                    .attr("y", hdilegendY)
+                    .attr("width", 50)
+                    .attr("height", 10)
+                    .style("fill", d=>this.colorScale(d));   
+                d3.select("#scaleShow")
+                    .selectAll("text")
+                    .data(scaleshow)
+                    .enter().append("text")
+                    .attr("x", d=>d*500+hdilegendX+25)
+                    .attr("y", hdilegendY+hdiInterval/3)
+                    .text(d=>d)
+                    .attr("text-anchor", "middle");                  
             }
             else {
                 d3.select("#indexTitle")
