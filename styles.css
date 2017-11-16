@@ -156,3 +156,24 @@
   fill: none;
   pointer-events: all;
 }
+
+
+.yearZoom {
+    cursor: move;
+    fill: none;
+    pointer-events: all;
+}
+
+.yearCircle {
+    fill : steelblue;
+    stroke: black;
+    stroke-width : 2px;
+    r : 5;
+}
+
+.yearCircleSelected {
+    fill : red;
+    stroke: black;
+    stroke-width : 2px;
+    r : 10;
+}
