@@ -135,7 +135,6 @@ class InfoPanel {
         else {
             d3.select("#countryInfo").style("visibility", "visible");
         }
-
         d3.json("data/stat/" + wd + ".json", function(err, data) { 
             this.wikipage.attr("src", data.wiki+"?printable=yes");
             this.infoTable.select("#table-capital").html(data.capital[0]);
