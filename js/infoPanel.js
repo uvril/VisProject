@@ -26,6 +26,102 @@ class InfoPanel {
 
     }
 
+    lineChartGenerator(selectPart, dataset, chartWidth, chartHeight, color, TopMargin, LeftMargin, yAxisText) {
+    	selectPart.attr("transform", "translate(" + LeftMargin + "," + TopMargin + ")");
+        let xScale = d3.scaleLinear()
+            .domain(d3.extent(dataset, d => +d.year))
+            .range([0, chartWidth]);
+        let yScale = d3.scaleLinear()
+            .domain(d3.extent(dataset, d => +d.stats))
+            .range([chartHeight, 0]);    	
+        let lineGenerator = d3.line()
+            .x(d=>xScale(+d.year))
+            .y(d=>yScale(+d.stats));
+		let dataset_sorted = dataset.sort((a, b) => parseInt(a.year) - parseInt(b.year));
+		selectPart.html("");
+		selectPart.append("path")
+        	.attr("d", lineGenerator(dataset_sorted))
+        	.style("fill", "none")
+        	.style("stroke", color)
+        	.style("stroke-width", "2px");
+        let xAxis = d3.axisBottom();
+        xAxis.scale(xScale)
+            .ticks(Math.min(dataset.length,7))
+            .tickFormat(d3.format("d"));
+        let yAxis = d3.axisLeft();
+        yAxis.scale(yScale)
+            .ticks(3)
+            .tickFormat(d3.format(".2s"));
+        selectPart.append("g")
+            .attr("transform", "translate(0, " + yScale.range()[0]+")")
+            .style("fill", "none")
+            .style("stroke", "black")
+            .call(xAxis);
+        selectPart.append("g")
+            .style("fill", "none")
+            .style("stroke", "black")
+            .call(yAxis)
+            .append("text")
+            .attr("transform", "rotate(-90)")
+            .attr("y", 6)
+            .attr("dy", ".71em")
+            .style("text-anchor", "end")
+            .text(yAxisText);
+        let focus = selectPart.append("g")
+                        .attr("class", "focus")
+                        .style("display", "none");
+        let rectWidth = 2;
+        let textInterval = 10;
+        focus.append("rect")
+            .attr("width", rectWidth)
+            .attr("height", chartHeight);
+        focus.append("circle")
+            .attr("r", 4);
+        focus.append("text")
+            .attr("id", "year")
+            .attr("dy", ".35em");
+        focus.append("text")
+            .attr("id", "stats")
+            .attr("dy", "1.35em");
+        selectPart.append("rect")
+        	.attr("class", "overlay")
+            .attr("x", 0)
+            .attr("y", 0)
+            .attr("height", yScale.range()[0])
+            .attr("width", xScale.range()[1])
+            .on("mouseover", function() {focus.style("display", null);})
+            .on("mouseout", function() {focus.style("display", "none");})
+            .on("mousemove", mousemove);
+        let bisectorDate = d3.bisector(function(d) { return d.year; }).left;
+        function mousemove() {
+            let x0 = xScale.invert(d3.mouse(this)[0] - LeftMargin),
+                i = bisectorDate(dataset_sorted, x0, 1),
+                d0 = dataset_sorted[i-1],
+                d1 = dataset_sorted[i],
+                d = d0;
+            if (i != dataset_sorted.length)
+                d = x0 - d0.year > d1.year - x0? d1:d0;
+            focus.select("circle")
+                .attr("cx", xScale(d.year))
+                .attr("cy", yScale(d.stats))
+            focus.select("rect")
+                .attr("x", xScale(d.year)-rectWidth/2)
+                .attr("y", 0);
+            focus.select("#year")
+                .attr("x", xScale(d.year)+textInterval)
+                .attr("y", yScale(d.stats))
+                .style("text-anchor", "start")
+                .text(d.year)
+                .style("fill", "black");
+            focus.select("#stats")
+                .attr("x", xScale(d.year)+textInterval)
+                .attr("y", yScale(d.stats))
+                .style("text-anchor", "start")
+                .text(d.stats)
+                .style("fill", "black");
+        } 
+    }
+
     updateInfo(oneCountryInfo, year) {
         console.log(oneCountryInfo);
         let wd = +oneCountryInfo.wikidata;
@@ -72,108 +168,11 @@ class InfoPanel {
 
                 d3.select("#population")
                     .style("display", null);
-    //population scale
-                let popxScale = d3.scaleLinear()
-                    .domain([d3.min(data.pop, d => +d.year), d3.max(data.pop, d => +d.year)])
-                    .range([0, this.svgWidth-popRightMargin-popLeftMargin]);
-                let popyScale = d3.scaleLinear()
-                    .domain([d3.min(data.pop, d => +d.stats), d3.max(data.pop, d => +d.stats)])
-                    .range([this.popHeight-popTopMargin-popBotMargin, 0]);
-    //population line
-                let lineGenerator = d3.line()
-                                        .x(d=>popxScale(+d.year))
-                                        .y(d=>popyScale(+d.stats));
-                d3.select("#popShow")
-                    .html("");
                 let pop_s = data.pop.sort((a, b) => parseInt(a.year) - parseInt(b.year));
-                d3.select("#popShow")
-                    .append("path")
-                    .attr("d", lineGenerator(pop_s))
-                    .style("fill", "none")
-                    .style("stroke", "steelblue")
-                    .style("stroke-width", "2px");
-    //population axes
-                let xAxis = d3.axisBottom();
-                xAxis.scale(popxScale)
-                    .ticks(Math.min(data.pop.length,7))
-                    .tickFormat(d3.format("d"));
-                let yAxis = d3.axisLeft();
-                yAxis.scale(popyScale)
-                    .ticks(3)
-                    .tickFormat(d3.format(".2s"));
-                d3.select("#popShow")
-                    .append("g")
-                    .attr("transform", "translate(0, " + popyScale.range()[0]+")")
-                    .style("fill", "none")
-                    .style("stroke", "black")
-                    .call(xAxis);
-                d3.select("#popShow")
-                    .append("g")
-                    .style("fill", "none")
-                    .style("stroke", "black")
-                    .call(yAxis)
-                    .append("text")
-                    .attr("transform", "rotate(-90)")
-                    .attr("y", 6)
-                    .attr("dy", ".71em")
-                    .style("text-anchor", "end")
-                    .text("Population");
-    //population focus point
-                let focus = d3.select("#popShow")
-                                .append("g")
-                                .attr("class", "focus")
-                                .style("display", "none");
-                focus.append("rect")
-                    .attr("width", 2)
-                    .attr("height", this.popHeight-30);
-                focus.append("circle")
-                    .attr("r", 4);
-                focus.append("text")
-                    .attr("id", "pop_year")
-                    .attr("dy", ".35em");
-                focus.append("text")
-                    .attr("id", "pop_stats")
-                    .attr("dy", "1.35em");
-                d3.select("#population")
-                    .append("rect")
-                    .attr("class", "overlay")
-                    .attr("x", popTopMargin)
-                    .attr("y", popLeftMargin)
-                    .attr("height", popyScale.range()[0])
-                    .attr("width", popxScale.range()[1])
-                    .on("mouseover", function() {focus.style("display", null);})
-                    .on("mouseout", function() {focus.style("display", "none");})
-                    .on("mousemove", mousemove);
-                let bisectorDate = d3.bisector(function(d) { return d.year; }).left;
-                function mousemove() {
-                    let x0 = popxScale.invert(d3.mouse(this)[0] - popLeftMargin),
-                        i = bisectorDate(pop_s, x0, 1),
-                        d0 = pop_s[i-1],
-                        d1 = pop_s[i],
-                        d = d0;
-                    if (i != pop_s.length)
-                        d = x0 - d0.year > d1.year - x0? d1:d0;
-                    focus.select("circle")
-                        .attr("cx", popxScale(d.year))
-                        .attr("cy", popyScale(d.stats))
-                    focus.select("rect")
-                        .attr("x", popxScale(d.year)-1)
-                        .attr("y", 0);
-                    focus.select("#pop_year")
-                        .attr("x", popxScale(d.year)+10)
-                        .attr("y", popyScale(d.stats))
-                        .style("text-anchor", "start")
-                        .text(d.year);
-                    focus.select("#pop_stats")
-                        .attr("x", popxScale(d.year)+10)
-                        .attr("y", popyScale(d.stats))
-                        .style("text-anchor", "start")
-                        .text(d.stats);
-                    focus.select("#pop_year")
-                        .attr("y", popyScale(d.stats)-20);
-                    focus.select("#pop_stats")
-                        .attr("y", popyScale(d.stats)-20);
-                }                
+                this.lineChartGenerator(d3.select("#popShow"), data.pop, this.svgWidth-popRightMargin-popLeftMargin, 
+                	this.popHeight-popTopMargin-popBotMargin, "steelblue", popTopMargin, popLeftMargin, "population");
+
+    //population focus point               
             }
             else {
                 d3.select("#popTitle")
@@ -258,7 +257,7 @@ class InfoPanel {
                 d3.select("#indexTitle")
                     .html("");
                 d3.select("#humanIndex")
-                    .style("display", "none");
+                    .style("display", "none");                   
             }
 
             d3.select("#dropbox")
