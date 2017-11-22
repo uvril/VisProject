@@ -16,6 +16,13 @@ class AggPanel {
             .attr("height", this.panelHeight)
             .attr("x", (this.svgWidth - this.panelWidth)/2)
             .attr("y", (this.svgHeight - this.panelHeight)/2);
+        this.legend = d3.select("#aggPanel")
+        	.append("svg")
+        	.attr("id", "legend")
+            .attr("width", this.panelWidth/2)
+            .attr("height", this.panelHeight)
+            .attr("x", (this.svgWidth + this.panelWidth)/2)
+            .attr("y", (this.svgHeight - this.panelHeight)/2);
         this.selectedLine = null;
 	}
 
@@ -38,55 +45,68 @@ class AggPanel {
         let yScale = d3.scaleLinear()
             .domain([popMin, popMax])
             .range([this.panelHeight-this.panelMargin, this.panelMargin]);  
+        let colors = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b", "#e377c2", "#7f7f7f", "#bcbd22", "#17becf"];
         let lineGenerator = d3.line()
             .x(d=>xScale(+d.year))
             .y(d=>yScale(+d.stats));
 		this.panel.html("");
+		let cnt = 0;
 		for (let i in dataset_sorted) {
 			this.panel.append("path")
 	        	.attr("d", lineGenerator(dataset_sorted[i]))
 	        	.attr("id", i)
 	        	.style("fill", "none")
-	        	.style("stroke", "steelblue")
+	        	.style("stroke", colors[cnt])
 	        	.style("stroke-width", "4px")
+	        	.style("opacity", "0.5")
 	        	.on("mouseover", function(){
 	        		console.log(d3.event.target);
 	        		if (this.selectedLine == null) {
-		        		d3.event.target.setAttribute("style", "stroke:red; fill:none; stroke-width:6px;");
-		        		d3.select("#"+d3.event.target.id+"_legend").style("fill", "red");
+	        			d3.select("#"+d3.event.target.id)
+	        				.style("stroke-width", "6px")
+	        				.style("opacity", "1");
+		        		d3.select("#"+d3.event.target.id+"_legend").style("stroke-width", "4px");
 	        		}
 	        	}.bind(this))
 	        	.on("mouseout", function(){
 	        		if (this.selectedLine != d3.event.target.id) {
-		        		d3.event.target.setAttribute("style", "stroke:steelblue; fill:none; stroke-width:4px;");
-		        		d3.select("#"+d3.event.target.id+"_legend").style("fill", "black");
+	        			d3.select("#"+d3.event.target.id)
+	        				.style("stroke-width", "4px")
+	        				.style("opacity", "0.5");
+		        		d3.select("#"+d3.event.target.id+"_legend").style("stroke-width", "2px");
 	        		}
 	        		else {
-	        			d3.event.target.setAttribute("style", "stroke:red; fill:none; stroke-width:4px;");
+	        			d3.select("#"+d3.event.target.id).style("stroke-width", "4px");
 	        		}
 	        	}.bind(this))
 	        	.on("click", function(){
 	        		console.log(this.selectedLine)
 	        		if (this.selectedLine == d3.event.target.id) {
 		        		d3.select("#"+d3.event.target.id+"_legend")
-		        			.style("fill", "black")
 		        			.style("stroke-width", "2px");
 		        		d3.select("#"+d3.event.target.id)
-		        			.style("stroke", "steelblue")
 		        			.style("stroke-width", "4px");
 		        			this.selectedLine = null;
 	        		}
 	        		else if (this.selectedLine == null) {
 		        		d3.select("#"+d3.event.target.id+"_legend")
-		        			.style("fill", "red")
 		        			.style("stroke-width", "4px");
 		        		d3.select("#"+d3.event.target.id)
-		        			.style("stroke", "red")
 		        			.style("stroke-width", "4px");
 		        		this.selectedLine = d3.event.target.id;
 	        		}
 	        		console.log(this.selectedLine)
 	        	}.bind(this));
+        	this.legend.append("g")
+        		.attr("class", "legend")
+        		.append("text")
+        		.attr("id", i+"_legend")
+        		.attr("x", (this.svgWidth + this.panelWidth)/2)
+        		.attr("y", (this.svgHeight - this.panelHeight)/2 + 20*cnt)
+        		.text(i)
+        		.style("stroke", colors[cnt])
+        		.style("fill", colors[cnt]);
+        	cnt+=1;
 		};
         let xAxis = d3.axisBottom();
         xAxis.scale(xScale)
@@ -113,18 +133,6 @@ class AggPanel {
             .attr("dy", ".71em")
             .style("text-anchor", "end")
             .text("pop");
-        let cnt = 0;
-        for (let i in dataset) {
-        	this.panel.append("g")
-        	.attr("class", "legend")
-        	.append("text")
-        	.attr("id", i+"_legend")
-        	.attr("x", this.panelWidth - this.panelMargin*2)
-        	.attr("y", this.panelMargin + 10*cnt)
-        	.text(i)
-        	.style("fill", "black");
-        	cnt+=1;
-        }
 
 	}
 }
