@@ -71,8 +71,8 @@ class InfoPanel {
             .tickFormat(d3.format("d"));
         let yAxis = d3.axisLeft();
         yAxis.scale(yScale)
-            .ticks(3)
-            .tickFormat(d3.format(".2s"));
+            .ticks(5)
+            .tickFormat(d3.format(".3s"));
         selectPart.append("g")
             .attr("transform", "translate(0, " + yScale.range()[0]+")")
             .style("fill", "none")
@@ -115,7 +115,7 @@ class InfoPanel {
             .on("mousemove", mousemove);
         let bisectorDate = d3.bisector(function(d) { return d.year; }).left;
         function mousemove() {
-            let x0 = xScale.invert(d3.mouse(this)[0] - LeftMargin),
+            let x0 = xScale.invert(d3.mouse(this)[0]),
                 i = bisectorDate(dataset_sorted, x0, 1),
                 d0 = dataset_sorted[i-1],
                 d1 = dataset_sorted[i],
@@ -181,8 +181,8 @@ class InfoPanel {
             if (data.pop.length != 0) {
                 let popTopMargin = 30;
                 let popBotMargin = 30;
-                let popRightMargin = 30;
-                let popLeftMargin = 30;
+                let popRightMargin = 20;
+                let popLeftMargin = 40;
                 d3.select("#popShow").attr("transform", "translate(" + popLeftMargin + "," + popTopMargin + ")");
                 //population
 
