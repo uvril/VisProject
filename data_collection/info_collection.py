@@ -47,7 +47,7 @@ def labelQuery(wd, dom):
         ret.append(i["name"]["value"])
     return ret
 
-def statsQuery(wd, dom):
+def statsQuery(wd, dom, d):
     q = """
         SELECT ?stats ?year WHERE {
         wd:Q%d p:P%d ?link.
@@ -63,9 +63,18 @@ def statsQuery(wd, dom):
         dd = i["stats"]["value"]
         if not yy in s:
             s[yy] = 1
-            ret.append({"year":yy, "stats":dd})
-    return ret
+            if not yy in d:
+                d[yy] = []
+            d[yy].append({"wikidata":wd, "stats":dd})
 
+def write_stat(d, ff):
+    for yy in d:
+        f = open(ff + str(yy)+".json", "w")
+        json.dump(d[yy], f)
+        f.close()
+
+pop = {}
+hdi = {}
 
 for root, dirs, files in os.walk("."):
     for osfn in files:
@@ -87,8 +96,8 @@ for root, dirs, files in os.walk("."):
                         rec["continent"] = labelQuery(wd, 30)
                         rec["headState"] = labelQuery(wd, 35)
                         rec["headGov"] = labelQuery(wd, 6)
-                        rec["pop"] = statsQuery(wd, 1082)
-                        rec["hdi"] = statsQuery(wd, 1081)
+                        statsQuery(wd, 1082, pop)
+                        statsQuery(wd, 1081, hdi)
                         print(jp["NAME"])
                         f = open(fn, "w")
                         json.dump(rec, f)
@@ -100,3 +109,6 @@ for root, dirs, files in os.walk("."):
                 continue
 
 errf.close()
+write_stat(pop, "../pop/")
+write_stat(hdi, "../hdi/")
+

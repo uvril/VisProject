@@ -27,6 +27,7 @@ class InfoPanel {
     }
 
     lineChartGenerator(selectPart, dataset, chartWidth, chartHeight, color, TopMargin, LeftMargin, yAxisText) {
+        console.log(dataset);
     	selectPart.attr("transform", "translate(" + LeftMargin + "," + TopMargin + ")");
         let xScale = d3.scaleLinear()
             .domain(d3.extent(dataset, d => +d.year))
@@ -168,7 +169,7 @@ class InfoPanel {
                 d3.select("#population")
                     .style("display", null);
                 let pop_s = data.pop.sort((a, b) => parseInt(a.year) - parseInt(b.year));
-                this.lineChartGenerator(d3.select("#popShow"), data.pop, this.svgWidth-popRightMargin-popLeftMargin, 
+                this.lineChartGenerator(d3.select("#popShow"), queryData(window.dataset.pop, wd, 1960, 2015), this.svgWidth-popRightMargin-popLeftMargin, 
                 	this.popHeight-popTopMargin-popBotMargin, "steelblue", popTopMargin, popLeftMargin, "population");
 
     //population focus point               
