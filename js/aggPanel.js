@@ -51,61 +51,73 @@ class AggPanel {
             .y(d=>yScale(+d.stats));
 		this.panel.html("");
 		let cnt = 0;
+		let setStroke = function(id, legendSize, lineSize, lineOpacity, legendFontSize) {
+			d3.select("#"+id)
+				.style("stroke-width", lineSize)
+				.style("opacity", lineOpacity);
+    		d3.select("#"+id+"_legend")
+    			.style("stroke-width", legendSize)
+    			.style("font-size", legendFontSize);
+		};
+		let lineThick = 4.5, lineThin = 3, legendBig = 3, legendSmall = 2, legendFontBig = 20, legendFontSmall = 15;
 		for (let i in dataset_sorted) {
 			this.panel.append("path")
 	        	.attr("d", lineGenerator(dataset_sorted[i]))
 	        	.attr("id", i)
 	        	.style("fill", "none")
 	        	.style("stroke", colors[cnt])
-	        	.style("stroke-width", "4px")
+	        	.style("stroke-width", "3px")
 	        	.style("opacity", "0.5")
 	        	.on("mouseover", function(){
-	        		console.log(d3.event.target);
-	        		if (this.selectedLine == null) {
-	        			d3.select("#"+d3.event.target.id)
-	        				.style("stroke-width", "6px")
-	        				.style("opacity", "1");
-		        		d3.select("#"+d3.event.target.id+"_legend").style("stroke-width", "4px");
-	        		}
+	        		if (this.selectedLine == null)
+	        			setStroke(d3.event.target.id, (legendSmall+0.5)+"px", (lineThin+0.5)+"px", "1", (legendFontSmall+2)+"px");
 	        	}.bind(this))
 	        	.on("mouseout", function(){
-	        		if (this.selectedLine != d3.event.target.id) {
-	        			d3.select("#"+d3.event.target.id)
-	        				.style("stroke-width", "4px")
-	        				.style("opacity", "0.5");
-		        		d3.select("#"+d3.event.target.id+"_legend").style("stroke-width", "2px");
-	        		}
-	        		else {
-	        			d3.select("#"+d3.event.target.id).style("stroke-width", "4px");
-	        		}
+	        		if (this.selectedLine != d3.event.target.id) 
+	        			setStroke(d3.event.target.id, legendSmall+"px", lineThin+"px", "0.5", legendFontSmall+"px");
 	        	}.bind(this))
 	        	.on("click", function(){
-	        		console.log(this.selectedLine)
 	        		if (this.selectedLine == d3.event.target.id) {
-		        		d3.select("#"+d3.event.target.id+"_legend")
-		        			.style("stroke-width", "2px");
-		        		d3.select("#"+d3.event.target.id)
-		        			.style("stroke-width", "4px");
-		        			this.selectedLine = null;
+	        			setStroke(d3.event.target.id, legendSmall+"px", lineThin+"px", "0.5", legendFontSmall+"px");
+		        		this.selectedLine = null;
 	        		}
 	        		else if (this.selectedLine == null) {
-		        		d3.select("#"+d3.event.target.id+"_legend")
-		        			.style("stroke-width", "4px");
-		        		d3.select("#"+d3.event.target.id)
-		        			.style("stroke-width", "4px");
+	        			setStroke(d3.event.target.id, legendBig+"px", lineThick+"px", "1", legendFontBig+"px");
 		        		this.selectedLine = d3.event.target.id;
 	        		}
-	        		console.log(this.selectedLine)
 	        	}.bind(this));
         	this.legend.append("g")
         		.attr("class", "legend")
         		.append("text")
         		.attr("id", i+"_legend")
-        		.attr("x", (this.svgWidth + this.panelWidth)/2)
-        		.attr("y", (this.svgHeight - this.panelHeight)/2 + 20*cnt)
+        		.attr("x", 0)
+        		.attr("y", legendFontBig*(cnt+1))
         		.text(i)
         		.style("stroke", colors[cnt])
-        		.style("fill", colors[cnt]);
+        		.style("fill", colors[cnt])
+        		.style("font-size", "15px")
+	        	.on("mouseover", function(){
+	        		let id = d3.event.target.id.split("_")[0];
+	        		if (this.selectedLine == null)
+	        			setStroke(id, (legendSmall+0.5)+"px", (lineThin+0.5)+"px", "1", (legendFontSmall+2)+"px");
+	        	}.bind(this))
+	        	.on("mouseout", function(){
+	        		let id = d3.event.target.id.split("_")[0];
+	        		if (this.selectedLine != id) 
+	        			setStroke(id, legendSmall+"px", lineThin+"px", "0.5", legendFontSmall+"px");
+	        	}.bind(this))
+        		.on("click", function(){
+        			let id = d3.event.target.id.split("_")[0];
+        			//console.log(id, this.selectedLine);
+	        		if (this.selectedLine == id) {
+	        			setStroke(id, legendSmall+"px", lineThin+"px", "0.5", legendFontSmall+"px");
+	        			this.selectedLine = null;
+	        		}
+	        		else if (this.selectedLine == null) {
+	        			setStroke(id, legendBig+"px", lineThick+"px", "1", legendFontBig+"px");
+		        		this.selectedLine = id;
+	        		}
+        		}.bind(this));
         	cnt+=1;
 		};
         let xAxis = d3.axisBottom();
