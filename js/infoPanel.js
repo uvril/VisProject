@@ -1,34 +1,54 @@
 class InfoPanel {
     constructor() {
-        this.svgBounds = d3.select("#details").node().getBoundingClientRect();
-        this.statBounds = this.svgBounds;
-        console.log(this.statBounds);
+        let contentObj = d3.select("#details");
+        this.svgBounds = contentObj.select(".tab-content").node().getBoundingClientRect();
+        console.log(this.svgBounds);
         this.svgWidth = this.svgBounds.width;
         this.svgHeight = this.svgBounds.width;
         this.hdiHeight = 200;
         this.hdiLeftMargin = 20;
         this.humanIndex = d3.select("#humanIndex")
-                            .attr("width", this.statBounds.width)
-                            .attr("height", this.hdiHeight);
+            .attr("width", this.svgWidth)
+            .attr("height", this.hdiHeight);
         this.popHeight = 260;
         this.population = d3.select("#population")
-                            .attr("width", this.statBounds.width)
-                            .attr("height", this.popHeight);
+            .attr("width", this.svgWidth)
+            .attr("height", this.popHeight);
         this.infoTable = d3.select("#basicInfoTable");
         this.wikipage = d3.select("#wikipage");
         this.wikipage
-        .attr("height", this.svgHeight)
-        .attr("width", this.svgWidth);
+            .attr("height", this.svgHeight)
+            .attr("width", this.svgWidth);
         this.colorScale = d3.scaleLinear()
             .domain([0, 0.5, 1])
             .range(['red', "yellow", 'green']);
         this.lastSection = null;
 
+        contentObj.select("#pop-tab").on("click", function(event){
+            contentObj.select("#info-nav").selectAll("a").classed("active", false);
+            contentObj.select("#stat-tab").classed("active", true);
+            let allTabs = contentObj.selectAll(".tab-pane");
+            allTabs.classed("show", false);
+            allTabs.classed("active", false);
+            let view = contentObj.select("#popView");
+            view.classed("show", true);
+            view.classed("active", true);
+        }.bind(this));
+        contentObj.select("#hdi-tab").on("click", function(event){
+            contentObj.select("#info-nav").selectAll("a").classed("active", false);
+            contentObj.select("#stat-tab").classed("active", true);
+            let allTabs = contentObj.selectAll(".tab-pane");
+            allTabs.classed("show", false);
+            allTabs.classed("active", false);
+            let view = contentObj.select("#hdiView");
+            view.classed("show", true);
+            view.classed("active", true);
+        }.bind(this));
     }
 
     lineChartGenerator(selectPart, dataset, chartWidth, chartHeight, color, TopMargin, LeftMargin, yAxisText) {
         console.log(dataset);
-    	selectPart.attr("transform", "translate(" + LeftMargin + "," + TopMargin + ")");
+        selectPart.attr("transform", "translate(" + LeftMargin + "," + TopMargin + ")");
         let xScale = d3.scaleLinear()
             .domain(d3.extent(dataset, d => +d.year))
             .range([0, chartWidth]);
@@ -38,13 +58,13 @@ class InfoPanel {
         let lineGenerator = d3.line()
             .x(d=>xScale(+d.year))
             .y(d=>yScale(+d.stats));
-		let dataset_sorted = dataset.sort((a, b) => parseInt(a.year) - parseInt(b.year));
-		selectPart.html("");
-		selectPart.append("path")
-        	.attr("d", lineGenerator(dataset_sorted))
-        	.style("fill", "none")
-        	.style("stroke", color)
-        	.style("stroke-width", "2px");
+        let dataset_sorted = dataset.sort((a, b) => parseInt(a.year) - parseInt(b.year));
+        selectPart.html("");
+        selectPart.append("path")
+            .attr("d", lineGenerator(dataset_sorted))
+            .style("fill", "none")
+            .style("stroke", color)
+            .style("stroke-width", "2px");
         let xAxis = d3.axisBottom();
         xAxis.scale(xScale)
             .ticks(Math.min(dataset.length,7))
@@ -69,8 +89,8 @@ class InfoPanel {
             .style("text-anchor", "end")
             .text(yAxisText);
         let focus = selectPart.append("g")
-                        .attr("class", "focus")
-                        .style("display", "none");
+            .attr("class", "focus")
+            .style("display", "none");
         let rectWidth = 2;
         let textInterval = 10;
         focus.append("rect")
@@ -85,7 +105,7 @@ class InfoPanel {
             .attr("id", "stats")
             .attr("dy", "1.35em");
         selectPart.append("rect")
-        	.attr("class", "overlay")
+            .attr("class", "overlay")
             .attr("x", 0)
             .attr("y", 0)
             .attr("height", yScale.range()[0])
@@ -127,7 +147,7 @@ class InfoPanel {
         console.log(oneCountryInfo);
         let wd = +oneCountryInfo.wikidata;
         console.log(wd);
-        d3.selectAll(".countryNameLabel").text(oneCountryInfo.NAME);
+        d3.selectAll("#countryNameLabel").text(oneCountryInfo.NAME);
         if (wd < 0) {
             d3.select("#countryInfo").style("visibility", "hidden");
             this.wikipage.attr("src", "");
@@ -158,21 +178,21 @@ class InfoPanel {
             else {
                 this.infoTable.select("#table-hdi").html("");
             }
-          if (data.pop.length != 0) {
-              let popTopMargin = 30;
-              let popBotMargin = 30;
-              let popRightMargin = 120;
-              let popLeftMargin = 30;
-              d3.select("#popShow").attr("transform", "translate(" + popLeftMargin + "," + popTopMargin + ")");
-    //population
+            if (data.pop.length != 0) {
+                let popTopMargin = 30;
+                let popBotMargin = 30;
+                let popRightMargin = 30;
+                let popLeftMargin = 30;
+                d3.select("#popShow").attr("transform", "translate(" + popLeftMargin + "," + popTopMargin + ")");
+                //population
 
                 d3.select("#population")
                     .style("display", null);
                 let pop_s = data.pop.sort((a, b) => parseInt(a.year) - parseInt(b.year));
                 this.lineChartGenerator(d3.select("#popShow"), queryData(window.dataset.pop, wd, 1960, 2015), this.svgWidth-popRightMargin-popLeftMargin, 
-                	this.popHeight-popTopMargin-popBotMargin, "steelblue", popTopMargin, popLeftMargin, "population");
+                    this.popHeight-popTopMargin-popBotMargin, "steelblue", popTopMargin, popLeftMargin, "population");
 
-    //population focus point               
+                //population focus point               
             }
             else {
                 d3.select("#popTitle")
@@ -184,8 +204,8 @@ class InfoPanel {
             if (data.hdi.length != 0) {
                 d3.select("#humanIndex")
                     .style("display", null);
-    //humanIndex tip
-               let hdiTip = d3.tip()
+                //humanIndex tip
+                let hdiTip = d3.tip()
                     .attr('class', 'd3-tip')
                     .direction('s')
                     .offset(function() {
@@ -195,7 +215,7 @@ class InfoPanel {
                         let tooltip_data = {"result":[{"year": d.year,"stats": d.stats}]};
                         return "<text>Year: "+d.year+"<br>HDI: "+d.stats+"</text>";
                     });
-    //humanIndex scale
+                //humanIndex scale
                 let hdiXScale = d3.scaleBand()
                     .domain(data.hdi.map(d=>+d.year).sort(d3.ascending))
                     .range([this.hdiLeftMargin, this.svgWidth-this.hdiLeftMargin])
@@ -203,7 +223,7 @@ class InfoPanel {
 
                 d3.select("#humanIndex")
                     .html("");
-    //humanIndex Title
+                //humanIndex Title
                 let hdiInterval = 100;
                 let hdilegendX = 10;
                 let hdilegendY = 10;
@@ -215,7 +235,7 @@ class InfoPanel {
                     .attr("y", hdiInterval-10) 
                     .attr("text-anchor", "middle")
                     .text(d=>d);
-    //humanIndex Visualization
+                //humanIndex Visualization
                 d3.select("#humanIndex")
                     .append("g")
                     .attr("id", "indexShow")
@@ -268,10 +288,10 @@ class InfoPanel {
                 let sect = document.getElementById("dropbox");
                 let section = sect.options[sect.selectedIndex].value;
                 d3.select("#"+section)
-                .style("visibility", "visible");
+                    .style("visibility", "visible");
                 if (this.lastSection != null) {
                     d3.select("#"+this.lastSection)
-                    .style("visibility", "hidden");
+                        .style("visibility", "hidden");
                 }
                 console.log(this.lastSection);
                 this.lastSection = section;

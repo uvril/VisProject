@@ -22,7 +22,6 @@ class Map {
         mapSvg.call(mapZoom);
         this.currentMouse = null;
         this.curScale = 1;
-        this.svgCurYear = mapSvg.append("text").attr("x", 50).attr("y", 600).style("font-size", "100px").style("opacity", "0.5").style("fill", "black");
     }
 
     zoomed() {
@@ -121,13 +120,6 @@ class Map {
     }
 
     drawMap(year) {
-
-        if (year > 0) {
-            this.svgCurYear.text(year);
-        }
-        else {
-            this.svgCurYear.text(-year + " BC");
-        }
 
         let filename = "data/map/cntry" + year + ".json"
 
