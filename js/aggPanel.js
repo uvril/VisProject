@@ -6,23 +6,17 @@ class AggPanel {
         let aggSvg = d3.select("#aggPanel")
             .attr("width", this.svgWidth)
             .attr("height", this.svgHeight);
-        this.panelWidth = this.svgWidth/2;
-        this.panelHeight = this.svgHeight/2;
+        this.panelWidth = this.svgWidth*0.8;
+        this.panelHeight = this.svgHeight;
         this.panelMargin = 35;
         this.panel = d3.select("#aggPanel")
-        	.append("svg")
+        	.append("g")
         	.attr("id", "panel")
-            .attr("width", this.panelWidth)
-            .attr("height", this.panelHeight)
-            .attr("x", (this.svgWidth - this.panelWidth)/2)
-            .attr("y", (this.svgHeight - this.panelHeight)/2);
+            .attr("transform", "translate(" + this.panelWidth*0.01 + ", 0)");
         this.legend = d3.select("#aggPanel")
-        	.append("svg")
+        	.append("g")
         	.attr("id", "legend")
-            .attr("width", this.panelWidth/2)
-            .attr("height", this.panelHeight)
-            .attr("x", (this.svgWidth + this.panelWidth)/2)
-            .attr("y", (this.svgHeight - this.panelHeight)/2);
+            .attr("transform", "translate(" + (this.panelWidth*1.02-this.panelMargin) + ", 0)");
         this.selectedLine = null;
         this.selectedCountry = [];
         this.selectedwd = [];
@@ -71,7 +65,7 @@ class AggPanel {
     			.style("stroke-width", legendSize)
     			.style("font-size", legendFontSize);
 		};
-		let lineThick = 4.5, lineThin = 3, legendBig = 2, legendSmall = 1, legendFontBig = 17, legendFontSmall = 15;
+		let lineThick = 2, lineThin = 1, legendBig = 2, legendSmall = 1, legendFontBig = 13, legendFontSmall = 10;
 		for (let i in dataset) {
 			this.panel.append("path")
 	        	.attr("d", lineGenerator(dataset[i]))
@@ -81,7 +75,7 @@ class AggPanel {
 	        	.style("stroke-width", lineThin)
 	        	.style("opacity", "0.5")
 	        	.on("mouseover", function(){
-	        		if (this.selectedLine == null)
+	        		if (this.selectedLine != d3.event.target.id)
 	        			setStroke(d3.event.target.id, (legendSmall+0.5)+"px", (lineThin+0.5)+"px", "1", legendFontBig+"px");
 	        	}.bind(this))
 	        	.on("mouseout", function(){
@@ -97,7 +91,42 @@ class AggPanel {
 	        			setStroke(d3.event.target.id, legendBig+"px", lineThick+"px", "1", legendFontBig+"px");
 		        		this.selectedLine = d3.event.target.id;
 	        		}
+	        		else {
+	        			setStroke(this.selectedLine, legendSmall+"px", lineThin+"px", "0.5", legendFontSmall+"px");
+	        			setStroke(d3.event.target.id, legendBig+"px", lineThick+"px", "1", legendFontBig+"px");
+	        			this.selectedLine = d3.event.target.id;
+	        		}
 	        	}.bind(this));
+
+	        this.panel.append("g")
+	        	.selectAll("circle")
+	        	.data(dataset[i])
+	        	.enter().append("circle")
+	        	.attr("id", d=>i.replace(/[^a-zA-Z]/g, "")+"_"+(+d.year))
+	        	.attr("cx", d=>xScale(+d.year))
+	        	.attr("cy", d=>yScale(+d.stats))
+	        	.attr("r", 2)
+	        	.style("fill", colors[cnt])
+	        	.on("mouseover", function(){
+	        		d3.select("#"+d3.event.target.id)
+						.transition()
+						.duration(500)
+						.attr("r", 4)
+						.style("opacity", 0.5);
+					console.log(this.selectedLine, d3.event.target.id.split("_")[0]);
+	        		if (this.selectedLine != d3.event.target.id.split("_")[0])
+	        			setStroke(d3.event.target.id.split("_")[0], (legendSmall+0.5)+"px", (lineThin+0.5)+"px", "1", legendFontBig+"px");
+	        	}.bind(this))
+	        	.on("mouseout", function(){
+	        		d3.select("#"+d3.event.target.id)
+						.transition()
+						.duration(500)
+						.attr("r", 2)
+						.style("opacity", 1);
+	        		if (this.selectedLine != d3.event.target.id.split("_")[0]) 
+	        			setStroke(d3.event.target.id.split("_")[0], legendSmall+"px", lineThin+"px", "0.5", legendFontSmall+"px");
+	        	}.bind(this));
+
         	this.legend.append("g")
         		.attr("class", "legend")
         		.append("text")
@@ -111,7 +140,7 @@ class AggPanel {
         		.style("stroke-width", legendSmall)
 	        	.on("mouseover", function(){
 	        		let id = d3.event.target.id.split("_")[0];
-	        		if (this.selectedLine == null)
+	        		if (this.selectedLine != id)
 	        			setStroke(id, (legendSmall+0.5)+"px", (lineThin+0.5)+"px", "1", (legendFontSmall+2)+"px");
 	        	}.bind(this))
 	        	.on("mouseout", function(){
@@ -129,6 +158,11 @@ class AggPanel {
 	        		else if (this.selectedLine == null) {
 	        			setStroke(id, legendBig+"px", lineThick+"px", "1", legendFontBig+"px");
 		        		this.selectedLine = id;
+	        		}
+	        		else {
+	        			setStroke(this.selectedLine, legendSmall+"px", lineThin+"px", "0.5", legendFontSmall+"px");
+	        			setStroke(id, legendBig+"px", lineThick+"px", "1", legendFontBig+"px");
+	        			this.selectedLine = id;
 	        		}
         		}.bind(this));
         	cnt+=1;
