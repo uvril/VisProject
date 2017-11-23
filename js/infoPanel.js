@@ -52,10 +52,11 @@ class InfoPanel {
         selectPart.attr("transform", "translate(" + LeftMargin + "," + TopMargin + ")");
         let xScale = d3.scaleLinear()
             .domain(d3.extent(dataset, d => +d.year))
-            .range([0, chartWidth]);
+            .range([0, chartWidth]).nice();
         let yScale = d3.scaleLinear()
             .domain(d3.extent(dataset, d => +d.stats))
-            .range([chartHeight, 0]);    	
+            .range([chartHeight, 0])
+			.nice();    	
         let lineGenerator = d3.line()
             .x(d=>xScale(+d.year))
             .y(d=>yScale(+d.stats));
@@ -70,19 +71,34 @@ class InfoPanel {
         xAxis.scale(xScale)
             .ticks(Math.min(dataset.length,7))
             .tickFormat(d3.format("d"));
-        let yAxis = d3.axisLeft();
+        let yAxis = d3.axisRight();
         yAxis.scale(yScale)
-            .ticks(5)
+			.tickSize(chartWidth)
+			.ticks(5)
             .tickFormat(d3.format(".3s"));
+			
+		function customXAxis(g) {
+		  g.call(xAxis);
+		  g.select(".domain").remove();
+		}
+
+		function customYAxis(g) {
+		  g.call(yAxis);
+		  g.select(".domain").remove();
+		  g.selectAll(".tick:not(:first-of-type) line").attr("stroke", "#777").attr("stroke-dasharray", "2,2");
+		  g.selectAll(".tick text").attr("x", 4).attr("dy", -4);
+		}
+
+
         selectPart.append("g")
             .attr("transform", "translate(0, " + yScale.range()[0]+")")
             .style("fill", "none")
             .style("stroke", "black")
-            .call(xAxis);
+            .call(customXAxis);
         selectPart.append("g")
             .style("fill", "none")
             .style("stroke", "black")
-            .call(yAxis)
+            .call(customYAxis)
             .append("text")
             .attr("transform", "rotate(-90)")
             .attr("y", 6)
