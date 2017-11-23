@@ -1,5 +1,5 @@
 class InfoPanel {
-    constructor() {
+    constructor(aggPanel) {
         let contentObj = d3.select("#details");
         this.svgBounds = contentObj.select(".tab-content").node().getBoundingClientRect();
         console.log(this.svgBounds);
@@ -23,6 +23,7 @@ class InfoPanel {
             .domain([0, 0.5, 1])
             .range(['red', "yellow", 'green']);
         this.lastSection = null;
+        this.aggPanel = aggPanel;
 
         contentObj.select("#pop-tab").on("click", function(event){
             contentObj.select("#info-nav").selectAll("a").classed("active", false);
@@ -188,7 +189,6 @@ class InfoPanel {
 
                 d3.select("#population")
                     .style("display", null);
-                let pop_s = data.pop.sort((a, b) => parseInt(a.year) - parseInt(b.year));
                 this.lineChartGenerator(d3.select("#popShow"), queryData(window.dataset.pop, wd, 1960, 2015), this.svgWidth-popRightMargin-popLeftMargin, 
                     this.popHeight-popTopMargin-popBotMargin, "steelblue", popTopMargin, popLeftMargin, "population");
 
@@ -279,23 +279,11 @@ class InfoPanel {
                 d3.select("#humanIndex")
                     .style("display", "none");                   
             }
-
-            d3.select("#dropbox")
-                .on("change", onchange.bind(this));
-
-            function onchange(){
-                console.log("!!!");
-                let sect = document.getElementById("dropbox");
-                let section = sect.options[sect.selectedIndex].value;
-                d3.select("#"+section)
-                    .style("visibility", "visible");
-                if (this.lastSection != null) {
-                    d3.select("#"+this.lastSection)
-                        .style("visibility", "hidden");
-                }
-                console.log(this.lastSection);
-                this.lastSection = section;
-            }
+            d3.select("#add-button")
+                .on("click", function(){
+                    this.aggPanel.updateAgg(oneCountryInfo.NAME, wd, 1960, 2015);
+                }.bind(this));
         }.bind(this));
+
     }
 }

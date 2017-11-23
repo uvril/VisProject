@@ -13,9 +13,9 @@ function queryData(d, wd, ys, ye) {
 window.dataset = {}
 d3.json("data/pop.json", function(err, data) { 
 	window.dataset.pop = data;
-	let infoPanel = new InfoPanel();
+    let aggPanel = new AggPanel();
+	let infoPanel = new InfoPanel(aggPanel);
 	let map = new Map(infoPanel);
 	let yearChart = new YearChart(map);
-	let aggPanel = new AggPanel();
-	aggPanel.updateAgg();
+	//aggPanel.updateAgg();
 });

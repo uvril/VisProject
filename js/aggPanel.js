@@ -24,24 +24,32 @@ class AggPanel {
             .attr("x", (this.svgWidth + this.panelWidth)/2)
             .attr("y", (this.svgHeight - this.panelHeight)/2);
         this.selectedLine = null;
+        this.selectedCountry = [];
+        this.selectedwd = [];
 	}
 
-	updateAgg() {
-		let dataset = {"pop1": [{"year": "1983", "stats": "1823211"}, {"year": "1960", "stats": "955508"}, {"year": "1971", "stats": "1317044"}, {"year": "1995", "stats": "2298063"}, {"year": "1969", "stats": "1242208"}, {"year": "1961", "stats": "982174"}],
-		"pop2": [{"year": "1983", "stats": "1820000"}, {"year": "1960", "stats": "900000"}, {"year": "1971", "stats": "1300044"}, {"year": "1995", "stats": "2200063"}, {"year": "1969", "stats": "1200208"}, {"year": "1961", "stats": "900174"}]};
+	updateAgg(countryName, wd, startYear, endYear) {
+		let index = this.selectedCountry.indexOf(countryName);
+		if (index != -1) return;
+		this.selectedCountry.push(countryName);
+		this.selectedwd.push(wd);
+		let dataset = {}, popMin = -1, popMax = -1, extent = 0;
+		this.selectedCountry.forEach(function(country, i){
+			dataset[country] = queryData(window.dataset.pop, this.selectedwd[i], startYear, endYear);
+			extent = d3.extent(dataset[country], d => +d.stats);
+			if (i == 0) {
+				popMin = extent[0];
+				popMax = extent[1];
+			}
+			else {
+				popMin = extent[0] < popMin? extent[0] : popMin;
+				popMax = extent[1] > popMax? extent[1] : popMax;
+			}
+		}.bind(this));
+		console.log(dataset);
         let xScale = d3.scaleLinear()
-            .domain(d3.extent(dataset["pop1"], d => +d.year))
+            .domain([startYear, endYear])
             .range([this.panelMargin, this.panelWidth-this.panelMargin]);
-        let popMin = d3.extent(dataset["pop1"], d => +d.stats)[0], 
-        	popMax = d3.extent(dataset["pop1"], d => +d.stats)[1];
-        let dataset_sorted = {}
-        for (let i in dataset) {
-        	let extent = d3.extent(dataset[i], d => +d.stats)
-        	if (popMin > extent[0]) popMin = extent[0];
-        	if (popMax < extent[1]) popMax = extent[1];
-        	dataset_sorted[i] = dataset[i].sort((a, b) => parseInt(a.year) - parseInt(b.year));
-        }
-        console.log(popMax, popMin);
         let yScale = d3.scaleLinear()
             .domain([popMin, popMax])
             .range([this.panelHeight-this.panelMargin, this.panelMargin]);  
@@ -49,7 +57,11 @@ class AggPanel {
         let lineGenerator = d3.line()
             .x(d=>xScale(+d.year))
             .y(d=>yScale(+d.stats));
+//initial setting
 		this.panel.html("");
+		this.legend.html("");
+		this.selectedLine = null;
+//add lines and legends
 		let cnt = 0;
 		let setStroke = function(id, legendSize, lineSize, lineOpacity, legendFontSize) {
 			d3.select("#"+id)
@@ -59,18 +71,18 @@ class AggPanel {
     			.style("stroke-width", legendSize)
     			.style("font-size", legendFontSize);
 		};
-		let lineThick = 4.5, lineThin = 3, legendBig = 3, legendSmall = 2, legendFontBig = 20, legendFontSmall = 15;
-		for (let i in dataset_sorted) {
+		let lineThick = 4.5, lineThin = 3, legendBig = 2, legendSmall = 1, legendFontBig = 17, legendFontSmall = 15;
+		for (let i in dataset) {
 			this.panel.append("path")
-	        	.attr("d", lineGenerator(dataset_sorted[i]))
+	        	.attr("d", lineGenerator(dataset[i]))
 	        	.attr("id", i)
 	        	.style("fill", "none")
 	        	.style("stroke", colors[cnt])
-	        	.style("stroke-width", "3px")
+	        	.style("stroke-width", lineThin)
 	        	.style("opacity", "0.5")
 	        	.on("mouseover", function(){
 	        		if (this.selectedLine == null)
-	        			setStroke(d3.event.target.id, (legendSmall+0.5)+"px", (lineThin+0.5)+"px", "1", (legendFontSmall+2)+"px");
+	        			setStroke(d3.event.target.id, (legendSmall+0.5)+"px", (lineThin+0.5)+"px", "1", legendFontBig+"px");
 	        	}.bind(this))
 	        	.on("mouseout", function(){
 	        		if (this.selectedLine != d3.event.target.id) 
@@ -95,7 +107,8 @@ class AggPanel {
         		.text(i)
         		.style("stroke", colors[cnt])
         		.style("fill", colors[cnt])
-        		.style("font-size", "15px")
+        		.style("font-size", legendFontSmall)
+        		.style("stroke-width", legendSmall)
 	        	.on("mouseover", function(){
 	        		let id = d3.event.target.id.split("_")[0];
 	        		if (this.selectedLine == null)
