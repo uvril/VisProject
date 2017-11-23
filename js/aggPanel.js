@@ -75,7 +75,7 @@ class AggPanel {
 		for (let i in dataset) {
 			this.panel.append("path")
 	        	.attr("d", lineGenerator(dataset[i]))
-	        	.attr("id", i)
+	        	.attr("id", i.replace(/[^a-zA-Z]/g, ""))
 	        	.style("fill", "none")
 	        	.style("stroke", colors[cnt])
 	        	.style("stroke-width", lineThin)
@@ -101,7 +101,7 @@ class AggPanel {
         	this.legend.append("g")
         		.attr("class", "legend")
         		.append("text")
-        		.attr("id", i+"_legend")
+        		.attr("id", i.replace(/[^a-zA-Z]/g, "")+"_legend")
         		.attr("x", 0)
         		.attr("y", legendFontBig*(cnt+1))
         		.text(i)
