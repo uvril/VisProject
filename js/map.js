@@ -2,7 +2,8 @@ class Map {
 
     constructor(infoPanel) {
         this.curData = null;
-        this.svgBounds = d3.select("#mapContainer").node().getBoundingClientRect();
+        this.mapContainer = d3.select("#mapContainer");
+        this.svgBounds = this.mapContainer.node().getBoundingClientRect();
         this.svgWidth = this.svgBounds.width - 40;
         this.svgHeight = this.svgWidth/875*500;
         this.projection = d3.geoPatterson().scale(this.svgWidth/875*130).translate([this.svgBounds.width/2, this.svgWidth/875*250]);
@@ -18,18 +19,38 @@ class Map {
         this.svgText = mapSvg.append("g");
         let mapZoom = d3.zoom()
             .scaleExtent([1, 16])
-            .on("zoom", this.zoomed.bind(this));
+            .on("zoom", function () {
+                this.curScale = d3.event.transform;
+                this.zoomed();
+            }.bind(this));
         mapSvg.call(mapZoom);
         this.currentMouse = null;
-        this.curScale = 1;
+        this.curScale = d3.zoomIdentity;
+        
+        this.mapContainer.select("#zoom-in")
+            .on("click", function() {
+                mapSvg.call(mapZoom.scaleBy, 1.2);
+            }.bind(this));
+        this.mapContainer.select("#zoom-out")
+            .on("click", function() {
+                mapSvg.call(mapZoom.scaleBy, 1/1.2);
+            }.bind(this));
+        this.mapContainer.select("#reset")
+            .on("click", function() {
+                this.curScale.k = 1;
+                this.curScale.x = 0;
+                this.curScale.y = -20;
+                this.zoomed();
+            }.bind(this));
     }
 
     zoomed() {
-        d3.select("#map").selectAll("g").style("stroke-width", 1.5 / d3.event.transform.k + "px");
-        d3.select("#map").selectAll("g").attr("transform", d3.event.transform); 
-        this.curScale = d3.event.transform.k;
+        console.log(this.curScale);
+        d3.select("#map").selectAll("g").style("stroke-width", 1.5 / this.curScale.k + "px");
+        d3.select("#map").selectAll("g").attr("transform", this.curScale);
         this.updateText();
     }
+
 
     calc_dist(c) {
         let d1 = Math.sqrt(Math.pow(c[0][0]-c[2][0], 2)+Math.pow(c[0][1]-c[2][1], 2));
@@ -49,13 +70,13 @@ class Map {
     updateText() {
         if (this.curData == null) return;
         let lCntry = this.curData.features.filter(function (d) {
-            if (this.path.area(d) < 400 / this.curScale) return false;
+            if (this.path.area(d) < 400 / this.curScale.k) return false;
             let box = this.getPath(d);
             let l = 0.9*this.calc_dist(box);
             if ("NAME" in d.properties){
                 let str = d.properties.NAME;
                 let w = str.length;
-                return l/w > 4 / this.curScale;
+                return l/w > 4 / this.curScale.k;
             }
             return false;
         }.bind(this));
@@ -177,47 +198,8 @@ class Map {
 
                 this.updateText();
 
-           
-
-                //this.arrangeLabels();
-
             }.bind(this));
     }
 
-    arrangeLabels() {
-        var move = 1;
-        console.log(d3.select("#map").selectAll("text"));
-        while(move > 0) {
-            move = 0;
-            d3.select("#map").selectAll("text")
-                .each(function() {
-                    var that = this,
-                    a = this.getBoundingClientRect();
-                    d3.select("#map").selectAll("text")
-                        .each(function() {
-                            if(this != that) {
-                                var b = this.getBoundingClientRect();
-                                if((Math.abs(a.left - b.left) * 2 < (a.width + b.width)) &&
-                                        (Math.abs(a.top - b.top) * 2 < (a.height + b.height))) {
-                                    // overlap, move labels
-                                    var dx = (Math.max(0, a.right - b.left) +
-                                            Math.min(0, a.left - b.right)) * 0.001,
-                                    dy = (Math.max(0, a.bottom - b.top) +
-                                            Math.min(0, a.top - b.bottom)) * 0.002,
-                                    tt = d3.select(this).attr("transform"),
-                                    to = d3.select(that).attr("transform");
-                                    move += Math.abs(dx) + Math.abs(dy);
-
-                                    let ton = " translate(" + dx + "," + dy + ")";
-                                    let ttn = " translate(" + -dx + "," + -dy + ")";
-                                    d3.select(this).attr("transform", tt + ttn);
-                                    d3.select(that).attr("transform", to + ton);
-                                    a = this.getBoundingClientRect();
-                                }
-                            }
-                        });
-                });
-        }
-    }
 }
 

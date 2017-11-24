@@ -1,6 +1,24 @@
+#float-button-group {
+    position:fixed;
+    left:150px;
+	top:100px;
+    opacity:0.5;
+}
+
+#float-button-group:hover {
+    opacity:1;
+}
+
+.mapContainer {
+    background: skyblue;
+    width: 965px;
+    height: 505px;
+    border: 3px solid steelblue;
+}
+
 .slider.slider-horizontal {
-  width: 90%;
-  height: 20px;
+    width: 90%;
+    height: 20px;
 }
 
 .yearRangeText {
@@ -20,63 +38,63 @@
     width: 80%;
 }
 #yearSlider .slider-track-high {
-	background: 	#D3D3D3;
+    background: 	#D3D3D3;
 }
 
 #yearSlider .slider-track-low {
-	background: 	#D3D3D3;
+    background: 	#D3D3D3;
 }
 
 #yearSlider .slider-selection {
-	background: #aad4e5;
+    background: #aad4e5;
 }
 
 #countryIcon {
     border-radius: 50%;
-	width: 20%;
+    width: 20%;
 }
 
 .div-board {
     border: 2px solid #d9d9d9;
     border-radius: 5px;
-	margin-top: 5px;
+    margin-top: 5px;
     margin-bottom: 5px;	
 }
 
 
 .ticks {
-  font: 10px sans-serif;
+    font: 10px sans-serif;
 }
 
 .track,
 .track-inset,
 .track-overlay {
-  stroke-linecap: round;
+    stroke-linecap: round;
 }
 
 .track {
-  stroke: #000;
-  stroke-opacity: 0.3;
-  stroke-width: 10px;
+    stroke: #000;
+    stroke-opacity: 0.3;
+    stroke-width: 10px;
 }
 
 .track-inset {
-  stroke: #ddd;
-  stroke-width: 8px;
+    stroke: #ddd;
+    stroke-width: 8px;
 }
 
 .track-overlay {
-  pointer-events: stroke;
-  stroke-width: 50px;
-  stroke: transparent;
-  cursor: crosshair;
+    pointer-events: stroke;
+    stroke-width: 50px;
+    stroke: transparent;
+    cursor: crosshair;
 }
 
 .handle {
-  fill: #fff;
-  stroke: #000;
-  stroke-opacity: 0.5;
-  stroke-width: 1.25px;
+    fill: #fff;
+    stroke: #000;
+    stroke-opacity: 0.5;
+    stroke-width: 1.25px;
 }
 
 .countries {
@@ -138,18 +156,18 @@
     font-family: "Arial Black";
 }
 .focus circle {
-  fill: red;
+    fill: red;
 }
 .focus rect {
-  fill: yellow;
+    fill: yellow;
 }
 .focus text {
     font-size: 15px;
     font-weight: bold;
 }
 .overlay {
-  fill: none;
-  pointer-events: all;
+    fill: none;
+    pointer-events: all;
 }
 
 /* Creates a small triangle extender for the tooltip */
@@ -199,8 +217,8 @@
 }
 
 .zoom {
-  fill: none;
-  pointer-events: all;
+    fill: none;
+    pointer-events: all;
 }
 
 
@@ -232,5 +250,5 @@
 }
 
 .disabled {
-  fill-opacity: 0;
+    fill-opacity: 0;
 }
