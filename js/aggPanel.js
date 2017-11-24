@@ -41,6 +41,23 @@ class AggPanel {
         this.endYear = endYear;
         this.aggRow.select("#yearRangeStartText").text(this.startYear);
         this.aggRow.select("#yearRangeEndText").text(this.endYear);
+        this.aggList.rows().every( function (outerThis) {
+            return function (rowIdx, tableLoop, rowLoop ) {
+                let countryName = this.data()[0];
+                let wd = window.wdmap[countryName];
+                let datStart = queryData(window.dataset.pop, wd, outerThis.startYear, outerThis.startYear);
+                datStart = (datStart.length == 0 ? "N/A" : datStart[0].stats);
+                let datEnd = queryData(window.dataset.pop, wd, outerThis.endYear, outerThis.endYear);
+                datEnd = (datEnd.length == 0 ? "N/A" : datEnd[0].stats);
+                let data = [countryName, datStart, datEnd];
+                this.data(data);
+            }
+        }(this));
+        let h1 = $(this.aggList.column(1).header());
+        h1.html(startYear)
+        let h2 = $(this.aggList.column(2).header());
+        h2.html(endYear)
+        this.aggList.draw();
     }
 
 	updateAgg(countryName, wd) {
@@ -49,6 +66,7 @@ class AggPanel {
 		this.selectedCountry.push(countryName);
 		this.currentSelectedCoutry = this.selectedCountry.slice();
 		this.selectedwd.push(wd);
+        window.wdmap[countryName] = wd;
 		let dataset = {}, popMin = -1, popMax = -1, extent = 0;
 		let datStart = queryData(window.dataset.pop, wd, this.startYear, this.startYear);
         datStart = (datStart.length == 0 ? "N/A" : datStart[0].stats);
@@ -56,7 +74,7 @@ class AggPanel {
         datEnd = (datEnd.length == 0 ? "N/A" : datEnd[0].stats);
         this.aggList.row.add([countryName, datStart, datEnd]).draw(false);
 		this.selectedCountry.forEach(function(country, i){
-		this.clicked.push(0);
+		    this.clicked.push(0);
 			dataset[country] = queryData(window.dataset.pop, this.selectedwd[i], this.startYear, this.endYear);
 			extent = d3.extent(dataset[country], d => +d.stats);
 			if (i == 0) {
