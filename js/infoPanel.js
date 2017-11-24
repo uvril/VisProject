@@ -1,21 +1,22 @@
 class InfoPanel {
     constructor(aggPanel) {
         let contentObj = d3.select("#details");
+        this.contentObj = contentObj;
         this.svgBounds = contentObj.select(".tab-content").node().getBoundingClientRect();
         console.log(this.svgBounds);
         this.svgWidth = this.svgBounds.width;
         this.svgHeight = this.svgBounds.width;
         this.hdiHeight = 200;
         this.hdiLeftMargin = 20;
-        this.humanIndex = d3.select("#humanIndex")
+        this.humanIndex = this.contentObj.select("#humanIndex")
             .attr("width", this.svgWidth)
             .attr("height", this.hdiHeight);
         this.popHeight = 260;
-        this.population = d3.select("#population")
+        this.population = this.contentObj.select("#population")
             .attr("width", this.svgWidth)
             .attr("height", this.popHeight);
-        this.infoTable = d3.select("#basicInfoTable");
-        this.wikipage = d3.select("#wikipage");
+        this.infoTable = this.contentObj.select("#basicInfoTable");
+        this.wikipage = this.contentObj.select("#wikipage");
         this.wikipage
             .attr("height", this.svgHeight)
             .attr("width", this.svgWidth);
@@ -163,15 +164,15 @@ class InfoPanel {
     updateInfo(oneCountryInfo, year) {
         console.log(oneCountryInfo);
         let wd = +oneCountryInfo.wikidata;
-        console.log(wd);
-        d3.selectAll("#countryNameLabel").text(oneCountryInfo.NAME);
+        this.contentObj.selectAll("#countryNameLabel").text(oneCountryInfo.NAME);
+        this.contentObj.select("#countryIcon").attr("src", "icons/" + wd + ".png");
         if (wd < 0) {
-            d3.select("#countryInfo").style("visibility", "hidden");
+            this.contentObj.select("#countryInfo").style("visibility", "hidden");
             this.wikipage.attr("src", "");
             return;
         }
         else {
-            d3.select("#countryInfo").style("visibility", "visible");
+            this.contentObj.select("#countryInfo").style("visibility", "visible");
         }
         d3.json("data/stat/" + wd + ".json", function(err, data) { 
             this.wikipage.attr("src", data.wiki+"?printable=yes");
@@ -200,25 +201,25 @@ class InfoPanel {
                 let popBotMargin = 30;
                 let popRightMargin = 20;
                 let popLeftMargin = 40;
-                d3.select("#popShow").attr("transform", "translate(" + popLeftMargin + "," + popTopMargin + ")");
+                this.contentObj.select("#popShow").attr("transform", "translate(" + popLeftMargin + "," + popTopMargin + ")");
                 //population
 
-                d3.select("#population")
+                this.contentObj.select("#population")
                     .style("display", null);
-                this.lineChartGenerator(d3.select("#popShow"), queryData(window.dataset.pop, wd, 1960, 2015), this.svgWidth-popRightMargin-popLeftMargin, 
+                this.lineChartGenerator(this.contentObj.select("#popShow"), queryData(window.dataset.pop, wd, 1960, 2015), this.svgWidth-popRightMargin-popLeftMargin, 
                     this.popHeight-popTopMargin-popBotMargin, "steelblue", popTopMargin, popLeftMargin, "population");
 
                 //population focus point               
             }
             else {
-                d3.select("#popTitle")
+                this.contentObj.select("#popTitle")
                     .html("");
-                d3.select("#population")
+                this.contentObj.select("#population")
                     .style("display", "none");
             }
 
             if (data.hdi.length != 0) {
-                d3.select("#humanIndex")
+                this.contentObj.select("#humanIndex")
                     .style("display", null);
                 //humanIndex tip
                 let hdiTip = d3.tip()
@@ -237,13 +238,13 @@ class InfoPanel {
                     .range([this.hdiLeftMargin, this.svgWidth-this.hdiLeftMargin])
                     .paddingInner(0.01);
 
-                d3.select("#humanIndex")
+                this.contentObj.select("#humanIndex")
                     .html("");
                 //humanIndex Title
                 let hdiInterval = 100;
                 let hdilegendX = 10;
                 let hdilegendY = 10;
-                d3.select("#humanIndex")
+                this.contentObj.select("#humanIndex")
                     .selectAll("text")
                     .data(d3.extent(data.hdi, d=>+d.year))
                     .enter().append("text")
@@ -252,11 +253,11 @@ class InfoPanel {
                     .attr("text-anchor", "middle")
                     .text(d=>d);
                 //humanIndex Visualization
-                d3.select("#humanIndex")
+                this.contentObj.select("#humanIndex")
                     .append("g")
                     .attr("id", "indexShow")
                     .call(hdiTip);
-                d3.select("#indexShow")
+                this.contentObj.select("#indexShow")
                     .selectAll("rect")
                     .data(data.hdi)
                     .enter().append("rect")
@@ -267,11 +268,11 @@ class InfoPanel {
                     .style("fill", d=>this.colorScale(+d.stats))
                     .on("mouseover", hdiTip.show)
                     .on("mouseout", hdiTip.hide);
-                d3.select("#humanIndex")
+                this.contentObj.select("#humanIndex")
                     .append("g")
                     .attr("id", "scaleShow");
                 let scaleshow = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0];
-                d3.select("#scaleShow")
+                this.contentObj.select("#scaleShow")
                     .selectAll("rect")
                     .data(scaleshow)
                     .enter().append("rect")
@@ -280,7 +281,7 @@ class InfoPanel {
                     .attr("width", 50)
                     .attr("height", 10)
                     .style("fill", d=>this.colorScale(d));   
-                d3.select("#scaleShow")
+                this.contentObj.select("#scaleShow")
                     .selectAll("text")
                     .data(scaleshow)
                     .enter().append("text")
@@ -290,12 +291,12 @@ class InfoPanel {
                     .attr("text-anchor", "middle");                  
             }
             else {
-                d3.select("#indexTitle")
+                this.contentObj.select("#indexTitle")
                     .html("");
-                d3.select("#humanIndex")
+                this.contentObj.select("#humanIndex")
                     .style("display", "none");                   
             }
-            d3.select("#add-button")
+            this.contentObj.select("#add-button")
                 .on("click", function(){
                     this.aggPanel.updateAgg(oneCountryInfo.NAME, wd, 1960, 2015);
                 }.bind(this));
