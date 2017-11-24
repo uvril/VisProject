@@ -46,6 +46,9 @@ class AggPanel {
         $("#yearRange").on("slide", function(event) {
             this.updateRange(event.value[0], event.value[1]);
         }.bind(this));
+        this.trans = d3.transition()
+            .duration(1000)
+            .ease(d3.easeLinear);
         this.updateRange(1960, 2016);
         this.currentSelectedCoutry = []; 
         this.clicked = [];	
@@ -59,6 +62,7 @@ class AggPanel {
             .ticks(5)
             .tickFormat(d3.format(".2s"));		
 
+
 	}
 
     updateRange(startYear, endYear) {
@@ -67,6 +71,7 @@ class AggPanel {
         this.xScale.domain([startYear, endYear]);
         this.aggRow.select("#yearRangeStartText").text(this.startYear);
         this.aggRow.select("#yearRangeEndText").text(this.endYear);
+        this.dataset = [];
         this.aggList.rows().every( function (outerThis) {
             return function (rowIdx, tableLoop, rowLoop ) {
                 let countryName = this.data()[0];
@@ -77,6 +82,7 @@ class AggPanel {
                 datEnd = (datEnd.length == 0 ? "N/A" : datEnd[0].stats);
                 let data = [countryName, datStart, datEnd];
                 this.data(data);
+			    outerThis.dataset.push(queryData(window.dataset.pop, wd, outerThis.startYear, outerThis.endYear));
             }
         }(this));
         let h1 = $(this.aggList.column(1).header());
@@ -84,7 +90,7 @@ class AggPanel {
         let h2 = $(this.aggList.column(2).header());
         h2.html(endYear)
         this.aggList.draw();
-		//this.update();
+		this.update();
     }
 
 	insertCountry(countryName, wd) {
@@ -115,14 +121,14 @@ class AggPanel {
 	}
 	
 	update() {
+        if (this.dataset.length == 0) {
+            return;
+        }
         let colors = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b", "#e377c2", "#7f7f7f", "#bcbd22", "#17becf"];
         let lineGenerator = d3.line()
             .x(d=>this.xScale(+d.year))
             .y(d=>this.yScale(+d.stats));
 //initial setting
-		this.pathG.html("");
-		this.circleG.html("");
-		this.legend.html("");
 		this.selectedLine = null;
 //add lines and legends
 		let cnt = 0;
@@ -139,61 +145,64 @@ class AggPanel {
 		let pathSel = this.pathG.selectAll("path").data(this.dataset);
 		pathSel.exit().remove();
 		pathSel = pathSel.enter().append("path").merge(pathSel);
-			pathSel
-			.attr("d", d => lineGenerator(d))
-			.attr("id", (d, i) => "path"+i.toString())
+			pathSel.transition(this.trans)
+            .attr("d", d => lineGenerator(d))
 			.style("fill", "none")
-			.style("stroke", colors[cnt])
+			.style("stroke", (d, i) => colors[i])
 			.style("stroke-width", lineThin)
-			.style("opacity", "0.5")
+			.style("opacity", "0.5");
+        pathSel
+			.attr("id", (d, i) => "path"+i.toString())
 			.on("mouseover", function(){
 				setStroke(d3.event.target.id, (legendSmall+0.5)+"px", (lineThin+0.5)+"px", "1", legendFontBig+"px");
 			}.bind(this))
 			.on("mouseout", function(){
 				setStroke(d3.event.target.id, legendSmall+"px", lineThin+"px", "0.5", legendFontSmall+"px");
 			}.bind(this));
+        
 			
 		let cirGSel = this.circleG.selectAll("g").data(this.dataset);
 		cirGSel.exit().remove();
 		cirGSel = cirGSel.enter().append("g").merge(cirGSel);
-		cirGSel
-	        	.attr("id", (d, i) => "cpath"+i.toString())
-				.selectAll("circle")
-				.data(d => d)
-	        	.enter().append("circle")
-	        	.attr("cx", d=>this.xScale(+d.year))
+	    cirGSel.attr("id", (d, i) => "cpath"+i.toString())
+                .attr("data-cnt", (d, i) => i);
+		let cirSel = cirGSel.selectAll("circle").data(d => d);
+        cirSel.exit().remove();
+		cirSel = cirSel.enter().append("circle").merge(cirSel);
+	    cirSel.transition(this.trans).attr("cx", d=>this.xScale(+d.year))
 	        	.attr("cy", d=>this.yScale(+d.stats))
 	        	.attr("r", 2)
-	        	.style("fill", colors[cnt])
-	        	.on("mouseover", function(setStroke){
+                .style("fill", function (d, i) {
+                    let cnt = this.parentNode.getAttribute("data-cnt");
+                    return colors[cnt];
+                });
+        cirSel
+	        	.on("mouseover", function(setStroke, trans){
 					return function() {
 						let pathid = this.parentNode.id.slice(1);
 						d3.select(this)
-							.transition()
-							.duration(500)
+							.transition(trans)
 							.attr("r", 4)
 							.style("opacity", 0.5);
 						setStroke(pathid, (legendSmall+0.5)+"px", (lineThin+0.5)+"px", "1", legendFontBig+"px");
 					}
-	        	}(setStroke))
-	        	.on("mouseout", function(setStroke){
+	        	}(setStroke, this.trans))
+	        	.on("mouseout", function(setStroke, trans){
 					return function() {
 						let pathid = this.parentNode.id.slice(1);
 						d3.select(this)
-							.transition()
-							.duration(500)
+							.transition(trans)
 							.attr("r", 2)
 							.style("opacity", 1);
 						setStroke(pathid, legendSmall+"px", lineThin+"px", "0.5", legendFontSmall+"px");	
 					}
-	        	}(setStroke));				
+	        	}(setStroke, this.trans));			
 				
 		/*
 		for (let i in this.dataset) {
 
 
-	      
-	        	}.bind(this));
+	     
 
         	this.legend.append("g")
         		.append("text")
@@ -267,16 +276,13 @@ class AggPanel {
 	}
 
 	updateAxis() {
-
-				
         this.xAxisG
-
             .call(function (g) {
 			  g.call(this.xAxis);
 			  g.select(".domain").remove();
 			}.bind(this));
         this.yAxisG
-            .transition().duration(1500)
+            .transition(this.trans)
             .call(function (g) {
 			  var s = g.selection ? g.selection() : g;
 			  g.call(this.yAxis);
