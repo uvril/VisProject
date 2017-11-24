@@ -1,35 +1,57 @@
 class AggPanel {
 	constructor	() {
-		this.svgBounds = d3.select("#aggPanelDiv").node().getBoundingClientRect();
+        let aggRow = d3.select("#aggPanelRow");
+        this.aggRow = aggRow;
+        this.aggList = $('#aggPanelList').DataTable({paging:false, searching:false, info:false});
+		this.svgBounds = aggRow.select("#aggPanelDiv").node().getBoundingClientRect();
         this.svgWidth = this.svgBounds.width;
         this.svgHeight = this.svgWidth/875*500;
-        let aggSvg = d3.select("#aggPanel")
+        let aggSvg = aggRow.select("#aggPanel")
             .attr("width", this.svgWidth)
             .attr("height", this.svgHeight);
         this.panelWidth = this.svgWidth*0.8;
         this.panelHeight = this.svgHeight;
         this.panelMargin = 35;
-        this.panel = d3.select("#aggPanel")
+        this.panel = aggSvg
         	.append("g")
         	.attr("id", "panel")
             .attr("transform", "translate(" + this.panelWidth*0.01 + ", 0)");
-        this.legend = d3.select("#aggPanel")
+        this.legend = aggSvg
         	.append("g")
         	.attr("id", "legend")
             .attr("transform", "translate(" + (this.panelWidth*1.02-this.panelMargin) + ", 0)");
         this.selectedLine = null;
         this.selectedCountry = [];
         this.selectedwd = [];
+        this.startYear = 0;
+        this.endYear = 0;
+        $("#yearRange").slider({ id: "yearSlider", min: 1960, max: 2016, range: true, value: [1960, 2016] });
+        $("#yearRange").on("slide", function(event) {
+            this.updateRange(event.value[0], event.value[1]);
+        }.bind(this));
+        this.updateRange(1960, 2016);
 	}
 
-	updateAgg(countryName, wd, startYear, endYear) {
+    updateRange(startYear, endYear) {
+        this.startYear = startYear;
+        this.endYear = endYear;
+        this.aggRow.select("#yearRangeStartText").text(this.startYear);
+        this.aggRow.select("#yearRangeEndText").text(this.endYear);
+    }
+
+	updateAgg(countryName, wd) {
 		let index = this.selectedCountry.indexOf(countryName);
 		if (index != -1) return;
 		this.selectedCountry.push(countryName);
 		this.selectedwd.push(wd);
 		let dataset = {}, popMin = -1, popMax = -1, extent = 0;
+		let datStart = queryData(window.dataset.pop, wd, this.startYear, this.startYear);
+        datStart = (datStart.length == 0 ? "N/A" : datStart[0].stats);
+		let datEnd = queryData(window.dataset.pop, wd, this.endYear, this.endYear);
+        datEnd = (datEnd.length == 0 ? "N/A" : datEnd[0].stats);
+        this.aggList.row.add([countryName, datStart, datEnd]).draw(false);
 		this.selectedCountry.forEach(function(country, i){
-			dataset[country] = queryData(window.dataset.pop, this.selectedwd[i], startYear, endYear);
+			dataset[country] = queryData(window.dataset.pop, this.selectedwd[i], this.startYear, this.endYear);
 			extent = d3.extent(dataset[country], d => +d.stats);
 			if (i == 0) {
 				popMin = extent[0];
@@ -42,7 +64,7 @@ class AggPanel {
 		}.bind(this));
 		console.log(dataset);
         let xScale = d3.scaleLinear()
-            .domain([startYear, endYear])
+            .domain([this.startYear, this.endYear])
             .range([this.panelMargin, this.panelWidth-this.panelMargin]);
         let yScale = d3.scaleLinear()
             .domain([popMin, popMax])

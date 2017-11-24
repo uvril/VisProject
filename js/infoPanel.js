@@ -296,9 +296,9 @@ class InfoPanel {
                 this.contentObj.select("#humanIndex")
                     .style("display", "none");                   
             }
-            this.contentObj.select("#add-button")
+            d3.select("#add-button")
                 .on("click", function(){
-                    this.aggPanel.updateAgg(oneCountryInfo.NAME, wd, 1960, 2015);
+                    this.aggPanel.updateAgg(oneCountryInfo.NAME, wd);
                 }.bind(this));
         }.bind(this));
 
