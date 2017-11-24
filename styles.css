@@ -1,3 +1,8 @@
+.slider.slider-horizontal {
+  width: 90%;
+  height: 20px;
+}
+
 .yearRangeText {
     box-sizing: border-box;
     float: left;

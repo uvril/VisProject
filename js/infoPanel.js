@@ -298,7 +298,7 @@ class InfoPanel {
             }
             d3.select("#add-button")
                 .on("click", function(){
-                    this.aggPanel.updateAgg(oneCountryInfo.NAME, wd);
+                    this.aggPanel.insertCountry(oneCountryInfo.NAME, wd);
                 }.bind(this));
         }.bind(this));
 

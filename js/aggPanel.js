@@ -9,6 +9,12 @@ class AggPanel {
         let aggSvg = aggRow.select("#aggPanel")
             .attr("width", this.svgWidth)
             .attr("height", this.svgHeight);
+        this.selectedLine = null;
+        this.selectedCountry = [];
+        this.selectedwd = [];
+		this.dataset = [];
+        this.startYear = 1960;
+        this.endYear = 2016;						
         this.panelWidth = this.svgWidth*0.8;
         this.panelHeight = this.svgHeight;
         this.panelMargin = 35;
@@ -16,29 +22,49 @@ class AggPanel {
         	.append("g")
         	.attr("id", "panel")
             .attr("transform", "translate(" + this.panelWidth*0.01 + ", 0)");
+        this.xScale = d3.scaleLinear()
+            .domain([this.startYear, this.endYear])
+            .range([this.panelMargin, this.panelWidth-this.panelMargin]);
+        this.yScale = d3.scaleLinear()
+            .domain([0, 1000])
+            .range([this.panelHeight-this.panelMargin, this.panelMargin]).nice(); 				
+		this.xAxisG = this.panel.append("g")
+		            .attr("transform", "translate(0, " + this.yScale.range()[0]+")")
+					.style("fill", "none")
+					.style("stroke", "black");
+		this.yAxisG = this.panel.append("g")
+		        	.attr("transform", "translate(" + this.xScale.range()[0] +", 0)")
+					.style("fill", "none")
+					.style("stroke", "black");
+		this.pathG = this.panel.append("g");
+		this.circleG = this.panel.append("g");			
         this.legend = aggSvg
         	.append("g")
         	.attr("id", "legend")
             .attr("transform", "translate(" + (this.panelWidth*1.02-this.panelMargin) + ", 0)");
-        this.selectedLine = null;
-        this.selectedCountry = [];
-        this.selectedwd = [];
-        this.startYear = 0;
-        this.endYear = 0;
         $("#yearRange").slider({ id: "yearSlider", min: 1960, max: 2016, range: true, value: [1960, 2016] });
         $("#yearRange").on("slide", function(event) {
             this.updateRange(event.value[0], event.value[1]);
         }.bind(this));
         this.updateRange(1960, 2016);
         this.currentSelectedCoutry = []; 
-        this.clicked = [];
+        this.clicked = [];	
         this.xAxis = d3.axisBottom();
-        this.yAxis = d3.axisLeft();
+        this.yAxis = d3.axisRight();
+        this.xAxis.scale(this.xScale)
+            .ticks(5)
+            .tickFormat(d3.format("d"));
+        this.yAxis.scale(this.yScale)
+			.tickSize(this.svgWidth)
+            .ticks(5)
+            .tickFormat(d3.format(".2s"));		
+
 	}
 
     updateRange(startYear, endYear) {
         this.startYear = startYear;
         this.endYear = endYear;
+        this.xScale.domain([startYear, endYear]);
         this.aggRow.select("#yearRangeStartText").text(this.startYear);
         this.aggRow.select("#yearRangeEndText").text(this.endYear);
         this.aggList.rows().every( function (outerThis) {
@@ -58,53 +84,50 @@ class AggPanel {
         let h2 = $(this.aggList.column(2).header());
         h2.html(endYear)
         this.aggList.draw();
+		//this.update();
     }
 
-	updateAgg(countryName, wd) {
+	insertCountry(countryName, wd) {
 		let index = this.selectedCountry.indexOf(countryName);
 		if (index != -1) return;
 		this.selectedCountry.push(countryName);
 		this.currentSelectedCoutry = this.selectedCountry.slice();
 		this.selectedwd.push(wd);
         window.wdmap[countryName] = wd;
-		let dataset = {}, popMin = -1, popMax = -1, extent = 0;
+		this.dataset = []
+		let popMin = 99999999999, popMax = -1, extent = 0;
 		let datStart = queryData(window.dataset.pop, wd, this.startYear, this.startYear);
         datStart = (datStart.length == 0 ? "N/A" : datStart[0].stats);
 		let datEnd = queryData(window.dataset.pop, wd, this.endYear, this.endYear);
         datEnd = (datEnd.length == 0 ? "N/A" : datEnd[0].stats);
-        this.aggList.row.add([countryName, datStart, datEnd]).draw(false);
+        this.aggList.row.add([countryName, datStart, datEnd]).draw();
 		this.selectedCountry.forEach(function(country, i){
 		    this.clicked.push(0);
-			dataset[country] = queryData(window.dataset.pop, this.selectedwd[i], this.startYear, this.endYear);
-			extent = d3.extent(dataset[country], d => +d.stats);
-			if (i == 0) {
-				popMin = extent[0];
-				popMax = extent[1];
-			}
-			else {
-				popMin = extent[0] < popMin? extent[0] : popMin;
-				popMax = extent[1] > popMax? extent[1] : popMax;
-			}
+			let data = queryData(window.dataset.pop, this.selectedwd[i], this.startYear, this.endYear);
+			this.dataset.push(data);
+			extent = d3.extent(data, d => +d.stats);
+			popMin = extent[0] < popMin? extent[0] : popMin;
+			popMax = extent[1] > popMax? extent[1] : popMax;
 		}.bind(this));
-		console.log(dataset);
-        let xScale = d3.scaleLinear()
-            .domain([this.startYear, this.endYear])
-            .range([this.panelMargin, this.panelWidth-this.panelMargin]);
-        let yScale = d3.scaleLinear()
-            .domain([popMin, popMax])
-            .range([this.panelHeight-this.panelMargin, this.panelMargin]); 
+		console.log(this.dataset);
+        this.yScale.domain([popMin, popMax]).nice(); 
+		this.update();
+	}
+	
+	update() {
         let colors = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b", "#e377c2", "#7f7f7f", "#bcbd22", "#17becf"];
         let lineGenerator = d3.line()
-            .x(d=>xScale(+d.year))
-            .y(d=>yScale(+d.stats));
+            .x(d=>this.xScale(+d.year))
+            .y(d=>this.yScale(+d.stats));
 //initial setting
-		this.panel.html("");
+		this.pathG.html("");
+		this.circleG.html("");
 		this.legend.html("");
 		this.selectedLine = null;
 //add lines and legends
 		let cnt = 0;
 		let setStroke = function(id, legendSize, lineSize, lineOpacity, legendFontSize) {
-			d3.select("#"+id)
+			d3.select("#"+id.toString())
 				.style("stroke-width", lineSize)
 				.style("opacity", lineOpacity);
     		d3.select("#"+id+"_legend")
@@ -112,46 +135,64 @@ class AggPanel {
     			.style("font-size", legendFontSize);
 		};
 		let lineThick = 2, lineThin = 1, legendBig = 2, legendSmall = 1, legendFontBig = 10, legendFontSmall = 8;
-		for (let i in dataset) {
-			this.panel.append("path")
-	        	.attr("d", lineGenerator(dataset[i]))
-	        	.attr("id", i.replace(/[^a-zA-Z]/g, ""))
-	        	.style("fill", "none")
-	        	.style("stroke", colors[cnt])
-	        	.style("stroke-width", lineThin)
-	        	.style("opacity", "0.5")
-	        	.on("mouseover", function(){
-	        		setStroke(d3.event.target.id, (legendSmall+0.5)+"px", (lineThin+0.5)+"px", "1", legendFontBig+"px");
-	        	}.bind(this))
-	        	.on("mouseout", function(){
-	        		setStroke(d3.event.target.id, legendSmall+"px", lineThin+"px", "0.5", legendFontSmall+"px");
-	        	}.bind(this));
 
-	        this.panel.append("g")
-	        	.attr("id", i.replace(/[^a-zA-Z]/g, "")+"_circles")
-	        	.selectAll("circle")
-	        	.data(dataset[i])
+		let pathSel = this.pathG.selectAll("path").data(this.dataset);
+		pathSel.exit().remove();
+		pathSel = pathSel.enter().append("path").merge(pathSel);
+			pathSel
+			.attr("d", d => lineGenerator(d))
+			.attr("id", (d, i) => "path"+i.toString())
+			.style("fill", "none")
+			.style("stroke", colors[cnt])
+			.style("stroke-width", lineThin)
+			.style("opacity", "0.5")
+			.on("mouseover", function(){
+				setStroke(d3.event.target.id, (legendSmall+0.5)+"px", (lineThin+0.5)+"px", "1", legendFontBig+"px");
+			}.bind(this))
+			.on("mouseout", function(){
+				setStroke(d3.event.target.id, legendSmall+"px", lineThin+"px", "0.5", legendFontSmall+"px");
+			}.bind(this));
+			
+		let cirGSel = this.circleG.selectAll("g").data(this.dataset);
+		cirGSel.exit().remove();
+		cirGSel = cirGSel.enter().append("g").merge(cirGSel);
+		cirGSel
+	        	.attr("id", (d, i) => "cpath"+i.toString())
+				.selectAll("circle")
+				.data(d => d)
 	        	.enter().append("circle")
-	        	.attr("id", d=>i.replace(/[^a-zA-Z]/g, "")+"_"+(+d.year))
-	        	.attr("cx", d=>xScale(+d.year))
-	        	.attr("cy", d=>yScale(+d.stats))
+	        	.attr("cx", d=>this.xScale(+d.year))
+	        	.attr("cy", d=>this.yScale(+d.stats))
 	        	.attr("r", 2)
 	        	.style("fill", colors[cnt])
-	        	.on("mouseover", function(){
-	        		d3.select("#"+d3.event.target.id)
-						.transition()
-						.duration(500)
-						.attr("r", 4)
-						.style("opacity", 0.5);
-	        		setStroke(d3.event.target.id.split("_")[0], (legendSmall+0.5)+"px", (lineThin+0.5)+"px", "1", legendFontBig+"px");
-	        	}.bind(this))
-	        	.on("mouseout", function(){
-	        		d3.select("#"+d3.event.target.id)
-						.transition()
-						.duration(500)
-						.attr("r", 2)
-						.style("opacity", 1);
-	        		setStroke(d3.event.target.id.split("_")[0], legendSmall+"px", lineThin+"px", "0.5", legendFontSmall+"px");
+	        	.on("mouseover", function(setStroke){
+					return function() {
+						let pathid = this.parentNode.id.slice(1);
+						d3.select(this)
+							.transition()
+							.duration(500)
+							.attr("r", 4)
+							.style("opacity", 0.5);
+						setStroke(pathid, (legendSmall+0.5)+"px", (lineThin+0.5)+"px", "1", legendFontBig+"px");
+					}
+	        	}(setStroke))
+	        	.on("mouseout", function(setStroke){
+					return function() {
+						let pathid = this.parentNode.id.slice(1);
+						d3.select(this)
+							.transition()
+							.duration(500)
+							.attr("r", 2)
+							.style("opacity", 1);
+						setStroke(pathid, legendSmall+"px", lineThin+"px", "0.5", legendFontSmall+"px");	
+					}
+	        	}(setStroke));				
+				
+		/*
+		for (let i in this.dataset) {
+
+
+	      
 	        	}.bind(this));
 
         	this.legend.append("g")
@@ -184,11 +225,11 @@ class AggPanel {
         		.on("click", function(){
         			let id  = d3.event.target.id.split("_")[0];
         			console.log(d3.event.target.id.split("_"), "!!!!");
-        			d3.select("#"+d3.event.target.id)
+        			this.aggRow.select("#"+d3.event.target.id)
         				.style("fill", 1 == 1-this.clicked[+d3.event.target.id.split("_")[2]]? "white":colors[d3.event.target.id.split("_")[2]]);
-        			d3.select("#"+id)
+        			this.aggRow.select("#"+id)
         				.style("display", 1 == 1-this.clicked[+d3.event.target.id.split("_")[2]]? "none": null);
-        			d3.select("#"+id+"_circles")
+        			this.aggRow.select("#"+id+"_circles")
         				.style("display", 1 == 1-(this.clicked[+d3.event.target.id.split("_")[2]])? "none": null);
         			if (1 == 1-(this.clicked[+d3.event.target.id.split("_")[2]])) {
         				let lineNo = +d3.event.target.id.split("_")[2];
@@ -199,13 +240,14 @@ class AggPanel {
         		}.bind(this));
         	cnt+=1;
 		};
-		this.updateAxis(xScale, yScale);
+		*/
+		this.updateAxis();
 	}
 
 	updateCurrentLine(startYear, endYear) {
 		let popMin = -1, popMax = -1, extent = 0;
 		this.currentSelectedCoutry.forEach(function(country, i){
-			extent = d3.extent(dataset[country], d => +d.stats);
+			extent = d3.extent(this.dataset[country], d => +d.stats);
 			if (i == 0) {
 				popMin = extent[0];
 				popMax = extent[1];
@@ -224,30 +266,24 @@ class AggPanel {
         this.updateAxis(xScale, yScale);
 	}
 
-	updateAxis(xScale, yScale) {
-        this.xAxis.scale(xScale)
-            .ticks(5)
-            .tickFormat(d3.format("d"));
-        this.yAxis.scale(yScale)
-            .ticks(5)
-            .tickFormat(d3.format(".2s"));
-        this.panel.append("g")
-            .attr("transform", "translate(0, " + yScale.range()[0]+")")
-            .style("fill", "none")
-            .style("stroke", "black")
-            .call(this.xAxis);
-        this.panel.append("g")
-        	.attr("transform", "translate(" + xScale.range()[0] +", 0)")
-            .style("fill", "none")
-            .style("stroke", "black")
+	updateAxis() {
+
+				
+        this.xAxisG
+
+            .call(function (g) {
+			  g.call(this.xAxis);
+			  g.select(".domain").remove();
+			}.bind(this));
+        this.yAxisG
             .transition().duration(1500)
-            .call(this.yAxis)
-            .append("text")
-            .attr("transform", "rotate(-90)")
-            .attr("x", -this.panelMargin)
-            .attr("y", 6)
-            .attr("dy", ".71em")
-            .style("text-anchor", "end")
-            .text("pop");
+            .call(function (g) {
+			  var s = g.selection ? g.selection() : g;
+			  g.call(this.yAxis);
+			  s.select(".domain").remove();
+			  s.selectAll(".tick line").filter(Number).attr("stroke", "#777").attr("stroke-dasharray", "2,2");
+			  s.selectAll(".tick text").attr("x", 4).attr("dy", -4);
+			  if (s !== g) g.selectAll(".tick text").attrTween("x", null).attrTween("dy", null);
+			}.bind(this));
 	}
 }
