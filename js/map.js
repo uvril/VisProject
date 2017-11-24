@@ -2,8 +2,8 @@ class Map {
 
     constructor(infoPanel) {
         this.curData = null;
-        this.svgBounds = d3.select("#middleWare").node().getBoundingClientRect();
-        this.svgWidth = this.svgBounds.width;
+        this.svgBounds = d3.select("#mapContainer").node().getBoundingClientRect();
+        this.svgWidth = this.svgBounds.width - 40;
         this.svgHeight = this.svgWidth/875*500;
         this.projection = d3.geoPatterson().scale(this.svgWidth/875*130).translate([this.svgBounds.width/2, this.svgWidth/875*250]);
         this.path = d3.geoPath()
