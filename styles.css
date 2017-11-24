@@ -225,3 +225,7 @@
     stroke-width : 2px;
     r : 3;
 }
+
+.disabled {
+  fill-opacity: 0;
+}
