@@ -132,15 +132,15 @@ class AggPanel {
 		this.selectedLine = null;
 //add lines and legends
 		let cnt = 0;
-		let setStroke = function(id, legendSize, lineSize, lineOpacity, legendFontSize) {
+		let setStroke = function(id, lineSize, lineOpacity, legendFontSize) {
 			d3.select("#"+id.toString())
 				.style("stroke-width", lineSize)
 				.style("opacity", lineOpacity);
-    		d3.select("#"+id+"_legend")
-    			.style("stroke-width", legendSize)
+    		d3.select("#l" + id.toString())
+    			.select("text")
     			.style("font-size", legendFontSize);
 		};
-		let lineThick = 2, lineThin = 1, legendBig = 2, legendSmall = 1, legendFontBig = 10, legendFontSmall = 8;
+		let lineThick = 2, lineThin = 1, legendFontBig = 10, legendFontSmall = 8;
 
 		let pathSel = this.pathG.selectAll("path").data(this.dataset);
 		pathSel.exit().remove();
@@ -154,10 +154,10 @@ class AggPanel {
         pathSel
 			.attr("id", (d, i) => "path"+i.toString())
 			.on("mouseover", function(){
-				setStroke(d3.event.target.id, (legendSmall+0.5)+"px", (lineThin+0.5)+"px", "1", legendFontBig+"px");
+				setStroke(d3.event.target.id, (lineThin+0.5)+"px", "1", legendFontBig+"px");
 			}.bind(this))
 			.on("mouseout", function(){
-				setStroke(d3.event.target.id, legendSmall+"px", lineThin+"px", "0.5", legendFontSmall+"px");
+				setStroke(d3.event.target.id, lineThin+"px", "0.5", legendFontSmall+"px");
 			}.bind(this));
         
 			
@@ -184,7 +184,7 @@ class AggPanel {
 							.transition(trans)
 							.attr("r", 4)
 							.style("opacity", 0.5);
-						setStroke(pathid, (legendSmall+0.5)+"px", (lineThin+0.5)+"px", "1", legendFontBig+"px");
+						setStroke(pathid, (lineThin+0.5)+"px", "1", legendFontBig+"px");
 					}
 	        	}(setStroke, this.trans))
 	        	.on("mouseout", function(setStroke, trans){
@@ -194,10 +194,71 @@ class AggPanel {
 							.transition(trans)
 							.attr("r", 2)
 							.style("opacity", 1);
-						setStroke(pathid, legendSmall+"px", lineThin+"px", "0.5", legendFontSmall+"px");	
+						setStroke(pathid, lineThin+"px", "0.5", legendFontSmall+"px");	
 					}
 	        	}(setStroke, this.trans));			
-				
+		
+		let legendGSel = this.legend.selectAll("g").data(this.selectedCountry)
+		legendGSel.exit().remove();
+		legendGSel = legendGSel.enter().append("g").merge(legendGSel);
+		legendGSel.attr("id", (d, i) => "lpath" + i.toString())
+					.attr("data-cnt", (d,i) => i);
+
+		let lTextSel = legendGSel.selectAll("text").data(d => [d]);
+		lTextSel.exit().remove();
+		lTextSel = lTextSel.enter().append("text").merge(lTextSel);
+		lTextSel.transition(this.trans)
+				.attr("x", 10)
+				.attr("y", function() {
+                    let cnt = this.parentNode.getAttribute("data-cnt");
+                    return legendFontBig*(parseInt(cnt)+1);
+				})
+				.text(d=>d)
+				.style("stroke", function() {
+                    let cnt = this.parentNode.getAttribute("data-cnt");
+                    return colors[cnt];
+				})
+				.style("fill", "none")
+        		.style("font-size", legendFontSmall);
+	    lTextSel.on("mouseover", function(){
+	        		let pathid = this.parentNode.id.slice(1);
+	        		setStroke(pathid, (lineThin+0.5)+"px", "1", (legendFontSmall+2)+"px");
+	        	})
+	        	.on("mouseout", function(){
+	        		let pathid = this.parentNode.id.slice(1);
+	        		setStroke(pathid, lineThin+"px", "0.5", legendFontSmall+"px");
+	        	});
+
+	    let lCirSel = legendGSel.selectAll("circle").data(d => [d]);
+	    lCirSel.exit().remove();
+	    lCirSel = lCirSel.enter().append("circle").merge(lCirSel);
+	    lCirSel.transition(this.trans)
+				.attr("cx", 3)
+				.attr("cy", function() {
+                    let cnt = this.parentNode.getAttribute("data-cnt");
+                    return legendFontBig*(parseInt(cnt)+1);
+				})
+				.attr("r", 3)
+				.style("stroke", function() {
+                    let cnt = this.parentNode.getAttribute("data-cnt");
+                    return colors[cnt];
+				})
+				.style("fill", function() {
+                    let cnt = this.parentNode.getAttribute("data-cnt");
+                    return colors[cnt];
+				});
+
+        lCirSel.on("click", function(){
+        			if (this.style.fill == "white") {
+        				let cnt = this.parentNode.getAttribute("data-cnt");
+        				this.style.fill = colors[cnt];
+        			}
+        			else {
+        				this.style.fill = "white"
+        			}
+        		});
+
+	        	
 		/*
 		for (let i in this.dataset) {
 
