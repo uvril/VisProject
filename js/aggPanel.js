@@ -22,6 +22,9 @@ class AggPanel {
         	.append("g")
         	.attr("id", "panel")
             .attr("transform", "translate(" + this.panelWidth*0.01 + ", 0)");
+        this.aggtip = this.aggRow.append("div")
+        				.attr("class", "agg-tooltip")
+        				.style("opacity", 0);
         this.xScale = d3.scaleLinear()
             .domain([this.startYear, this.endYear])
             .range([this.panelMargin, this.panelWidth-this.panelMargin]);
@@ -177,26 +180,33 @@ class AggPanel {
                     return colors[cnt];
                 });
         cirSel
-	        	.on("mouseover", function(setStroke, trans){
-					return function() {
+	        	.on("mouseover", function(setStroke, trans, tip){
+					return function(d) {
 						let pathid = this.parentNode.id.slice(1);
 						d3.select(this)
-							.transition(trans)
 							.attr("r", 4)
 							.style("opacity", 0.5);
 						setStroke(pathid, (lineThin+0.5)+"px", "1", legendFontBig+"px");
+						tip.transition()
+							.duration(200)
+							.style("opacity", .9);
+						tip.html("year:"+d.year+"<br>"+"stats:"+d.stats)
+							.style("left", (d3.event.pageX) + "px")
+							.style("top", (d3.event.pageY-28) + "px");
 					}
-	        	}(setStroke, this.trans))
-	        	.on("mouseout", function(setStroke, trans){
+	        	}(setStroke, this.trans, this.aggtip))
+	        	.on("mouseout", function(setStroke, trans, tip){
 					return function() {
 						let pathid = this.parentNode.id.slice(1);
 						d3.select(this)
-							.transition(trans)
 							.attr("r", 2)
 							.style("opacity", 1);
 						setStroke(pathid, lineThin+"px", "0.5", legendFontSmall+"px");	
+						tip.transition()
+							.duration(500)
+							.style("opacity", 0);
 					}
-	        	}(setStroke, this.trans));			
+	        	}(setStroke, this.trans, this.aggtip));			
 		
 		let legendGSel = this.legend.selectAll("g").data(this.selectedCountry)
 		legendGSel.exit().remove();
@@ -257,60 +267,6 @@ class AggPanel {
         				this.style.fill = "white"
         			}
         		});
-
-	        	
-		/*
-		for (let i in this.dataset) {
-
-
-	     
-
-        	this.legend.append("g")
-        		.append("text")
-        		.attr("id", i.replace(/[^a-zA-Z]/g, "")+"_legend")
-        		.attr("x", 10)
-        		.attr("y", legendFontBig*(cnt+1))
-        		.text(i)
-        		.style("stroke", colors[cnt])
-        		.style("fill", colors[cnt])
-        		.style("font-size", legendFontSmall)
-        		.style("stroke-width", legendSmall)
-	        	.on("mouseover", function(){
-	        		let id = d3.event.target.id.split("_")[0];
-	        		setStroke(id, (legendSmall+0.5)+"px", (lineThin+0.5)+"px", "1", (legendFontSmall+2)+"px");
-	        	}.bind(this))
-	        	.on("mouseout", function(){
-	        		let id = d3.event.target.id.split("_")[0];
-	        		setStroke(id, legendSmall+"px", lineThin+"px", "0.5", legendFontSmall+"px");
-	        	}.bind(this));
-
-			this.legend.append("g")
-				.append('circle')
-				.attr("id", i.replace(/[^a-zA-Z]/g, "")+"_legendcircle_"+cnt)
-				.attr("cx", 3)
-				.attr("cy", legendFontSmall*(cnt+1))
-				.attr("r", 3)
-        		.style("stroke", colors[cnt])
-        		.style("fill", colors[cnt])
-        		.on("click", function(){
-        			let id  = d3.event.target.id.split("_")[0];
-        			console.log(d3.event.target.id.split("_"), "!!!!");
-        			this.aggRow.select("#"+d3.event.target.id)
-        				.style("fill", 1 == 1-this.clicked[+d3.event.target.id.split("_")[2]]? "white":colors[d3.event.target.id.split("_")[2]]);
-        			this.aggRow.select("#"+id)
-        				.style("display", 1 == 1-this.clicked[+d3.event.target.id.split("_")[2]]? "none": null);
-        			this.aggRow.select("#"+id+"_circles")
-        				.style("display", 1 == 1-(this.clicked[+d3.event.target.id.split("_")[2]])? "none": null);
-        			if (1 == 1-(this.clicked[+d3.event.target.id.split("_")[2]])) {
-        				let lineNo = +d3.event.target.id.split("_")[2];
-        				this.currentSelectedCoutry.splice(lineNo, lineNo+1);
-        				this.updateCurrentLine(startYear, endYear);
-        			}
-        			this.clicked[d3.event.target.id.split("_")[2]] = 1-this.clicked[d3.event.target.id.split("_")[2]];
-        		}.bind(this));
-        	cnt+=1;
-		};
-		*/
 		this.updateAxis();
 	}
 
