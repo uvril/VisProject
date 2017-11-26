@@ -54,7 +54,7 @@ class AggPanel {
         this.trans = d3.transition()
             .duration(1000)
             .ease(d3.easeLinear);
-        this.updateRange(1960, 2016);
+        //this.updateRange(1960, 2016);
         this.xAxis = d3.axisBottom();
         this.yAxis = d3.axisRight();
         this.xAxis.scale(this.xScale)
@@ -127,12 +127,15 @@ class AggPanel {
 			popMin = extent[0] < popMin? extent[0] : popMin;
 			popMax = extent[1] > popMax? extent[1] : popMax;
        	}
-       	this.yScale.domain([popMin, popMax]).nice(); 
+       	this.yScale.domain([popMin, popMax]).nice();
+       	this.xScale.domain([this.startYear, this.endYear]).nice();
+       	if (this.dataset.length == 0) {
+			this.xScale.domain([]).nice();
+			this.yScale.domain([]).nice();
+       	}
 	}
+
 	update() {
-        if (this.dataset.length == 0) {
-            return;
-        }
         let lineGenerator = d3.line()
             .x(d=>this.xScale(+d.year))
             .y(d=>this.yScale(+d.stats));
@@ -147,7 +150,7 @@ class AggPanel {
     			.style("font-size", legendFontSize);
 		};
 		let lineThick = 2, lineThin = 1, legendFontBig = 10, legendFontSmall = 8;
-
+		console.log(this.dataset);
 		let pathSel = this.pathG.selectAll("path").data(this.dataset);
 		pathSel.exit().remove();
 		pathSel = pathSel.enter().append("path").merge(pathSel);
@@ -231,11 +234,12 @@ class AggPanel {
 			.text("remove")
 			.on("click", function(outerThis) {
 				return function(d) {
-					outerThis.selectedColor[d.index] = false;
+					outerThis.selectedColor[outerThis.selectedCountry[d].index] = false;
 					delete outerThis.selectedCountry[d];
 					console.log(outerThis.selectedCountry);
 					outerThis.updateDataset();
 					outerThis.update();
+					outerThis.updateAxis();
 				}
 			}(this))
 
@@ -251,7 +255,7 @@ class AggPanel {
 	        				this.childNodes[1].style.fill = outerThis.colors[outerThis.selectedCountry[j].index];
 	        				let selectedpath = outerThis.pathG.select("#"+pathid)
 	        									.style("opacity", function(d){
-	        										d.disabled = !d.disabled;
+	        										d[1].disabled = !d[1].disabled;
 	        										return 0.5;
 	        									});
 							let selectedcircle = outerThis.circleG.select("#c"+pathid)
@@ -265,7 +269,7 @@ class AggPanel {
 	        				this.childNodes[1].style.fill = "white"
 	        				let selectedpath = outerThis.pathG.select("#"+pathid)
 	        									.style("opacity", function(d){
-	        										d.disabled = !d.disabled;
+	        										d[1].disabled = !d[1].disabled;
 	        										return 0;
 	        									});
 							let selectedcircle = outerThis.circleG.select("#c"+pathid)
@@ -280,7 +284,7 @@ class AggPanel {
         				let stats = outerThis.circleG.selectAll("circle").filter(d=>!d.disabled).data()
         								.map(d=>d.stats);
         				let selectionCir = outerThis.circleG.selectAll("circle").filter(d=>!d.disabled);
-        				let selectedPath = outerThis.pathG.selectAll("path").filter(d=>!d.disabled);
+        				let selectedPath = outerThis.pathG.selectAll("path").filter(d=>!d[1].disabled);
         				console.log(selectedPath);
         				outerThis.xScale.domain(d3.extent(years)).nice();
         				outerThis.yScale.domain(d3.extent(stats)).nice();
@@ -293,8 +297,7 @@ class AggPanel {
 		let lTextSel = legendGSel.selectAll("text").data(d => [d]);
 		lTextSel.exit().remove();
 		lTextSel = lTextSel.enter().append("text").merge(lTextSel);
-		lTextSel.transition(this.trans)
-				.attr("x", 10)
+		lTextSel.attr("x", 10)
 				.attr("y", function() {
                     let cnt = this.parentNode.getAttribute("data-cnt");
                     return legendFontBig*(parseInt(cnt)+1);
@@ -320,8 +323,7 @@ class AggPanel {
 	    let lCirSel = legendGSel.selectAll("circle").data(d => [d]);
 	    lCirSel.exit().remove();
 	    lCirSel = lCirSel.enter().append("circle").merge(lCirSel);
-	    lCirSel.transition(this.trans)
-				.attr("cx", 3)
+	    lCirSel.attr("cx", 3)
 				.attr("cy", function() {
                     let cnt = this.parentNode.getAttribute("data-cnt");
                     return legendFontBig*(parseInt(cnt)+1);
@@ -349,7 +351,7 @@ class AggPanel {
 	    cirSel.transition(this.trans).attr("cx", d=>this.xScale(+d.year))
 	        	.attr("cy", d=>this.yScale(+d.stats));
 		pathSel.transition(this.trans)
-            .attr("d", d => lineGenerator(d))
+            .attr("d", d => lineGenerator(d[1]))
 	}
 
 	updateAxis() {
