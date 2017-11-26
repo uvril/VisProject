@@ -142,6 +142,7 @@ class AggPanel {
 //add lines and legends
 		let cnt = 0;
 		let setStroke = function(id, lineSize, lineOpacity, legendFontSize) {
+			if (d3.select("#"+id.toString()).style("opacity") == "0") return;
 			d3.select("#"+id.toString())
 				.style("stroke-width", lineSize)
 				.style("opacity", lineOpacity);
@@ -311,14 +312,14 @@ class AggPanel {
 				}(this))
 				.style("fill", "none")
         		.style("font-size", legendFontSmall);
-	    /*lTextSel.on("mouseover", function(){
+	    lTextSel.on("mouseover", function(){
 	        		let pathid = this.parentNode.id.slice(1);
 	        		setStroke(pathid, (lineThin+0.5)+"px", "1", (legendFontSmall+2)+"px");
 	        	})
 	        	.on("mouseout", function(){
 	        		let pathid = this.parentNode.id.slice(1);
 	        		setStroke(pathid, lineThin+"px", "0.5", legendFontSmall+"px");
-	        	});*/
+	        	});
 
 	    let lCirSel = legendGSel.selectAll("circle").data(d => [d]);
 	    lCirSel.exit().remove();
