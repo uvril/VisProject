@@ -80,7 +80,7 @@ class AggPanel {
         	this.category = "gdp";
         	this.updateRange(this.startYear, this.endYear);
         }.bind(this));
-        this.aggList.on("click", 'a', function(outerThis) {
+        this.aggList.on("click", 'i', function(outerThis) {
 				return function(d) {
                     let wd = parseInt($(this).attr("data-wd"));
 					outerThis.selectedColor[outerThis.selectedCountry[wd].index] = false;
@@ -115,7 +115,8 @@ class AggPanel {
                 datStart = (datStart.length == 0 ? "N/A" : datStart[0].stats);
                 let datEnd = queryData(window.dataset[outerThis.category], wd, outerThis.endYear, outerThis.endYear);
                 datEnd = (datEnd.length == 0 ? "N/A" : datEnd[0].stats);
-                let data = [countryName, datStart, datEnd, "<a href=\"\">X</a>"];
+				let ico = "<i class=\"fa fa-times\" data-wd=\""+wd+"\"aria-hidden=\"true\"></i>"
+                let data = [countryName, datStart, datEnd, ico];
                 this.data(data);
             }
         }(this));
@@ -144,7 +145,8 @@ class AggPanel {
         datStart = (datStart.length == 0 ? "N/A" : datStart[0].stats);
 		let datEnd = queryData(window.dataset.pop, wd, this.endYear, this.endYear);
         datEnd = (datEnd.length == 0 ? "N/A" : datEnd[0].stats);
-        this.aggList.row.add([countryName, datStart, datEnd, "<a href=\"#\" data-wd=\""+wd+"\">X</a>"]).draw();
+		let ico = "<i class=\"fa fa-times\" data-wd=\""+wd+"\"aria-hidden=\"true\"></i>"
+        this.aggList.row.add([countryName, datStart, datEnd, ico]).draw();
         this.updateDataset();
 		this.update();
 	}
