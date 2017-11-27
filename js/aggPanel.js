@@ -28,7 +28,7 @@ class AggPanel {
             .range([this.panelMargin, this.panelWidth-this.panelMargin]);
         this.yScale = d3.scaleLinear()
             .domain([0, 1000])
-            .range([this.panelHeight-this.panelMargin, this.panelMargin]); 				
+            .range([this.panelHeight-this.panelMargin, this.panelMargin]).nice(); 				
 		this.xAxisG = this.panel.append("g")
 		            .attr("transform", "translate(0, " + this.yScale.range()[0]+")")
 					.style("fill", "none")
@@ -58,15 +58,16 @@ class AggPanel {
         this.xAxis = d3.axisBottom();
         this.yAxis = d3.axisRight();
         this.xAxis.scale(this.xScale)
-            .ticks(5)
             .tickFormat(d3.format("d"));
         this.yAxis.scale(this.yScale)
 			.tickSize(this.svgWidth)
-            .ticks(5)
             .tickFormat(d3.format(".2s"));
         this.colors = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b", "#e377c2", "#7f7f7f", "#bcbd22", "#17becf"];	
 		this.selectedColor = [];
 		for (let i in this.colors) this.selectedColor.push(false);
+        this.lineGenerator = d3.line()
+            .x(d=>this.xScale(+d.year))
+            .y(d=>this.yScale(+d.stats));
 	}
 
     updateRange(startYear, endYear) {
@@ -99,22 +100,27 @@ class AggPanel {
 
 	insertCountry(countryName, wd) {
 		if (this.selectedCountry.hasOwnProperty(wd)) return;
+//Using this.selcetedCountry, every selected coutry will have the index as its primary key while the index also choose
+//color for it.
 		let index = 0;
 		for (; index < this.selectedColor.length; ++index)
 			if (this.selectedColor[index] == false) 
 				break;
 		this.selectedCountry[wd] = {"index": index, "countryName": countryName};
 		this.selectedColor[index] = true;
+//aggList part
         window.wdmap[countryName] = wd;
 		let datStart = queryData(window.dataset.pop, wd, this.startYear, this.startYear);
         datStart = (datStart.length == 0 ? "N/A" : datStart[0].stats);
 		let datEnd = queryData(window.dataset.pop, wd, this.endYear, this.endYear);
         datEnd = (datEnd.length == 0 ? "N/A" : datEnd[0].stats);
         this.aggList.row.add([countryName, datStart, datEnd]).draw();
+
         this.updateDataset();
 		this.update();
 	}
 
+//update dataset, xscale and yscale
 	updateDataset () {
 		this.dataset = []
 		let popMin = 99999999999, popMax = -1, extent = 0;
@@ -127,20 +133,19 @@ class AggPanel {
 			popMin = extent[0] < popMin? extent[0] : popMin;
 			popMax = extent[1] > popMax? extent[1] : popMax;
        	}
-       	this.yScale.domain([popMin, popMax]).nice();
-       	this.xScale.domain([this.startYear, this.endYear]).nice();
        	if (this.dataset.length == 0) {
 			this.xScale.domain([]).nice();
 			this.yScale.domain([]).nice();
        	}
+       	else {
+	       	this.yScale.domain([popMin, popMax]).nice();
+	       	this.xScale.domain([this.startYear, this.endYear]).nice();
+       	}
 	}
 
 	update() {
-        let lineGenerator = d3.line()
-            .x(d=>this.xScale(+d.year))
-            .y(d=>this.yScale(+d.stats));
-//add lines and legends
-		let cnt = 0;
+//add hovoring over line and legend
+		let lineThick = 2, lineThin = 1, legendFontBig = 10, legendFontSmall = 8;
 		let setStroke = function(id, lineSize, lineOpacity, legendFontSize) {
 			if (d3.select("#"+id.toString()).style("opacity") == "0") return;
 			d3.select("#"+id.toString())
@@ -150,13 +155,13 @@ class AggPanel {
     			.select("text")
     			.style("font-size", legendFontSize);
 		};
-		let lineThick = 2, lineThin = 1, legendFontBig = 10, legendFontSmall = 8;
-		console.log(this.dataset);
+//add paths		
+		//console.log(this.dataset);
 		let pathSel = this.pathG.selectAll("path").data(this.dataset);
 		pathSel.exit().remove();
 		pathSel = pathSel.enter().append("path").merge(pathSel);
 			pathSel.transition(this.trans)
-            .attr("d", d => lineGenerator(d[1]))
+            .attr("d", d => this.lineGenerator(d[1]))
 			.style("fill", "none")
 			.style("stroke", (d, i) => this.colors[d[0]])
 			.style("stroke-width", lineThin)
@@ -171,8 +176,7 @@ class AggPanel {
 				if (d.disabled == true) return;
 				setStroke(d3.event.target.id, lineThin+"px", "0.5", legendFontSmall+"px");
 			}.bind(this));
-        
-			
+//add circles on paths	
 		let cirGSel = this.circleG.selectAll("g").data(this.dataset);
 		cirGSel.exit().remove();
 		cirGSel = cirGSel.enter().append("g").merge(cirGSel);
@@ -197,6 +201,8 @@ class AggPanel {
 						if (d.disabled == true) return;
 						let pathid = this.parentNode.id.slice(1);
 						d3.select(this)
+							.transition()
+							.duration(200)
 							.attr("r", 4)
 							.style("opacity", 0.5);
 						setStroke(pathid, (lineThin+0.5)+"px", "1", legendFontBig+"px");
@@ -213,6 +219,8 @@ class AggPanel {
 						if (d.disabled == true) return;
 						let pathid = this.parentNode.id.slice(1);
 						d3.select(this)
+							.transition()
+							.duration(500)
 							.attr("r", 2)
 							.style("opacity", 1);
 						setStroke(pathid, lineThin+"px", "0.5", legendFontSmall+"px");	
@@ -221,29 +229,27 @@ class AggPanel {
 							.style("opacity", 0);
 					}
 	        	}(setStroke, this.trans, this.aggtip));			
-		
-		let names = [], wds = [];
-		for (let i in this.selectedCountry) {
-			names.push(this.selectedCountry[i].countryName);
-			wds.push(i)
-		}
+//add remove button		
+		let wds = [];
+		for (let i in this.selectedCountry) wds.push(i);
 		let removeT = this.remove.selectAll("text").data(wds);
 		removeT.exit().remove();
 		removeT = removeT.enter().append("text").merge(removeT);
-		removeT.attr("x", 3)
+		removeT.attr("x", 7)
 			.attr("y", (d, i)=>legendFontBig*(i+1))
 			.text("remove")
+			.attr("font-size", legendFontSmall)
 			.on("click", function(outerThis) {
 				return function(d) {
 					outerThis.selectedColor[outerThis.selectedCountry[d].index] = false;
 					delete outerThis.selectedCountry[d];
-					console.log(outerThis.selectedCountry);
+					//console.log(outerThis.selectedCountry);
+//if user removes one country, chart will change to the original one.
 					outerThis.updateDataset();
 					outerThis.update();
-					outerThis.updateAxis();
 				}
 			}(this))
-
+//add lengend
 		let legendGSel = this.legend.selectAll("g").data(wds)
 		legendGSel.exit().remove();
 		legendGSel = legendGSel.enter().append("g").merge(legendGSel);
@@ -252,45 +258,45 @@ class AggPanel {
 		legendGSel.on("click", function(outerThis) {
 						return function(j, i){
 						let pathid = this.id.slice(1);
+						let selectedpath = outerThis.pathG.select("#"+pathid);
+						let selectedcircle = outerThis.circleG.select("#c"+pathid).selectAll("circle");
 	        			if (this.childNodes[1].style.fill == "white") {
 	        				this.childNodes[1].style.fill = outerThis.colors[outerThis.selectedCountry[j].index];
-	        				let selectedpath = outerThis.pathG.select("#"+pathid)
-	        									.style("opacity", function(d){
+	        				selectedpath.style("opacity", function(d){
 	        										d[1].disabled = !d[1].disabled;
 	        										return 0.5;
 	        									});
-							let selectedcircle = outerThis.circleG.select("#c"+pathid)
-												.selectAll("circle")
-	        									.style("opacity", function(d){
+							selectedcircle.style("opacity", function(d){
 	        										d.disabled = !d.disabled;
 	        										return 1;
 	        									});
 	        			}
 	        			else {
 	        				this.childNodes[1].style.fill = "white"
-	        				let selectedpath = outerThis.pathG.select("#"+pathid)
-	        									.style("opacity", function(d){
+	        				selectedpath.style("opacity", function(d){
 	        										d[1].disabled = !d[1].disabled;
 	        										return 0;
 	        									});
-							let selectedcircle = outerThis.circleG.select("#c"+pathid)
-												.selectAll("circle")
-	        									.style("opacity", function(d){
+							selectedcircle.style("opacity", function(d){
 	        										d.disabled = !d.disabled;
 	        										return 0;
 	        									});
 	        			}
+//filter disabled paths and circles and show the others.(click on the legend circle not remove)
         				let years = outerThis.circleG.selectAll("circle").filter(d=>!d.disabled).data()
         								.map(d=>d.year);
         				let stats = outerThis.circleG.selectAll("circle").filter(d=>!d.disabled).data()
         								.map(d=>d.stats);
-        				let selectionCir = outerThis.circleG.selectAll("circle").filter(d=>!d.disabled);
-        				let selectedPath = outerThis.pathG.selectAll("path").filter(d=>!d[1].disabled);
-        				console.log(selectedPath);
+        				let otherCir = outerThis.circleG.selectAll("circle").filter(d=>!d.disabled);
+        				let otherPath = outerThis.pathG.selectAll("path").filter(d=>!d[1].disabled);
+        				//console.log(otherPath);
+       	        		//outerThis.yScale.ticks();
+	        			//outerThis.yAxis.ticks();
         				outerThis.xScale.domain(d3.extent(years)).nice();
         				outerThis.yScale.domain(d3.extent(stats)).nice();
         				if (years.length != 0)
-	        				outerThis.updatePanel(selectionCir, selectedPath);
+	        				outerThis.updatePanel(otherCir, otherPath);
+	        			console.log(outerThis.yScale.domain());
 	        			outerThis.updateAxis();
         			}
         		}(this));
@@ -305,10 +311,7 @@ class AggPanel {
 				})
 				.text(d=>this.selectedCountry[d].countryName)
 				.style("stroke", function(outerThis) {
-					return function(d) {
-                    	let cnt = this.parentNode.getAttribute("data-cnt");
-                   		return outerThis.colors[outerThis.selectedCountry[d].index];
-                	}
+					return d=>outerThis.colors[outerThis.selectedCountry[d].index];
 				}(this))
 				.style("fill", "none")
         		.style("font-size", legendFontSmall);
@@ -331,28 +334,19 @@ class AggPanel {
 				})
 				.attr("r", 3)
 				.style("stroke", function(outerThis) {
-					return function(d) {
-                    	let cnt = this.parentNode.getAttribute("data-cnt");
-                   		return outerThis.colors[outerThis.selectedCountry[d].index];
-                	}
+					return d=>outerThis.colors[outerThis.selectedCountry[d].index];
 				}(this))
 				.style("fill", function(outerThis) {
-					return function(d) {
-                    	let cnt = this.parentNode.getAttribute("data-cnt");
-                   		return outerThis.colors[outerThis.selectedCountry[d].index];
-                	}
+					return d=>outerThis.colors[outerThis.selectedCountry[d].index];
 				}(this))
 		this.updateAxis();
 	}
 
 	updatePanel(cirSel, pathSel) {
-        let lineGenerator = d3.line()
-            .x(d=>this.xScale(+d.year))
-            .y(d=>this.yScale(+d.stats));
 	    cirSel.transition(this.trans).attr("cx", d=>this.xScale(+d.year))
 	        	.attr("cy", d=>this.yScale(+d.stats));
 		pathSel.transition(this.trans)
-            .attr("d", d => lineGenerator(d[1]))
+            .attr("d", d => this.lineGenerator(d[1]))
 	}
 
 	updateAxis() {
