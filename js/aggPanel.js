@@ -74,14 +74,27 @@ class AggPanel {
         this.category = "pop";
         aggRow.select("#agg-pop").on("click", function(){
         	this.category = "pop";
-        	this.updateDataset();
-        	this.update();
+        	this.updateRange(this.startYear, this.endYear);
         }.bind(this));
         aggRow.select("#agg-gdp").on("click", function(){
         	this.category = "gdp";
-        	this.updateDataset();
-        	this.update();
+        	this.updateRange(this.startYear, this.endYear);
         }.bind(this));
+        this.aggList.on("click", 'a', function(outerThis) {
+				return function(d) {
+                    let wd = parseInt($(this).attr("data-wd"));
+					outerThis.selectedColor[outerThis.selectedCountry[wd].index] = false;
+					delete outerThis.selectedCountry[wd];
+					//console.log(outerThis.selectedCountry);
+//if user removes one country, chart will change to the original one.
+					outerThis.updateDataset();
+                    outerThis.aggList
+                    .row( $(this).parents('tr') )
+                    .remove()
+                    .draw();
+					outerThis.update();
+				}
+			}(this));
 	}
 
 	updateYearText(startYear, endYear) {
@@ -102,7 +115,7 @@ class AggPanel {
                 datStart = (datStart.length == 0 ? "N/A" : datStart[0].stats);
                 let datEnd = queryData(window.dataset[outerThis.category], wd, outerThis.endYear, outerThis.endYear);
                 datEnd = (datEnd.length == 0 ? "N/A" : datEnd[0].stats);
-                let data = [countryName, datStart, datEnd];
+                let data = [countryName, datStart, datEnd, "<a href=\"\">X</a>"];
                 this.data(data);
             }
         }(this));
@@ -131,8 +144,7 @@ class AggPanel {
         datStart = (datStart.length == 0 ? "N/A" : datStart[0].stats);
 		let datEnd = queryData(window.dataset.pop, wd, this.endYear, this.endYear);
         datEnd = (datEnd.length == 0 ? "N/A" : datEnd[0].stats);
-        this.aggList.row.add([countryName, datStart, datEnd]).draw();
-
+        this.aggList.row.add([countryName, datStart, datEnd, "<a href=\"#\" data-wd=\""+wd+"\">X</a>"]).draw();
         this.updateDataset();
 		this.update();
 	}
