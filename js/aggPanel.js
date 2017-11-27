@@ -49,6 +49,9 @@ class AggPanel {
             .attr("transform", "translate(" + (this.panelWidth*1.1-this.panelMargin) + ", 0)");
         $("#yearRange").slider({ id: "yearSlider", min: 1960, max: 2016, range: true, value: [1960, 2016] });
         $("#yearRange").on("slide", function(event) {
+            this.updateYearText(event.value[0], event.value[1]);
+        }.bind(this));
+        $("#yearRange").on("slideStop", function(event) {
             this.updateRange(event.value[0], event.value[1]);
         }.bind(this));
         this.trans = d3.transition()
@@ -68,15 +71,28 @@ class AggPanel {
         this.lineGenerator = d3.line()
             .x(d=>this.xScale(+d.year))
             .y(d=>this.yScale(+d.stats));
-        this.category = "gdp";
+        this.category = "pop";
+        aggRow.select("#agg-pop").on("click", function(){
+        	this.category = "pop";
+        	this.updateDataset();
+        	this.update();
+        }.bind(this));
+        aggRow.select("#agg-gdp").on("click", function(){
+        	this.category = "gdp";
+        	this.updateDataset();
+        	this.update();
+        }.bind(this));
+	}
+
+	updateYearText(startYear, endYear) {
+        this.aggRow.select("#yearRangeStartText").text(startYear);
+        this.aggRow.select("#yearRangeEndText").text(endYear);
 	}
 
     updateRange(startYear, endYear) {
         this.startYear = startYear;
         this.endYear = endYear;
         this.xScale.domain([startYear, endYear]).nice();
-        this.aggRow.select("#yearRangeStartText").text(this.startYear);
-        this.aggRow.select("#yearRangeEndText").text(this.endYear);
         this.dataset = [];
         this.aggList.rows().every( function (outerThis) {
             return function (rowIdx, tableLoop, rowLoop ) {
@@ -88,7 +104,6 @@ class AggPanel {
                 datEnd = (datEnd.length == 0 ? "N/A" : datEnd[0].stats);
                 let data = [countryName, datStart, datEnd];
                 this.data(data);
-			    outerThis.dataset.push(queryData(window.dataset[outerThis.category], wd, outerThis.startYear, outerThis.endYear));
             }
         }(this));
         let h1 = $(this.aggList.column(1).header());
@@ -96,6 +111,7 @@ class AggPanel {
         let h2 = $(this.aggList.column(2).header());
         h2.html(endYear)
         this.aggList.draw();
+        this.updateDataset();
 		this.update();
     }
 
