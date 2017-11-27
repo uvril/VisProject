@@ -43,10 +43,6 @@ class AggPanel {
         	.append("g")
         	.attr("id", "legend")
             .attr("transform", "translate(" + (this.panelWidth*1.02-this.panelMargin) + ", 0)");
-        this.remove = aggSvg
-        	.append("g")
-        	.attr("id", "remove")
-            .attr("transform", "translate(" + (this.panelWidth*1.1-this.panelMargin) + ", 0)");
         $("#yearRange").slider({ id: "yearSlider", min: 1960, max: 2016, range: true, value: [1960, 2016] });
         $("#yearRange").on("slide", function(event) {
             this.updateYearText(event.value[0], event.value[1]);
@@ -260,26 +256,9 @@ class AggPanel {
 							.style("opacity", 0);
 					}
 	        	}(setStroke, this.trans, this.aggtip));			
-//add remove button		
+
 		let wds = [];
 		for (let i in this.selectedCountry) wds.push(i);
-		let removeT = this.remove.selectAll("text").data(wds);
-		removeT.exit().remove();
-		removeT = removeT.enter().append("text").merge(removeT);
-		removeT.attr("x", 7)
-			.attr("y", (d, i)=>legendFontBig*(i+1))
-			.text("remove")
-			.attr("font-size", legendFontSmall)
-			.on("click", function(outerThis) {
-				return function(d) {
-					outerThis.selectedColor[outerThis.selectedCountry[d].index] = false;
-					delete outerThis.selectedCountry[d];
-					//console.log(outerThis.selectedCountry);
-//if user removes one country, chart will change to the original one.
-					outerThis.updateDataset();
-					outerThis.update();
-				}
-			}(this))
 //add lengend
 		let legendGSel = this.legend.selectAll("g").data(wds)
 		legendGSel.exit().remove();
