@@ -16,6 +16,12 @@
             <div class="row">
                 <div class="col-9" id="middleWare">
 					 <div class="card text-center col-12">
+                            <div class="text-center col-1">
+                                <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#mapList">Area</button>
+                                <div id="mapList" class="collapse in">
+                                    <button class="btn btn-info btn-sm" id="map-pop">Population</button>
+                                </div>
+                            </div>
                             <div class="card-body" id="mapContainer">
                                 <div class="btn-group-vertical" role="group" aria-label="..." id="float-button-group">
                                     <button type="button" class="btn btn-default" id="zoom-in"><span class="fa fa-search-plus" aria-hidden="true"></span></button>
@@ -155,7 +161,7 @@
                             <div class="col-2" id="aggPanelDiv">
                                 <ul class="nav justify-content-center nav-tabs" id="agg-nav" role="tablist">
                                     <li class="nav-item dropdown">
-                                        <a class="nav-link dropdown-toggle" id="stat-tab" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Category</a>
+                                        <a class="nav-link dropdown-toggle" id="agg-tab" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Category</a>
                                         <div class="dropdown-menu">
                                             <a class="dropdown-item" id="agg-pop" href="#nav-stat">Population</a>
                                             <a class="dropdown-item" id="agg-gdp" href="#nav-stat">GDP</a>

@@ -42,6 +42,12 @@ class Map {
                 this.curScale.y = -20;
                 this.zoomed();
             }.bind(this));
+        this.layers = d3.select("#mapList");
+        this.layers.select("#map-pop")
+            .on("click", function(){
+                
+            })
+
     }
 
     zoomed() {
