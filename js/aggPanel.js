@@ -68,6 +68,7 @@ class AggPanel {
         this.lineGenerator = d3.line()
             .x(d=>this.xScale(+d.year))
             .y(d=>this.yScale(+d.stats));
+        this.category = "gdp";
 	}
 
     updateRange(startYear, endYear) {
@@ -81,13 +82,13 @@ class AggPanel {
             return function (rowIdx, tableLoop, rowLoop ) {
                 let countryName = this.data()[0];
                 let wd = window.wdmap[countryName];
-                let datStart = queryData(window.dataset.pop, wd, outerThis.startYear, outerThis.startYear);
+                let datStart = queryData(window.dataset[outerThis.category], wd, outerThis.startYear, outerThis.startYear);
                 datStart = (datStart.length == 0 ? "N/A" : datStart[0].stats);
-                let datEnd = queryData(window.dataset.pop, wd, outerThis.endYear, outerThis.endYear);
+                let datEnd = queryData(window.dataset[outerThis.category], wd, outerThis.endYear, outerThis.endYear);
                 datEnd = (datEnd.length == 0 ? "N/A" : datEnd[0].stats);
                 let data = [countryName, datStart, datEnd];
                 this.data(data);
-			    outerThis.dataset.push(queryData(window.dataset.pop, wd, outerThis.startYear, outerThis.endYear));
+			    outerThis.dataset.push(queryData(window.dataset[outerThis.category], wd, outerThis.startYear, outerThis.endYear));
             }
         }(this));
         let h1 = $(this.aggList.column(1).header());
@@ -110,7 +111,7 @@ class AggPanel {
 		this.selectedColor[index] = true;
 //aggList part
         window.wdmap[countryName] = wd;
-		let datStart = queryData(window.dataset.pop, wd, this.startYear, this.startYear);
+		let datStart = queryData(window.dataset[this.category], wd, this.startYear, this.startYear);
         datStart = (datStart.length == 0 ? "N/A" : datStart[0].stats);
 		let datEnd = queryData(window.dataset.pop, wd, this.endYear, this.endYear);
         datEnd = (datEnd.length == 0 ? "N/A" : datEnd[0].stats);
@@ -125,7 +126,7 @@ class AggPanel {
 		this.dataset = []
 		let popMin = 99999999999, popMax = -1, extent = 0;
        	for (let index in this.selectedCountry) {
-			let data = queryData(window.dataset.pop, index, this.startYear, this.endYear);
+			let data = queryData(window.dataset[this.category], index, this.startYear, this.endYear);
 			data.forEach(d=>d.disabled = false);
 			//console.log(data);
 			this.dataset.push([this.selectedCountry[index].index, data]);
@@ -296,7 +297,7 @@ class AggPanel {
         				outerThis.yScale.domain(d3.extent(stats)).nice();
         				if (years.length != 0)
 	        				outerThis.updatePanel(otherCir, otherPath);
-	        			console.log(outerThis.yScale.domain());
+	        			//console.log(outerThis.yScale.domain());
 	        			outerThis.updateAxis();
         			}
         		}(this));
