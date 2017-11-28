@@ -19,7 +19,17 @@
                             <div class="text-center col-1">
                                 <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#mapList">Area</button>
                                 <div id="mapList" class="collapse in">
-                                    <button class="btn btn-info btn-sm" id="map-pop">Population</button>
+                                    <div class="btn-group" data-toggle="buttons" id="map-bnt">
+                                      <label class="btn btn-primary active" id="map-ori">
+                                        <input type="radio" name="options" autocomplete="off" checked> None
+                                      </label>
+                                      <label class="btn btn-primary" id="map-pop">
+                                        <input type="radio" name="options" autocomplete="off"> Poplation
+                                      </label>
+                                      <label class="btn btn-primary" id="map-gdp">
+                                        <input type="radio" name="options" autocomplete="off"> GDP
+                                      </label>
+                                    </div>
                                 </div>
                             </div>
                             <div class="card-body" id="mapContainer">

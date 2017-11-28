@@ -2,6 +2,7 @@ class Map {
 
     constructor(infoPanel) {
         this.curData = null;
+        this.year = null;
         this.mapContainer = d3.select("#mapContainer");
         this.svgBounds = this.mapContainer.node().getBoundingClientRect();
         this.svgWidth = this.svgBounds.width - 40;
@@ -42,12 +43,62 @@ class Map {
                 this.curScale.y = -20;
                 this.zoomed();
             }.bind(this));
-        this.layers = d3.select("#mapList");
-        this.layers.select("#map-pop")
-            .on("click", function(){
-                
-            })
+        this.layers = d3.select("#map-bnt");
+        //d.properties.wikidata
+        this.layers.selectAll("#map-pop")
+            .on("click", function() {
+                this.addLayer("pop");
+            }.bind(this));
+        this.layers.selectAll("#map-gdp")
+            .on("click", function() {
+                this.addLayer("gdp");
+            }.bind(this));
+        this.domain = {};
+        this.domain.pop = [0, 1e5, 3e5, 5e5, 7e5, 1e6, 3e6, 5e6, 7e6, 1e7, 2e7, 4e7, 6e7, 8e7, 1e8, 3e8, 5e8, 7e8, 1e9];
+        this.domain.gdp = [0, 1e8, 3e8, 5e8, 7e8, 1e9, 5e9, 1e10, 5e10, 1e11, 5e11, 1e12, 3e12, 5e12, 7e12, 1e13, 1.3e13, 1.5e13];
+    }
 
+    addLayer(category) {
+        console.log("!!!");
+        let domain = this.domain[category];
+        let range = this.generateColor("white", "darkred", domain.length);
+        let data = window.dataset[category][this.year];
+        let colorScale = d3.scaleQuantile()
+                            .domain(domain)
+                            .range(range);
+        this.svgPath.selectAll("path")
+            .style("fill", function(d){
+                //console.log(d.properties.NAME, data[d.properties.wikidata], colorScale((+data[d.properties.wikidata])));
+                return colorScale((+data[d.properties.wikidata]));
+            });
+    }
+
+    generateColor(startColor, endColor, numIntervals){
+        function colorToHex(color) {
+            let rgbToHex = function (rgb) { 
+              var hex = Number(rgb).toString(16);
+              if (hex.length < 2) {
+                   hex = "0" + hex;
+              }
+              return hex;
+            };
+            if (color.substr(0, 1) === '#') {
+                return color;
+            }
+            let digits = /(.*?)rgb\((\d+), (\d+), (\d+)\)/.exec(color);
+            let red = rgbToHex(parseInt(digits[2]));
+            let green = rgbToHex(parseInt(digits[3]));
+            let blue = rgbToHex(parseInt(digits[4]));
+            return digits[1] + '#' + red+green+blue;
+        };
+        let list = [];
+        let tmp = d3.scaleLinear()
+                    .domain([0, numIntervals-1])
+                    .range([startColor, endColor]);
+        for (let i = 0; i < numIntervals; ++i) {
+            list.push(colorToHex(tmp(i)));
+        }
+        return list;
     }
 
     zoomed() {
@@ -147,7 +198,7 @@ class Map {
     }
 
     drawMap(year) {
-
+        this.year = year;
         let filename = "data/map/cntry" + year + ".json"
 
             d3.json(filename, function (geoData) {
