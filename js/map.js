@@ -212,6 +212,7 @@ class Map {
                     .enter()
                     .append("path")
                     .attr("d", this.path)
+                    .style("fill-b", "none")
                     .classed("countries", true)
                     .on("mouseover", function(d, i, n) {
                         let map = window.map;
@@ -220,7 +221,9 @@ class Map {
                         }
                         if (d.properties.NAME != "unclaimed") {
                             map.currentMouse = this;
-                            d3.select(this).classed("cntryMouseOver", true);
+                            d3.select(this).classed("cntryMouseOver", true)
+                                            .style("fill-b", d3.select(this).style("fill"))
+                                            .style("fill", null);
                         }
                         else {
                             map.currentMouse = null;
@@ -231,6 +234,9 @@ class Map {
                         let map = window.map;
                         if (map.currentMouse != null) {
                             d3.select(map.currentMouse).classed("cntryMouseOver", false);
+                            console.log(d3.select(this).style("fill-b"));
+                            if (d3.select(this).style("fill-b") != "none")
+                                d3.select(this).style("fill", d3.select(this).style("fill-b"));
                             map.currentMouse = null;
                         }
                     })
