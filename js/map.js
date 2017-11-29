@@ -69,7 +69,6 @@ class Map {
     }
 
     addLayer() {
-        console.log("!!!");
         this.data = window.dataset[this.category][this.year];
         let domain = this.domain[this.category];
         let range = this.generateColor("white", "darkred", domain.length);
@@ -112,7 +111,6 @@ class Map {
     }
 
     zoomed() {
-        console.log(this.curScale);
         d3.select("#map").selectAll("g").style("stroke-width", 1.5 / this.curScale.k + "px");
         d3.select("#map").selectAll("g").attr("transform", this.curScale);
         this.updateText();
@@ -215,6 +213,12 @@ class Map {
 
         d3.json(filename, function (geoData) {
 
+			for (let i = 0; i < geoData.features.length; ++i) {
+				if (geoData.features[i].properties.wikidata === "212429") {
+					geoData.features[i].properties.wikidata = "142";
+				}
+			}
+		
             this.curData = geoData;
 
             this.svgPath

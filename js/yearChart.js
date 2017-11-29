@@ -7,43 +7,48 @@ class YearChart {
 
         this.content= d3.select("#yearChart");
 
-        this.yearText = this.content.select("#yearText");
+        this.yearText = $("#yearText");
 
-        this.curYear = 2015;
+        this.curYear = 2016;
 
         this.update(this.curYear);
 
         this.content.select("#yearPrev")
             .on("click", function() {
-                this.update(lYear(this.curYear));
+                this.curYear -= 1;
+                this.update();
             }.bind(this));
         this.content.select("#yearNext")
             .on("click", function() {
-                this.update(rYear(this.curYear));
+                this.curYear += 1;
+                this.update();
             }.bind(this));
         this.content.select("#yearText")
             .on("keyup", function() {
                 if (d3.event.key === "Enter") {
-                    let curVal = parseInt($("#yearText").val());
+                    let curVal = parseInt(this.yearText.val());
                     if (isNaN(curVal)) {
                         alert("Invalid Year!");
-                        $("#yearText").val(this.curYear);
+                        this.yearText.val(this.curYear);
+						this.yearText.blur();
                     }
                     else {
-                        this.update(curVal);
+                        this.curYear = curVal;
+                        this.yearText.blur();
+                        this.update();
                     }
                 }
             }.bind(this));
     }
 
-    update (year) {
-        this.curYear = year;
+    update () {
+        let year = this.curYear;
         this.content.select("#yearPrev")
-        .classed("disabled", year === window.dataset.years[0]);
+        .classed("disabled", year <= 1960);//window.dataset.years[0]);
         this.content.select("#yearNext")
-        .classed("disabled", year === window.dataset.years[window.dataset.years.length - 1]);
-        this.yearText.attr("value", getYearText(year));
-        this.mapChart.drawMap(year);
+        .classed("disabled", year >= 2016);//window.dataset.years[window.dataset.years.length - 1]);
+        this.yearText.val(getYearText(year));
+        this.mapChart.drawMap(fYear(year));
     }
 
 

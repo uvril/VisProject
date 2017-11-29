@@ -69,14 +69,20 @@ class AggPanel {
             .y(d=>this.yScale(+d.stats));
         this.category = "pop";
         aggRow.select("#agg-pop").on("click", function(){
+			aggRow.selectAll(".nav-link").classed("active", false);
+			aggRow.select("#agg-pop").classed("active", true);
         	this.category = "pop";
         	this.updateRange(this.startYear, this.endYear);
         }.bind(this));
         aggRow.select("#agg-gdp").on("click", function(){
+			aggRow.selectAll(".nav-link").classed("active", false);
+			aggRow.select("#agg-gdp").classed("active", true);			
         	this.category = "gdp";
         	this.updateRange(this.startYear, this.endYear);
         }.bind(this));
         aggRow.select("#agg-cpi").on("click", function(){
+			aggRow.selectAll(".nav-link").classed("active", false);
+			aggRow.select("#agg-cpi").classed("active", true);			
         	this.category = "cpi";
         	this.updateRange(this.startYear, this.endYear);
         }.bind(this));
@@ -143,7 +149,7 @@ class AggPanel {
         window.wdmap[countryName] = wd;
 		let datStart = queryData(window.dataset[this.category], wd, this.startYear, this.startYear);
         datStart = (datStart.length == 0 ? "N/A" : datStart[0].stats);
-		let datEnd = queryData(window.dataset.pop, wd, this.endYear, this.endYear);
+		let datEnd = queryData(window.dataset[this.category], wd, this.endYear, this.endYear);
         datEnd = (datEnd.length == 0 ? "N/A" : datEnd[0].stats);
 		let ico = "<i class=\"fa fa-times\" data-wd=\""+wd+"\"aria-hidden=\"true\"></i>"
         this.aggList.row.add([countryName, datStart, datEnd, ico]).draw();

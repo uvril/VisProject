@@ -3,7 +3,6 @@ class InfoPanel {
         let contentObj = d3.select("#details");
         this.contentObj = contentObj;
         this.svgBounds = contentObj.select(".tab-content").node().getBoundingClientRect();
-        console.log(this.svgBounds);
         this.svgWidth = this.svgBounds.width;
         this.svgHeight = this.svgBounds.width;
         this.hdiHeight = 200;
@@ -49,7 +48,6 @@ class InfoPanel {
     }
 
     lineChartGenerator(selectPart, dataset, chartWidth, chartHeight, color, TopMargin, LeftMargin, yAxisText) {
-        console.log(dataset);
         selectPart.attr("transform", "translate(" + LeftMargin + "," + TopMargin + ")");
         let xScale = d3.scaleLinear()
             .domain(d3.extent(dataset, d => +d.year))
@@ -162,7 +160,6 @@ class InfoPanel {
     }
 
     updateInfo(oneCountryInfo, year) {
-        console.log(oneCountryInfo);
         let wd = +oneCountryInfo.wikidata;
         this.contentObj.selectAll("#countryNameLabel").text(oneCountryInfo.NAME);
         this.contentObj.select("#countryIcon").attr("src", "icons/" + wd + ".png");
