@@ -2,7 +2,6 @@ class Map {
 
     constructor(infoPanel) {
         this.curData = null;
-        this.year = null;
         this.mapContainer = d3.select("#mapContainer");
         this.svgBounds = this.mapContainer.node().getBoundingClientRect();
         this.svgWidth = this.svgBounds.width - 40;
@@ -43,34 +42,45 @@ class Map {
                 this.curScale.y = -20;
                 this.zoomed();
             }.bind(this));
+        this.category = null;
         this.layers = d3.select("#map-bnt");
         //d.properties.wikidata
         this.layers.selectAll("#map-pop")
             .on("click", function() {
-                this.addLayer("pop");
+                this.category = "pop";
+                this.addLayer();
             }.bind(this));
         this.layers.selectAll("#map-gdp")
             .on("click", function() {
-                this.addLayer("gdp");
+                this.category = "gdp";
+                this.addLayer();
+            }.bind(this));
+        this.layers.selectAll("#map-ori")
+            .on("click", function() {
+                this.category = null;
+                this.drawMap(this.year);
             }.bind(this));
         this.domain = {};
         this.domain.pop = [0, 1e5, 3e5, 5e5, 7e5, 1e6, 3e6, 5e6, 7e6, 1e7, 2e7, 4e7, 6e7, 8e7, 1e8, 3e8, 5e8, 7e8, 1e9];
         this.domain.gdp = [0, 1e8, 3e8, 5e8, 7e8, 1e9, 5e9, 1e10, 5e10, 1e11, 5e11, 1e12, 3e12, 5e12, 7e12, 1e13, 1.3e13, 1.5e13];
+        this.colorScale = null;
+        this.data = null;
+        this.year = null;
     }
 
-    addLayer(category) {
+    addLayer() {
         console.log("!!!");
-        let domain = this.domain[category];
+        this.data = window.dataset[this.category][this.year];
+        let domain = this.domain[this.category];
         let range = this.generateColor("white", "darkred", domain.length);
-        let data = window.dataset[category][this.year];
-        let colorScale = d3.scaleQuantile()
+        this.colorScale = d3.scaleQuantile()
                             .domain(domain)
                             .range(range);
         this.svgPath.selectAll("path")
             .style("fill", function(d){
                 //console.log(d.properties.NAME, data[d.properties.wikidata], colorScale((+data[d.properties.wikidata])));
-                return colorScale((+data[d.properties.wikidata]));
-            });
+                return this.colorScale((+this.data[d.properties.wikidata]));
+            }.bind(this));
     }
 
     generateColor(startColor, endColor, numIntervals){
@@ -199,67 +209,64 @@ class Map {
 
     drawMap(year) {
         this.year = year;
-        let filename = "data/map/cntry" + year + ".json"
+        if (this.category != null)
+            this.data = window.dataset[this.category][year];
+        let filename = "data/map/cntry" + year + ".json";
 
-            d3.json(filename, function (geoData) {
+        d3.json(filename, function (geoData) {
 
-                this.curData = geoData;
+            this.curData = geoData;
 
-                this.svgPath
-                    .html("")
-                    .selectAll("path")
-                    .data(geoData.features)
-                    .enter()
-                    .append("path")
-                    .attr("d", this.path)
-                    .style("fill-b", "none")
-                    .classed("countries", true)
-                    .on("mouseover", function(d, i, n) {
-                        let map = window.map;
-                        if (map.currentMouse != null) {
-                            d3.select(map.currentMouse).classed("cntryMouseOver", false);
-                        }
-                        if (d.properties.NAME != "unclaimed") {
-                            map.currentMouse = this;
-                            d3.select(this).classed("cntryMouseOver", true)
-                                            .style("fill-b", d3.select(this).style("fill"))
-                                            .style("fill", null);
-                        }
-                        else {
-                            map.currentMouse = null;
-                        }
+            this.svgPath
+                .html("")
+                .selectAll("path")
+                .data(geoData.features)
+                .enter()
+                .append("path")
+                .attr("d", this.path)
+                .classed("countries", true)
+                .style("fill", d=>this.category != null? this.colorScale(+this.data[d.properties.wikidata]): null)
+                .on("mouseover", function(d, i, n) {
+                    let map = window.map;
+                    if (map.currentMouse != null) {
+                        d3.select(map.currentMouse).classed("cntryMouseOver", false);
+                    }
+                    if (d.properties.NAME != "unclaimed") {
+                        map.currentMouse = this;
+                        d3.select(this).classed("cntryMouseOver", true);
+                    }
+                    else {
+                        map.currentMouse = null;
+                    }
 
-                    })
-                    .on("mouseout", function(d) {
-                        let map = window.map;
-                        if (map.currentMouse != null) {
-                            d3.select(map.currentMouse).classed("cntryMouseOver", false);
-                            console.log(d3.select(this).style("fill-b"));
-                            if (d3.select(this).style("fill-b") != "none")
-                                d3.select(this).style("fill", d3.select(this).style("fill-b"));
-                            map.currentMouse = null;
-                        }
-                    })
-                    .on("click", function(d){
-                        if (d.properties.NAME != "unclaimed") {
-                            this.svgPath.selectAll("path").classed("selected", d1 => d1.properties.wikidata === d.properties.wikidata);
-                            this.svgText.selectAll("textPath").style("fill-opacity", d1 => d1.properties.wikidata === d.properties.wikidata ? 1 : 0.4);
-                            this.infoPanel.updateInfo(d.properties, year);
-                        }
-                    }.bind(this));
+                })
+                .on("mouseout", function(d) {
+                    let map = window.map;
+                    if (map.currentMouse != null) {
+                        d3.select(map.currentMouse).classed("cntryMouseOver", false);
+                        map.currentMouse = null;
+                    }
+                })
+                .on("click", function(d){
+                    if (d.properties.NAME != "unclaimed") {
+                        this.svgPath.selectAll("path").classed("selected", d1 => d1.properties.wikidata === d.properties.wikidata);
+                        this.svgText.selectAll("textPath").style("fill-opacity", d1 => d1.properties.wikidata === d.properties.wikidata ? 1 : 0.4);
+                        this.infoPanel.updateInfo(d.properties, year);
+                    }
+                }.bind(this));
 
-                let graticule = d3.geoGraticule();
+            let graticule = d3.geoGraticule();
 
-                this.svgGra
-                    .html("")
-                    .append('path')
-                    .attr("id", "grat")
-                    .datum(graticule)
-                    .attr('class', "grat")
-                    .attr('d', this.path)
-                    .attr('fill', 'none'); 
+            this.svgGra
+                .html("")
+                .append('path')
+                .attr("id", "grat")
+                .datum(graticule)
+                .attr('class', "grat")
+                .attr('d', this.path)
+                .attr('fill', 'none'); 
 
-                this.updateText();
+            this.updateText();
 
             }.bind(this));
     }
