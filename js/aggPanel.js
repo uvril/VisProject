@@ -76,6 +76,10 @@ class AggPanel {
         	this.category = "gdp";
         	this.updateRange(this.startYear, this.endYear);
         }.bind(this));
+        aggRow.select("#agg-cpi").on("click", function(){
+        	this.category = "cpi";
+        	this.updateRange(this.startYear, this.endYear);
+        }.bind(this));
         this.aggList.on("click", 'i', function(outerThis) {
 				return function(d) {
                     let wd = parseInt($(this).attr("data-wd"));
