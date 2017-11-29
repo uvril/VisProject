@@ -13,6 +13,13 @@ class Map {
         let mapSvg = d3.select("#map")
             .attr("width", this.svgWidth)
             .attr("height", this.svgHeight);
+        let legendHeight = 150;
+        this.mapLegend =  d3.select("#map-legend")
+                            .attr("width", this.svgWidth)
+                            .attr("height", legendHeight)
+                            .append("g")
+                            .attr("class", "legendQuantile")
+                            .attr("transform", "translate(0,0)");
         this.svgDefs = mapSvg.append("defs");
         this.svgPath = mapSvg.append("g");
         this.svgGra = mapSvg.append("g");
@@ -61,7 +68,7 @@ class Map {
                 this.drawMap(this.year);
             }.bind(this));
         this.domain = {};
-        this.domain.pop = [0, 1e5, 3e5, 5e5, 7e5, 1e6, 3e6, 5e6, 7e6, 1e7, 2e7, 4e7, 6e7, 8e7, 1e8, 3e8, 5e8, 7e8, 1e9];
+        this.domain.pop = [0, 1e5, 3e5, 5e5, 7e5, 9e5, 1e6, 3e6, 5e6, 7e6, 1e7, 2e7, 4e7, 6e7, 8e7, 1e8, 3e8, 5e8, 7e8, 1e9];
         this.domain.gdp = [0, 1e8, 3e8, 5e8, 7e8, 1e9, 5e9, 1e10, 5e10, 1e11, 5e11, 1e12, 3e12, 5e12, 7e12, 1e13, 1.3e13, 1.5e13];
         this.colorScale = null;
         this.data = null;
@@ -75,6 +82,24 @@ class Map {
         this.colorScale = d3.scaleQuantile()
                             .domain(domain)
                             .range(range);
+        this.mapLegend.selectAll("g")
+                        .data(domain)
+                        .enter().append("g")
+                        .append("rect")
+                        .attr("x", (d, i)=>i%10*(this.svgWidth/10))
+                        .attr("y", (d, i)=>Math.floor(i/10)*10)
+                        .attr("width", this.svgWidth/10)
+                        .attr("height", 10)
+                        .style("fill", d=>this.colorScale(d))
+        /*let legendQuantile = d3.legendColor()
+                                .labelFormat(d3.format(".1s"))
+                                .labelDelimiter("-")
+                                .shapeWidth(this.svgWidth/20)
+                                .cells(domain.length)
+                                .orient('horizontal')
+                                .scale(this.colorScale);
+        this.mapLegend.call(legendQuantile);*/
+        console.log(this.mapLegend.selectAll("g"));
         this.svgPath.selectAll("path")
             .style("fill", function(d){
                 //console.log(d.properties.NAME, data[d.properties.wikidata], colorScale((+data[d.properties.wikidata])));
