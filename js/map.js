@@ -55,16 +55,19 @@ class Map {
         this.layers.selectAll("#map-pop")
             .on("click", function() {
                 this.category = "pop";
+                this.mapLegend.html("");
                 this.addLayer();
             }.bind(this));
         this.layers.selectAll("#map-gdp")
             .on("click", function() {
                 this.category = "gdp";
+                this.mapLegend.html("");
                 this.addLayer();
             }.bind(this));
         this.layers.selectAll("#map-ori")
             .on("click", function() {
                 this.category = null;
+                this.mapLegend.html("");
                 this.drawMap(this.year);
             }.bind(this));
         this.domain = {};
@@ -74,6 +77,7 @@ class Map {
         this.data = null;
         this.year = null;
         this.clickedCountry = null;
+        this.clickedColor = "95c5de";
     }
 
     addLayer() {
@@ -86,7 +90,6 @@ class Map {
                             .domain(domain)
                             .range(range);
         let colNum = 5, linePadding = 15, rectHeight = 20, colPadding =5;
-        this.mapLegend.html("");
         let legendG = this.mapLegend.selectAll("g")
                         .data(domain)
                         .enter().append("g")
@@ -106,10 +109,14 @@ class Map {
         		})
         		.style("text-anchor", "middle");
         this.svgPath.selectAll("path")
-            .style("fill", function(d){
-                //console.log(d.properties.NAME, data[d.properties.wikidata], colorScale((+data[d.properties.wikidata])));
-                return this.colorScale((+this.data[d.properties.wikidata]));
-            }.bind(this));
+            .style("fill", function(outThis) {
+                    return function(d){
+                        //console.log(d.properties.NAME, data[d.properties.wikidata], colorScale((+data[d.properties.wikidata])));
+                        if (d.properties.wikidata === outThis.clickedCountry)
+                            return outThis.clickedColor;
+                        return outThis.colorScale((+outThis.data[d.properties.wikidata]));
+                    }
+            }(this));
     }
 
     generateColor(startColor, endColor, numIntervals){
@@ -259,7 +266,15 @@ class Map {
                 .append("path")
                 .attr("d", this.path)
                 .classed("countries", true)
-                .style("fill", d=>this.category != null? this.colorScale(+this.data[d.properties.wikidata]): null)
+                .style("fill", function(outThis) {
+                    return function(d) {
+                        if (d.properties.wikidata === outThis.clickedCountry) return outThis.clickedColor;
+                        else {
+                            if (outThis.category != null) return outThis.colorScale(+outThis.data[d.properties.wikidata]);
+                            else return null;
+                        }
+                    }
+                }(this))
                 .on("mouseover", function(d, i, n) {
                     let map = window.map;
                     /*if (map.currentMouse != null) {
@@ -278,13 +293,18 @@ class Map {
                         return function(d) {
                             let map = window.map;
                             if (map.currentMouse != null) {
-                                if (d != outThis.clickedCountry) {
-                                    d3.select(map.currentMouse).style("fill", d=>outThis.category != null? outThis.colorScale(+outThis.data[d.properties.wikidata]): null);
+                                if (d.properties.wikidata != outThis.clickedCountry) {
+                                    d3.select(map.currentMouse)
+                                    .transition()
+                                    .duration(500)
+                                    .style("fill", d=>outThis.category != null? outThis.colorScale(+outThis.data[d.properties.wikidata]): null);
                                     map.currentMouse = null;
                                 }
                                 else {
                                     d3.select(map.currentMouse)
-                                    .style("fill", "95c5de");
+                                    .transition()
+                                    .duration(500)
+                                    .style("fill", outThis.clickedColor);
                                 }
                             }
                        } 
@@ -295,8 +315,8 @@ class Map {
                                 outThis.svgPath.selectAll("path")
                                                 .style("fill", function(d1){
                                                     if (d1.properties.wikidata === d.properties.wikidata) {
-                                                        outThis.clickedCountry = d1;
-                                                        return "95c5de";
+                                                        outThis.clickedCountry = d1.properties.wikidata;
+                                                        return outThis.clickedColor;
                                                     }
                                                     else if (outThis.category != null) {
                                                         return outThis.colorScale(+outThis.data[d1.properties.wikidata]);
