@@ -23,10 +23,10 @@ class AggPanel {
         	.append("g")
         	.attr("id", "panel")
             .attr("transform", "translate(" + this.panelWidth*0.01 + ", 0)");
-        this.aggtip = this.aggRow.append("div")
+        this.aggtip = d3.select("body").append("div")
         				.attr("class", "agg-tooltip")
         				.style("opacity", 0);
-        this.eventtip = this.aggRow.append("div")
+        this.eventtip = d3.select("body").append("div")
                         .attr("class", "event-tooltip")
                         .style("opacity", 0);
         this.showEvents = false;
