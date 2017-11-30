@@ -13,13 +13,13 @@ class Map {
         let mapSvg = d3.select("#map")
             .attr("width", this.svgWidth)
             .attr("height", this.svgHeight);
-        let legendHeight = 150;
+        let legendHeight = 80;
+        this.legendWidth = this.svgWidth * 0.8;
         this.mapLegend =  d3.select("#map-legend")
-                            .attr("width", this.svgWidth)
+                            .attr("width", this.legendWidth)
                             .attr("height", legendHeight)
                             .append("g")
-                            .attr("class", "legendQuantile")
-                            .attr("transform", "translate(0,0)");
+                            .attr("class", "legendQuantile");
         this.svgDefs = mapSvg.append("defs");
         this.svgPath = mapSvg.append("g");
         this.svgGra = mapSvg.append("g");
@@ -94,13 +94,13 @@ class Map {
                         .data(domain)
                         .enter().append("g")
         legendG.append("rect")
-                .attr("x", (d, i)=>i%colNum*(this.svgWidth/colNum))
+                .attr("x", (d, i)=>i%colNum*(this.legendWidth/colNum))
                 .attr("y", (d, i)=>Math.floor(i/colNum)*(linePadding+rectHeight))
-                .attr("width", this.svgWidth/colNum-colPadding)
+                .attr("width", this.legendWidth/colNum-colPadding)
                 .attr("height", rectHeight)
                 .style("fill", d=>this.colorScale(d));
         legendG.append("text")
-        		.attr("x", (d, i)=>i%colNum*(this.svgWidth/colNum)+this.svgWidth/colNum/2)
+        		.attr("x", (d, i)=>i%colNum*(this.legendWidth/colNum)+this.legendWidth/colNum/2)
         		.attr("y", (d, i)=>Math.floor(i/colNum)*(linePadding+rectHeight)+rectHeight+13)
         		.text(function(d, i){
         			if (i == 0) return "Less than "+d3.format(".2s")(domain[1]);
