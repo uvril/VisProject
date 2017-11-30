@@ -255,9 +255,19 @@
 
 .agg-tooltip {   
     position: absolute;         
-    text-align: center;         
-    width: 100px;                    
+    text-align: center;                            
     height: 28px;                   
+    padding: 2px;               
+    font: 12px sans-serif;      
+    background: lightsteelblue; 
+    border: 0px;        
+    border-radius: 8px;         
+    pointer-events: none;           
+}
+
+.event-tooltip {   
+    position: absolute;                
+    width: 150px;                                       
     padding: 2px;               
     font: 12px sans-serif;      
     background: lightsteelblue; 
