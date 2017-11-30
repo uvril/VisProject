@@ -74,6 +74,7 @@ class Map {
         this.data = null;
         this.year = null;
         this.clickedCountry = null;
+        this.clickedColor = "yellow";
     }
 
     addLayer() {
@@ -106,10 +107,14 @@ class Map {
         		})
         		.style("text-anchor", "middle");
         this.svgPath.selectAll("path")
-            .style("fill", function(d){
-                //console.log(d.properties.NAME, data[d.properties.wikidata], colorScale((+data[d.properties.wikidata])));
-                return this.colorScale((+this.data[d.properties.wikidata]));
-            }.bind(this));
+            .style("fill", function(outThis) {
+                    return function(d){
+                        //console.log(d.properties.NAME, data[d.properties.wikidata], colorScale((+data[d.properties.wikidata])));
+                        if (d.properties.wikidata === outThis.clickedCountry)
+                            return outThis.clickedColor;
+                        return outThis.colorScale((+outThis.data[d.properties.wikidata]));
+                    }
+            }(this));
     }
 
     generateColor(startColor, endColor, numIntervals){
@@ -213,7 +218,10 @@ class Map {
         }.bind(this))
         .attr("startOffset", "5%")
         .style("fill", "black")
-        .style("fill-opacity", ".4")
+        .style("fill-opacity", function(d){
+            if (d.properties.wikidata === this.clickedCountry) return "1";
+            else return ".4";
+         }.bind(this))
             .style("font-size", function (d, i, n) {
                 let node = d3.select(n[i]);
                 let l = node.attr("textLength");
@@ -259,7 +267,15 @@ class Map {
                 .append("path")
                 .attr("d", this.path)
                 .classed("countries", true)
-                .style("fill", d=>this.category != null? this.colorScale(+this.data[d.properties.wikidata]): null)
+                .style("fill", function(outThis) {
+                    return function(d) {
+                        if (d.properties.wikidata === outThis.clickedCountry) return outThis.clickedColor;
+                        else {
+                            if (outThis.category != null) return outThis.colorScale(+outThis.data[d.properties.wikidata]);
+                            else return null;
+                        }
+                    }
+                }(this))
                 .on("mouseover", function(d, i, n) {
                     let map = window.map;
                     /*if (map.currentMouse != null) {
@@ -278,13 +294,13 @@ class Map {
                         return function(d) {
                             let map = window.map;
                             if (map.currentMouse != null) {
-                                if (d != outThis.clickedCountry) {
+                                if (d.properties.wikidata != outThis.clickedCountry) {
                                     d3.select(map.currentMouse).style("fill", d=>outThis.category != null? outThis.colorScale(+outThis.data[d.properties.wikidata]): null);
                                     map.currentMouse = null;
                                 }
                                 else {
                                     d3.select(map.currentMouse)
-                                    .style("fill", "yellow");
+                                    .style("fill", outThis.clickedColor);
                                 }
                             }
                        } 
@@ -295,8 +311,8 @@ class Map {
                                 outThis.svgPath.selectAll("path")
                                                 .style("fill", function(d1){
                                                     if (d1.properties.wikidata === d.properties.wikidata) {
-                                                        outThis.clickedCountry = d1;
-                                                        return "yellow";
+                                                        outThis.clickedCountry = d1.properties.wikidata;
+                                                        return outThis.clickedColor;
                                                     }
                                                     else if (outThis.category != null) {
                                                         return outThis.colorScale(+outThis.data[d1.properties.wikidata]);
