@@ -206,7 +206,6 @@ class AggPanel {
             }.bind(this));
             eventData.push([i, curEventData]);
         }
-        console.log(eventData);
         let eventGSel = this.eventG.selectAll("g")
         .data(eventData);
         eventGSel.exit().remove();
