@@ -26,6 +26,9 @@ class AggPanel {
         this.aggtip = this.aggRow.append("div")
         				.attr("class", "agg-tooltip")
         				.style("opacity", 0);
+        this.eventtip = this.aggRow.append("div")
+                        .attr("class", "event-tooltip")
+                        .style("opacity", 0);
         this.showEvents = false;
         aggRow.select("#showEvents").on("click", function() {
             this.showEvents = !this.showEvents;
@@ -229,10 +232,10 @@ class AggPanel {
                         .duration(200)
                         .attr("r", 5)
                         .style("opacity", 0.5);
-                    this.aggtip.transition()
+                    this.eventtip.transition()
                         .duration(200)
                         .style("opacity", .9);
-                    this.aggtip.html(d.event)
+                    this.eventtip.html(d.event)
                         .style("left", (d3.event.pageX) + "px")
                         .style("top", (d3.event.pageY-28) + "px");
 	        	}.bind(this))
@@ -243,7 +246,7 @@ class AggPanel {
                         .duration(500)
                         .attr("r", 3)
                         .style("opacity", 1);
-                    this.aggtip.transition()
+                    this.eventtip.transition()
                         .duration(500)
                         .style("opacity", 0);
 	        	}.bind(this));
@@ -317,7 +320,7 @@ class AggPanel {
 						tip.transition()
 							.duration(200)
 							.style("opacity", .9);
-						tip.html("year:"+d.year+"<br>"+"stats:"+d3.format(",")(d.stats))
+						tip.html("year:"+d.year+"<br>"+"stats:"+d3.format(",d")(d.stats))
 							.style("left", (d3.event.pageX) + "px")
 							.style("top", (d3.event.pageY-28) + "px");
 					}
