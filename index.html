@@ -12,32 +12,7 @@
     </head>
 
     <body>
-        <header>
-            <nav class="navbar navbar-expand-lg navbar-light bg-light">
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <a class="navbar-brand" href="#">A Mirror of Contemporary History</a>
-
-                <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
-                    <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-                        <li class="nav-item active">
-                            <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Process Book</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Screencast</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">About</a>
-                        </li>	  
-                    </ul>
-                </div>
-            </nav>
-        </header>
-
+        <div w3-include-html="header.html"></div>
         <div id="accordion" role="tablist">
             <div class="container-fluid">
                 <div class="card">
@@ -263,11 +238,17 @@
         <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
         <script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.0.0/bootstrap-slider.min.js"></script>
+        <script src="https://www.w3schools.com/lib/w3.js"></script>
         <script src="js/yearChart.js"></script>
         <script src="js/map.js"></script>
         <script src="js/infoPanel.js"></script>
         <script src="js/aggPanel.js"></script>
         <script src="js/rankView.js"></script>
         <script src="js/script.js"></script>
+        <script>
+            w3.includeHTML(function () {
+                d3.select("#navbar-home").classed("active", true);
+            });
+        </script>
     </body>
 </html>

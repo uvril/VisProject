@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <title>Visualization - Project </title>
+        <script src="https://www.w3schools.com/lib/w3.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="styles.css"/>
+    </head>
+
+    <body>
+        <div w3-include-html="header.html"></div>
+        <div id="accordion" role="tablist">
+            <div class="container-fluid">
+                About goes here
+            </div>
+        </div>
+        <script src="https://d3js.org/d3.v4.js"></script>
+        <script>
+            w3.includeHTML(function () {
+                d3.select("#navbar-about").classed("active", true);
+            });
+        </script>
+    </body>
+</html>
