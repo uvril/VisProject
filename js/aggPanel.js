@@ -1,5 +1,8 @@
 class AggPanel {
 	constructor	() {
+        this.trans = d3.transition()
+            .duration(1000)
+            .ease(d3.easeLinear);
         let aggRow = d3.select("#aggPanelRow");
         this.aggRow = aggRow;
         this.aggList = $('#aggPanelList').DataTable({paging:false, searching:false, info:false});
@@ -23,6 +26,14 @@ class AggPanel {
         this.aggtip = this.aggRow.append("div")
         				.attr("class", "agg-tooltip")
         				.style("opacity", 0);
+        this.showEvents = false;
+        aggRow.select("#showEvents").on("click", function() {
+            this.showEvents = !this.showEvents;
+            this.eventG.transition(this.trans).style("opacity", d => this.showEvents ? 1 : 0.1)
+            this.pathG.transition(this.trans).style("opacity", d => this.showEvents ? 0.1 : 1)
+            this.circleG.transition(this.trans).style("opacity", d => this.showEvents ? 0.1 : 1)
+            this.yAxisG.transition(this.trans).style("opacity", d => this.showEvents ? 0.1 : 1)
+        }.bind(this));
         this.xScale = d3.scaleLinear()
             .domain([this.startYear, this.endYear])
             .range([this.panelMargin, this.panelWidth-this.panelMargin]);
@@ -39,20 +50,22 @@ class AggPanel {
 					.style("stroke", "black");
 		this.pathG = this.panel.append("g");
 		this.circleG = this.panel.append("g");			
+        this.eventG = this.panel.append("g").style("opacity", "0.1");
         this.legend = aggSvg
         	.append("g")
         	.attr("id", "legend")
             .attr("transform", "translate(" + (this.panelWidth*1.02-this.panelMargin) + ", 0)");
+        this.startYear = 1960;
+        this.endYear = 2016;
         $("#yearRange").slider({ id: "yearSlider", min: 1960, max: 2016, range: true, value: [1960, 2016] });
         $("#yearRange").on("slide", function(event) {
             this.updateYearText(event.value[0], event.value[1]);
         }.bind(this));
         $("#yearRange").on("slideStop", function(event) {
+            this.startYear = +event.value[0];
+            this.endYear = +event.value[1];
             this.updateRange(event.value[0], event.value[1]);
         }.bind(this));
-        this.trans = d3.transition()
-            .duration(1000)
-            .ease(d3.easeLinear);
         //this.updateRange(1960, 2016);
         this.xAxis = d3.axisBottom();
         this.yAxis = d3.axisRight();
@@ -159,6 +172,7 @@ class AggPanel {
 
 //update dataset, xscale and yscale
 	updateDataset () {
+
 		this.dataset = []
 		let popMin = 99999999999, popMax = -1, extent = 0;
        	for (let index in this.selectedCountry) {
@@ -181,6 +195,63 @@ class AggPanel {
 	}
 
 	update() {
+        let eventData = [];
+        for (let i = this.startYear; i <= this.endYear; ++i) {
+            let curEventData = window.dataset.events[i];
+            curEventData = curEventData.filter(function (d) {
+                return d.wd in this.selectedCountry;
+            }.bind(this));
+            eventData.push([i, curEventData]);
+        }
+        console.log(eventData);
+        let eventGSel = this.eventG.selectAll("g")
+        .data(eventData);
+        eventGSel.exit().remove();
+        eventGSel = eventGSel.enter().append("g").merge(eventGSel);
+	    eventGSel.attr("data-year", d => d[0]);
+		let eventSel = eventGSel.selectAll("circle").data(d => d[1]);
+        eventSel.exit().remove();
+        eventSel = eventSel.enter().append("circle").merge(eventSel);
+        eventSel.transition(this.trans).attr("cx", function (d, i, n) {
+                    	let year = +n[i].parentNode.getAttribute("data-year");
+                    	return this.xScale(year);
+                	}.bind(this))
+        .attr("cy", (d, i) => 30 + i * 10)
+        .attr("r", 3)
+            .style("fill", function (d) {
+                return this.colors[this.selectedCountry[d.wd].index];
+            }.bind(this));
+        eventSel 
+	        	.on("mouseover", function(d, i, n) {
+                    if (!this.showEvents) return;
+                    d3.select(n[i])
+                        .transition()
+                        .duration(200)
+                        .attr("r", 5)
+                        .style("opacity", 0.5);
+                    this.aggtip.transition()
+                        .duration(200)
+                        .style("opacity", .9);
+                    this.aggtip.html(d.event)
+                        .style("left", (d3.event.pageX) + "px")
+                        .style("top", (d3.event.pageY-28) + "px");
+	        	}.bind(this))
+	        	.on("mouseout", function(d, i, n) {
+                    if (!this.showEvents) return;
+                    d3.select(n[i])
+                        .transition()
+                        .duration(500)
+                        .attr("r", 3)
+                        .style("opacity", 1);
+                    this.aggtip.transition()
+                        .duration(500)
+                        .style("opacity", 0);
+	        	}.bind(this));
+
+        eventGSel.attr("transform", function(d, i, n) {
+            let nc = n[i].childNodes.length;
+            return "translate(0," + (200 - nc*5) + ")";
+        });
 //add hovoring over line and legend
 		let lineThick = 2, lineThin = 1, legendFontBig = 10, legendFontSmall = 8;
 		let setStroke = function(id, lineSize, lineOpacity, legendFontSize) {

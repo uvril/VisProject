@@ -41,10 +41,13 @@ d3.json("data/pop.json", function(err, popdata) {
 		push_data("gdp", gdpdata);
         d3.json("data/cpi.json", function(err, cpidata){
 			push_data("cpi", cpidata);
-            let aggPanel = new AggPanel();
-            let infoPanel = new InfoPanel(aggPanel);
-            let map = new Map(infoPanel);
-            let yearChart = new YearChart(map); 
+            d3.json("data/events.json", function(err, evtdata){
+			    push_data("events", evtdata);
+                let aggPanel = new AggPanel();
+                let infoPanel = new InfoPanel(aggPanel);
+                let map = new Map(infoPanel);
+                let yearChart = new YearChart(map); 
+            })
         })
     })
 });

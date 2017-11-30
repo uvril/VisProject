@@ -81,7 +81,7 @@ class Map {
         let domain = this.domain[this.category];
         console.log(domain+"!!!");
         //let range = this.generateColor("#E0F2D4", "#192F0A", domain.length);
-        let range = ["#E0F2D4", "#A3D77F", "#66BC29", "#335E15", "#192F0A"]
+        let range = ["#F2F2F2", "#E0F2D4", "#A3D77F", "#66BC29", "#537E35"]
         this.colorScale = d3.scaleQuantile()
                             .domain(domain)
                             .range(range);
@@ -213,7 +213,7 @@ class Map {
         }.bind(this))
         .attr("startOffset", "5%")
         .style("fill", "black")
-        .style("fill-opacity", ".4")
+        .style("fill-opacity", ".9")
             .style("font-size", function (d, i, n) {
                 let node = d3.select(n[i]);
                 let l = node.attr("textLength");
@@ -267,7 +267,7 @@ class Map {
                     }*/
                     if (d.properties.NAME != "unclaimed") {
                         map.currentMouse = this;
-                        d3.select(this).style("fill", "BADA55");
+                        d3.select(this).style("fill", "d5e8f2");
                     }
                     else {
                         map.currentMouse = null;
@@ -284,7 +284,7 @@ class Map {
                                 }
                                 else {
                                     d3.select(map.currentMouse)
-                                    .style("fill", "yellow");
+                                    .style("fill", "95c5de");
                                 }
                             }
                        } 
@@ -296,7 +296,7 @@ class Map {
                                                 .style("fill", function(d1){
                                                     if (d1.properties.wikidata === d.properties.wikidata) {
                                                         outThis.clickedCountry = d1;
-                                                        return "yellow";
+                                                        return "95c5de";
                                                     }
                                                     else if (outThis.category != null) {
                                                         return outThis.colorScale(+outThis.data[d1.properties.wikidata]);

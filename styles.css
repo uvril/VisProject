@@ -265,3 +265,12 @@
     border-radius: 8px;         
     pointer-events: none;           
 }
+
+@font-face {
+	font-family: Optima;
+	src: url("./fonts/optima.ttf");
+}
+  
+#map text {
+	font-family: Optima;
+}
