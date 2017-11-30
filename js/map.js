@@ -295,15 +295,11 @@ class Map {
                             if (map.currentMouse != null) {
                                 if (d.properties.wikidata != outThis.clickedCountry) {
                                     d3.select(map.currentMouse)
-                                    .transition()
-                                    .duration(500)
                                     .style("fill", d=>outThis.category != null? outThis.colorScale(+outThis.data[d.properties.wikidata]): null);
                                     map.currentMouse = null;
                                 }
                                 else {
                                     d3.select(map.currentMouse)
-                                    .transition()
-                                    .duration(500)
                                     .style("fill", outThis.clickedColor);
                                 }
                             }
