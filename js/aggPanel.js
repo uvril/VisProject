@@ -317,7 +317,7 @@ class AggPanel {
 						tip.transition()
 							.duration(200)
 							.style("opacity", .9);
-						tip.html("year:"+d.year+"<br>"+"stats:"+d.stats)
+						tip.html("year:"+d.year+"<br>"+"stats:"+d3.format(",")(d.stats))
 							.style("left", (d3.event.pageX) + "px")
 							.style("top", (d3.event.pageY-28) + "px");
 					}
