@@ -12,207 +12,272 @@
     </head>
 
     <body>
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-9" id="middleWare">
-                    <div class="card text-center col-12">
-                        <div class="text-center col-1">
-                            <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#mapList">Heat Map</button>
-                            <div id="mapList" class="collapse in">
-                                <div class="btn-group" data-toggle="buttons" id="map-bnt">
-                                    <label class="btn btn-primary active" id="map-ori">
-                                        <input type="radio" name="options" checked> None
-                                    </label>
-                                    <label class="btn btn-primary" id="map-pop">
-                                        <input type="radio" name="options" > Poplation
-                                    </label>
-                                    <label class="btn btn-primary" id="map-gdp">
-                                        <input type="radio" name="options" > GDP
-                                    </label>
+
+
+
+        <header>
+
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <a class="navbar-brand" href="#">A Mirror of Contemporary History</a>
+
+                <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
+                    <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                        <li class="nav-item active">
+                            <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Process Book</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Screencast</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">About</a>
+                        </li>	  
+                    </ul>
+                </div>
+            </nav>
+        </header>
+
+        <div class="card">
+            <div class="card-header" role="tab" id="headingOne">
+                <h5 class="mb-0">
+                    <a data-toggle="collapse" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                        Map View
+                    </a>
+                </h5>
+            </div>
+
+            <div id="collapseOne" class="collapse show" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion">
+                <div class="card-body">
+
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-9" id="middleWare">
+                                <div class="card text-center col-12">
+                                    <div class="text-center col-1">
+                                        <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#mapList">Heat Map</button>
+                                        <div id="mapList" class="collapse in">
+                                            <div class="btn-group" data-toggle="buttons" id="map-bnt">
+                                                <label class="btn btn-primary active" id="map-ori">
+                                                    <input type="radio" name="options" checked> None
+                                                </label>
+                                                <label class="btn btn-primary" id="map-pop">
+                                                    <input type="radio" name="options" > Poplation
+                                                </label>
+                                                    <label class="btn btn-primary" id="map-gdp">
+                                                        <input type="radio" name="options" > GDP
+                                                    </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-body" id="mapContainer">
+                                        <div class="btn-group-vertical" role="group" aria-label="..." id="float-button-group">
+                                            <button type="button" class="btn btn-default" id="zoom-in"><span class="fa fa-search-plus" aria-hidden="true"></span></button>
+                                            <button type="button" class="btn btn-default" id="zoom-out"><span class="fa fa-search-minus" aria-hidden="true"></span></button>
+                                            <button type="button" class="btn btn-default" id="reset"><span class="fa fa-retweet" aria-hidden="true"></span></button>
+                                        </div>
+                                        <svg id="map-legend"></svg>
+                                        <svg id="map"></svg>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="card-body" id="mapContainer">
-                            <div class="btn-group-vertical" role="group" aria-label="..." id="float-button-group">
-                                <button type="button" class="btn btn-default" id="zoom-in"><span class="fa fa-search-plus" aria-hidden="true"></span></button>
-                                <button type="button" class="btn btn-default" id="zoom-out"><span class="fa fa-search-minus" aria-hidden="true"></span></button>
-                                <button type="button" class="btn btn-default" id="reset"><span class="fa fa-retweet" aria-hidden="true"></span></button>
-                            </div>
-                            <svg id="map-legend"></svg>
-                            <svg id="map"></svg>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-3">
-                    <div class="row">
-                        <div class="card text-center col-12">
-                            <div class="card-body" id="yearChart">
-                                <nav aria-label="Year navigation">
-                                    <ul class="pagination pagination-lg justify-content-center">
-                                        <li class="page-item" id="yearPrev">
-                                            <a class="page-link" href="#" aria-label="Previous">
-                                                <span aria-hidden="true">&laquo;</span>
-                                                <span class="sr-only">Previous</span>
-                                            </a>
-                                        </li>
-                                        <li class="page-item"><input type="text" style="z-index:9999;text-align:center" class="page-link" id="yearText" placeholder="Year" value="2016"></li>
-                                        <li class="page-item disabled"  id="yearNext">
-                                            <a class="page-link" href="#" aria-label="Next">
-                                                <span aria-hidden="true">&raquo;</span>
-                                                <span class="sr-only">Next</span>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </nav>
-                            </div>				
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="card text-center col-12">
-                            <div class="card-body" id="details">
-                                <img src="icons/globe.ico" id="countryIcon" alt="">
-                                <h4 class="card-title" id="countryNameLabel"></h4>
-                                <ul class="nav justify-content-center nav-tabs" id="info-nav" role="tablist">
-                                    <li class="nav-item"><a class="nav-link active" id="info-tab" href="#nav-info" data-toggle="tab" role="tab" aria-controls="nav-info" aria-selected="true">Information</a></li>
-                                    <li class="nav-item dropdown">
-                                        <a class="nav-link dropdown-toggle" id="stat-tab" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Statistics</a>
-                                        <div class="dropdown-menu">
-                                            <a class="dropdown-item" id="pop-tab" href="#nav-stat">Population</a>
-                                            <a class="dropdown-item" id="hdi-tab" href="#nav-stat">HDI</a>
+                            <div class="col-3">
+                                <div class="row">
+                                    <div class="card text-center col-12">
+                                        <div class="card-body" id="yearChart">
+                                            <nav aria-label="Year navigation">
+                                                <ul class="pagination pagination-lg justify-content-center">
+                                                    <li class="page-item" id="yearPrev">
+                                                        <a class="page-link" href="#" aria-label="Previous">
+                                                            <span aria-hidden="true">&laquo;</span>
+                                                            <span class="sr-only">Previous</span>
+                                                        </a>
+                                                    </li>
+                                                    <li class="page-item"><input type="text" style="z-index:9999;text-align:center" class="page-link" id="yearText" placeholder="Year" value="2016"></li>
+                                                    <li class="page-item disabled"  id="yearNext">
+                                                        <a class="page-link" href="#" aria-label="Next">
+                                                            <span aria-hidden="true">&raquo;</span>
+                                                            <span class="sr-only">Next</span>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </nav>
+                                        </div>				
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="card text-center col-12">
+                                        <div class="card-body" id="details">
+                                            <img src="icons/globe.ico" id="countryIcon" alt="">
+                                            <h4 class="card-title" id="countryNameLabel"></h4>
+                                            <ul class="nav justify-content-center nav-tabs" id="info-nav" role="tablist">
+                                                <li class="nav-item"><a class="nav-link active" id="info-tab" href="#nav-info" data-toggle="tab" role="tab" aria-controls="nav-info" aria-selected="true">Information</a></li>
+                                                <li class="nav-item dropdown">
+                                                    <a class="nav-link dropdown-toggle" id="stat-tab" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Statistics</a>
+                                                    <div class="dropdown-menu">
+                                                        <a class="dropdown-item" id="pop-tab" href="#nav-stat">Population</a>
+                                                        <a class="dropdown-item" id="hdi-tab" href="#nav-stat">HDI</a>
+                                                    </div>
+                                                </li>
+                                                <li class="nav-item"><a class="nav-link" id="wiki-tab" href="#nav-wiki" data-toggle="tab" role="tab" aria-controls="nav-wiki" aria-selected="false">Wikipedia</a></li>
+                                            </ul>
+                                            <div class="tab-content">
+                                                <div class="tab-pane fade show active" id="nav-info" role="tabpanel" aria-labelledby="info-tab">
+                                                    <div id="countryInfo" style="visibility:hidden">
+                                                        <table class="table" id="basicInfoTable">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <th scope="row">Capital</th>
+                                                                    <td id="table-capital"></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th scope="row">Continent</th>
+                                                                    <td id="table-continent"></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th scope="row">Head of State</th>
+                                                                    <td id="table-hos"></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th scope="row">Head of Gov</th>
+                                                                    <td id="table-hog"></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th scope="row">Population</th>
+                                                                    <td id="table-population"></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th scope="row">HDI</th>
+                                                                    <td id="table-hdi"></td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                                <div class="tab-pane fade" id="popView" role="tabpanel">
+                                                    <svg id="population">
+                                                        <g id="popShow"></g>
+                                                    </svg>
+                                                </div>
+                                                <div class="tab-pane fade" id="hdiView" role="tabpanel">
+                                                    <svg id="humanIndex"></svg>
+                                                </div>
+                                                <div class="tab-pane fade" id="nav-wiki" role="tabpanel" aria-labelledby="wiki-tab">
+                                                    <iframe style="border:none" id="wikipage"></iframe>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </li>
-                                    <li class="nav-item"><a class="nav-link" id="wiki-tab" href="#nav-wiki" data-toggle="tab" role="tab" aria-controls="nav-wiki" aria-selected="false">Wikipedia</a></li>
-                                </ul>
-                                <div class="tab-content">
-                                    <div class="tab-pane fade show active" id="nav-info" role="tabpanel" aria-labelledby="info-tab">
-                                        <div id="countryInfo" style="visibility:hidden">
-                                            <table class="table" id="basicInfoTable">
+                                        <div class="card-footer">
+                                            <button class="btn btn-info btn-sm" id="add-button">Compare</button>
+                                        </div>
+                                    </div>
+                                </div>				
+                            </div>
+                        </div>
+                    </div>			
+
+
+                </div>
+            </div>
+        </div>
+        </div>
+        <div class="card">
+            <div class="card-header" role="tab" id="headingTwo">
+                <h5 class="mb-0">
+                    <a class="collapsed" data-toggle="collapse" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                        Statistics View
+                    </a>
+                </h5>
+            </div>
+            <div id="collapseTwo" class="collapse show" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion">
+                <div class="card-body">
+
+                    <div class="row" id="aggPanelRow">
+
+
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <div>
+                                        <span class="yearRangeText">
+                                            <b id="yearRangeStartText">1960</b> - <b id="yearRangeEndText">2016</b>
+                                        </span>
+                                        <div class="yearRangeSlider"> 
+                                            <input id="yearRange" type="text"/><br/>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                                            <a class="navbar-brand" href="#">Navbar</a>
+                                            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                                                <span class="navbar-toggler-icon"></span>
+                                            </button>
+
+                                            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                                                <ul class="navbar-nav mr-auto" id="agg-nav">
+                                                    <li class="nav-item">
+                                                        <a class="nav-link active" id="agg-pop">Population</a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link" id="agg-gdp">GDP</a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link" id="agg-cpi">CPI</a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            <form class="form-inline form-check my-2 my-lg-0">
+                                                <label class="form-check-label">
+                                                    <input class="form-check-input" type="checkbox" id="showEvents">
+                                                    Show Events
+                                                </label>
+                                            </form>
+                                        </nav>
+                                    </div>
+                                    <div class="row">
+
+
+                                        <div class="col-8" id="aggPanelDiv">
+                                            <svg id="aggPanel"></svg>
+                                        </div>
+                                        <div class="col-4">
+                                            <table id="aggPanelList" class="table table-striped table-bordered" style="border-spacing:0;width=100%">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Country</th>
+                                                        <th>1960</th>
+                                                        <th>2016</th>
+                                                        <th>Remove</th>
+                                                    </tr>
+                                                </thead>
+
                                                 <tbody>
-                                                    <tr>
-                                                        <th scope="row">Capital</th>
-                                                        <td id="table-capital"></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th scope="row">Continent</th>
-                                                        <td id="table-continent"></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th scope="row">Head of State</th>
-                                                        <td id="table-hos"></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th scope="row">Head of Gov</th>
-                                                        <td id="table-hog"></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th scope="row">Population</th>
-                                                        <td id="table-population"></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th scope="row">HDI</th>
-                                                        <td id="table-hdi"></td>
-                                                    </tr>
                                                 </tbody>
                                             </table>
-                                        </div>
-                                    </div>
-                                    <div class="tab-pane fade" id="popView" role="tabpanel">
-                                        <svg id="population">
-                                            <g id="popShow"></g>
-                                        </svg>
-                                    </div>
-                                    <div class="tab-pane fade" id="hdiView" role="tabpanel">
-                                        <svg id="humanIndex"></svg>
-                                    </div>
-                                    <div class="tab-pane fade" id="nav-wiki" role="tabpanel" aria-labelledby="wiki-tab">
-                                        <iframe style="border:none" id="wikipage"></iframe>
+                                        </div>							
                                     </div>
                                 </div>
                             </div>
-                            <div class="card-footer">
-                                <button class="btn btn-info btn-sm" id="add-button">Compare</button>
-                            </div>
                         </div>
-                    </div>				
+                    </div>            	  
+
+
+
+
                 </div>
             </div>
-            <div class="row" id="aggPanelRow">
-
-
-                <div class="col-12">
-                    <div class="card">
-                        <div class="card-header">
-                            <div>
-                                <span class="yearRangeText">
-                                <b id="yearRangeStartText">1960</b> - <b id="yearRangeEndText">2016</b>
-                                </span>
-                                <div class="yearRangeSlider"> 
-                                    <input id="yearRange" type="text"/><br/>
-                                </div>
-                            </div>
-
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <nav class="navbar navbar-expand-lg navbar-light bg-light">
-                                    <a class="navbar-brand" href="#">Navbar</a>
-                                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                                        <span class="navbar-toggler-icon"></span>
-                                    </button>
-
-                                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                                        <ul class="navbar-nav mr-auto" id="agg-nav">
-                                            <li class="nav-item">
-                                                <a class="nav-link active" id="agg-pop">Population</a>
-                                            </li>
-                                            <li class="nav-item">
-                                                <a class="nav-link" id="agg-gdp">GDP</a>
-                                            </li>
-                                            <li class="nav-item">
-                                                <a class="nav-link" id="agg-cpi">CPI</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <form class="form-inline form-check my-2 my-lg-0">
-                                        <label class="form-check-label">
-                                            <input class="form-check-input" type="checkbox" id="showEvents">
-                                            Show Events
-                                        </label>
-                                    </form>
-                                </nav>
-                            </div>
-                            <div class="row">
-
-
-                                <div class="col-8" id="aggPanelDiv">
-                                    <svg id="aggPanel"></svg>
-                                </div>
-                                <div class="col-4">
-                                    <table id="aggPanelList" class="table table-striped table-bordered" style="border-spacing:0;width=100%">
-                                        <thead>
-                                            <tr>
-                                                <th>Country</th>
-                                                <th>1960</th>
-                                                <th>2016</th>
-                                                <th>Remove</th>
-                                            </tr>
-                                        </thead>
-
-                                        <tbody>
-                                        </tbody>
-                                    </table>
-                                </div>							
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-12">
-                    <svg id="rankView"></svg>
-                </div>
-            </div>            
         </div>
+
+
+
+
 
 
         <script src="https://d3js.org/d3.v4.js"></script>
@@ -229,7 +294,6 @@
         <script type="application/javascript" src="js/map.js"></script>
         <script type="application/javascript" src="js/infoPanel.js"></script>
         <script type="application/javascript" src="js/aggPanel.js"></script>
-        <script type="application/javascript" src="js/rankView.js"></script>
         <script type="application/javascript" src="js/script.js"></script>
     </body>
 </html>
