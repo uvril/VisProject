@@ -77,7 +77,7 @@ class Map {
         this.data = null;
         this.year = null;
         this.clickedCountry = null;
-        this.clickedColor = "yellow";
+        this.clickedColor = "95c5de";
     }
 
     addLayer() {
@@ -85,7 +85,7 @@ class Map {
         let domain = this.domain[this.category];
         console.log(domain+"!!!");
         //let range = this.generateColor("#E0F2D4", "#192F0A", domain.length);
-        let range = ["#E0F2D4", "#A3D77F", "#66BC29", "#335E15", "#192F0A"]
+        let range = ["#F2F2F2", "#E0F2D4", "#A3D77F", "#66BC29", "#537E35"]
         this.colorScale = d3.scaleQuantile()
                             .domain(domain)
                             .range(range);
@@ -220,10 +220,7 @@ class Map {
         }.bind(this))
         .attr("startOffset", "5%")
         .style("fill", "black")
-        .style("fill-opacity", function(d){
-            if (d.properties.wikidata === this.clickedCountry) return "1";
-            else return ".4";
-         }.bind(this))
+        .style("fill-opacity", ".9")
             .style("font-size", function (d, i, n) {
                 let node = d3.select(n[i]);
                 let l = node.attr("textLength");
@@ -285,7 +282,7 @@ class Map {
                     }*/
                     if (d.properties.NAME != "unclaimed") {
                         map.currentMouse = this;
-                        d3.select(this).style("fill", "BADA55");
+                        d3.select(this).style("fill", "d5e8f2");
                     }
                     else {
                         map.currentMouse = null;
