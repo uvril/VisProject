@@ -55,16 +55,19 @@ class Map {
         this.layers.selectAll("#map-pop")
             .on("click", function() {
                 this.category = "pop";
+                this.mapLegend.html("");
                 this.addLayer();
             }.bind(this));
         this.layers.selectAll("#map-gdp")
             .on("click", function() {
                 this.category = "gdp";
+                this.mapLegend.html("");
                 this.addLayer();
             }.bind(this));
         this.layers.selectAll("#map-ori")
             .on("click", function() {
                 this.category = null;
+                this.mapLegend.html("");
                 this.drawMap(this.year);
             }.bind(this));
         this.domain = {};
@@ -87,7 +90,6 @@ class Map {
                             .domain(domain)
                             .range(range);
         let colNum = 5, linePadding = 15, rectHeight = 20, colPadding =5;
-        this.mapLegend.html("");
         let legendG = this.mapLegend.selectAll("g")
                         .data(domain)
                         .enter().append("g")
