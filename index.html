@@ -13,6 +13,30 @@
 
     <body>
         <div w3-include-html="header.html"></div>
+
+
+
+        <div class="card text-center col-12">
+            <div class="card-body" id="yearChart">
+                <nav aria-label="Year navigation">
+                    <ul class="pagination pagination-lg justify-content-center">
+                        <li class="page-item" id="yearPrev">
+                            <a class="page-link" href="#" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                                <span class="sr-only">Previous</span>
+                            </a>
+                        </li>
+                        <li class="page-item"><input type="text" style="z-index:9999;text-align:center" class="page-link" id="yearText" placeholder="Year" value="2016"></li>
+                        <li class="page-item disabled"  id="yearNext">
+                            <a class="page-link" href="#" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                                <span class="sr-only">Next</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>				
+        </div>		
         <div id="accordion" role="tablist">
             <div class="container-fluid">
                 <div class="card">
@@ -25,12 +49,25 @@
                     </div>
                     <div id="collapseOne" class="collapse show" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion">
                         <div class="card-body">
-                            <div class="row">
-                                <div class="col-9" id="middleWare">
-                                    <div class="card text-center col-12">
-                                        <div class="card-body" id="mapContainer">
 
-                                        <div class="text-center col-1" style="position:absolute">
+                            <div class="col-12" id="middleWare">
+                                <div class="card text-center">
+                                    <div class="card-body" id="mapContainer">
+
+                                        <div class="svg-container">
+                                            <svg id="mapSvg">
+                                                <g id="map"></g>
+                                                <g id="map-legend" class="legendQuantile"></g>
+                                            </svg>
+                                        </div>
+
+                                        <div class="btn-group-vertical" role="group" aria-label="..." id="float-button-group">
+                                            <button type="button" class="btn btn-default" id="zoom-in"><span class="fa fa-search-plus" aria-hidden="true"></span></button>
+                                            <button type="button" class="btn btn-default" id="zoom-out"><span class="fa fa-search-minus" aria-hidden="true"></span></button>
+                                            <button type="button" class="btn btn-default" id="reset"><span class="fa fa-retweet" aria-hidden="true"></span></button>
+                                        </div>
+
+                                        <div class="text-center" style="position:absolute;float:left;left:5%;top:12%;">
                                             <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#mapList">Heat Map</button>
                                             <div id="mapList" class="collapse in">
                                                 <div class="btn-group-vertical" data-toggle="buttons" id="map-bnt">
@@ -46,55 +83,27 @@
                                                 </div>
                                             </div>
                                         </div>
-                                            <div class="btn-group-vertical" role="group" aria-label="..." id="float-button-group">
-                                                <button type="button" class="btn btn-default" id="zoom-in"><span class="fa fa-search-plus" aria-hidden="true"></span></button>
-                                                <button type="button" class="btn btn-default" id="zoom-out"><span class="fa fa-search-minus" aria-hidden="true"></span></button>
-                                                <button type="button" class="btn btn-default" id="reset"><span class="fa fa-retweet" aria-hidden="true"></span></button>
-                                            </div>
-                                            <svg id="map-legend" style="float:left"></svg>
-                                            <svg id="map"></svg>
-                                        </div>
+
+
                                     </div>
                                 </div>
-                                <div class="col-3">
-                                    <div class="card text-center col-12">
-                                        <div class="card-body" id="yearChart">
-                                            <nav aria-label="Year navigation">
-                                                <ul class="pagination pagination-lg justify-content-center">
-                                                    <li class="page-item" id="yearPrev">
-                                                        <a class="page-link" href="#" aria-label="Previous">
-                                                            <span aria-hidden="true">&laquo;</span>
-                                                            <span class="sr-only">Previous</span>
-                                                        </a>
-                                                    </li>
-                                                    <li class="page-item"><input type="text" style="z-index:9999;text-align:center" class="page-link" id="yearText" placeholder="Year" value="2016"></li>
-                                                    <li class="page-item disabled"  id="yearNext">
-                                                        <a class="page-link" href="#" aria-label="Next">
-                                                            <span aria-hidden="true">&raquo;</span>
-                                                            <span class="sr-only">Next</span>
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                            </nav>
-                                        </div>				
-                                    </div>
-                                    <div class="card text-center col-12">
-                                        <div class="card-body" id="details">
-                                            <img src="icons/globe.ico" id="countryIcon" alt="">
-                                            <h4 class="card-title" id="countryNameLabel"></h4>
-                                            <ul class="nav justify-content-center nav-tabs" id="info-nav" role="tablist">
-                                                <li class="nav-item"><a class="nav-link active" id="info-tab" href="#nav-info" data-toggle="tab" role="tab" aria-controls="nav-info" aria-selected="true">Information</a></li>
-                                                <li class="nav-item dropdown">
-                                                    <a class="nav-link dropdown-toggle" id="stat-tab" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Statistics</a>
-                                                    <div class="dropdown-menu">
-                                                        <a class="dropdown-item" id="pop-tab" href="#nav-stat">Population</a>
-                                                        <a class="dropdown-item" id="hdi-tab" href="#nav-stat">HDI</a>
-                                                    </div>
-                                                </li>
-                                                <li class="nav-item"><a class="nav-link" id="wiki-tab" href="#nav-wiki" data-toggle="tab" role="tab" aria-controls="nav-wiki" aria-selected="false">Wikipedia</a></li>
-                                            </ul>
-                                            <div class="tab-content">
-                                                <div class="tab-pane fade show active" id="nav-info" role="tabpanel" aria-labelledby="info-tab">
+                            </div>
+                                    <a href="#" data-target="#sidebar" data-toggle="collapse"><i class="fa fa-navicon fa-2x py-2 p-1" style="position:absolute;top:10%;left:60%"></i></a>
+                                    <div class="collapse width" id="sidebar" style="position:absolute;top:10%;float:left;">
+                                        <div class="card text-center" id="mySidenav" style="word-wrap:normal">
+                                            <div class="card-header">
+                                                <h5 class="mb-0">
+                                                    Information Panel
+                                                </h5>
+                                            </div>
+                                            <div class="card-body" id="details">
+                                                <div class="countryIconDiv" align="center">
+                                                <img src="icons/globe.ico" id="countryIcon" alt="">
+                                                </div>
+                                                <h4 class="card-title" id="countryNameLabel"></h4>
+
+
+                                                <div id="nav-info">
                                                     <div id="countryInfo" style="visibility:hidden">
                                                         <table class="table" id="basicInfoTable">
                                                             <tbody>
@@ -126,28 +135,19 @@
                                                         </table>
                                                     </div>
                                                 </div>
-                                                <div class="tab-pane fade" id="popView" role="tabpanel">
-                                                    <svg id="population">
-                                                        <g id="popShow"></g>
-                                                    </svg>
-                                                </div>
-                                                <div class="tab-pane fade" id="hdiView" role="tabpanel">
-                                                    <svg id="humanIndex"></svg>
-                                                </div>
-                                                <div class="tab-pane fade" id="nav-wiki" role="tabpanel" aria-labelledby="wiki-tab">
-                                                    <iframe style="border:none" id="wikipage"></iframe>
-                                                </div>
+                                            </div>
+                                            <div class="card-footer">
+                                                <button class="btn btn-info btn-sm" id="add-button">Select</button>
                                             </div>
                                         </div>
-                                        <div class="card-footer">
-                                            <button class="btn btn-info btn-sm" id="add-button">Compare</button>
-                                        </div>
                                     </div>
-                                </div>
-                            </div>			
-                        </div>			
-                    </div>
-                </div>
+
+
+
+                        </div>
+                    </div>			
+                </div>			
+
 
                 <div class="card">
                     <div class="card-header" role="tab" id="headingTwo">
@@ -265,9 +265,9 @@
         <script src="js/rankView.js"></script>
         <script src="js/script.js"></script>
         <script>
-            w3.includeHTML(function () {
-                d3.select("#navbar-home").classed("active", true);
-            });
+w3.includeHTML(function () {
+    d3.select("#navbar-home").classed("active", true);
+});
         </script>
     </body>
 </html>
