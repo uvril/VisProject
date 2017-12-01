@@ -12,81 +12,51 @@
     </head>
 
     <body>
+        <div w3-include-html="header.html"></div>
+        <div id="accordion" role="tablist">
+            <div class="container-fluid">
+                <div class="card">
+                    <div class="card-header" role="tab" id="headingOne">
+                        <h5 class="mb-0">
+                            <a data-toggle="collapse" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                Map View
+                            </a>
+                        </h5>
+                    </div>
+                    <div id="collapseOne" class="collapse show" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-9" id="middleWare">
+                                    <div class="card text-center col-12">
+                                        <div class="card-body" id="mapContainer">
 
-
-
-        <header>
-
-            <nav class="navbar navbar-expand-lg navbar-light bg-light">
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <a class="navbar-brand" href="#">A Mirror of Contemporary History</a>
-
-                <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
-                    <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-                        <li class="nav-item active">
-                            <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Process Book</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Screencast</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">About</a>
-                        </li>	  
-                    </ul>
-                </div>
-            </nav>
-        </header>
-
-        <div class="card">
-            <div class="card-header" role="tab" id="headingOne">
-                <h5 class="mb-0">
-                    <a data-toggle="collapse" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                        Map View
-                    </a>
-                </h5>
-            </div>
-
-            <div id="collapseOne" class="collapse show" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion">
-                <div class="card-body">
-
-                    <div class="container-fluid">
-                        <div class="row">
-                            <div class="col-9" id="middleWare">
-                                <div class="card text-center col-12">
-                                    <div class="text-center col-1">
-                                        <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#mapList">Heat Map</button>
-                                        <div id="mapList" class="collapse in">
-                                            <div class="btn-group" data-toggle="buttons" id="map-bnt">
-                                                <label class="btn btn-primary active" id="map-ori">
-                                                    <input type="radio" name="options" checked> None
-                                                </label>
-                                                <label class="btn btn-primary" id="map-pop">
-                                                    <input type="radio" name="options" > Poplation
-                                                </label>
-                                                    <label class="btn btn-primary" id="map-gdp">
-                                                        <input type="radio" name="options" > GDP
+                                        <div class="text-center col-1" style="position:absolute">
+                                            <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#mapList">Heat Map</button>
+                                            <div id="mapList" class="collapse in">
+                                                <div class="btn-group-vertical" data-toggle="buttons" id="map-bnt">
+                                                    <label class="btn btn-primary active" id="map-ori">
+                                                        <input type="radio" name="options" checked> None
                                                     </label>
+                                                    <label class="btn btn-primary" id="map-pop">
+                                                        <input type="radio" name="options" > Poplation
+                                                    </label>
+                                                        <label class="btn btn-primary" id="map-gdp">
+                                                            <input type="radio" name="options" > GDP
+                                                        </label>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="card-body" id="mapContainer">
-                                        <div class="btn-group-vertical" role="group" aria-label="..." id="float-button-group">
-                                            <button type="button" class="btn btn-default" id="zoom-in"><span class="fa fa-search-plus" aria-hidden="true"></span></button>
-                                            <button type="button" class="btn btn-default" id="zoom-out"><span class="fa fa-search-minus" aria-hidden="true"></span></button>
-                                            <button type="button" class="btn btn-default" id="reset"><span class="fa fa-retweet" aria-hidden="true"></span></button>
+                                            <div class="btn-group-vertical" role="group" aria-label="..." id="float-button-group">
+                                                <button type="button" class="btn btn-default" id="zoom-in"><span class="fa fa-search-plus" aria-hidden="true"></span></button>
+                                                <button type="button" class="btn btn-default" id="zoom-out"><span class="fa fa-search-minus" aria-hidden="true"></span></button>
+                                                <button type="button" class="btn btn-default" id="reset"><span class="fa fa-retweet" aria-hidden="true"></span></button>
+                                            </div>
+                                            <svg id="map-legend" style="float:left"></svg>
+                                            <svg id="map"></svg>
                                         </div>
-                                        <svg id="map-legend"></svg>
-                                        <svg id="map"></svg>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-3">
-                                <div class="row">
+                                <div class="col-3">
                                     <div class="card text-center col-12">
                                         <div class="card-body" id="yearChart">
                                             <nav aria-label="Year navigation">
@@ -108,8 +78,6 @@
                                             </nav>
                                         </div>				
                                     </div>
-                                </div>
-                                <div class="row">
                                     <div class="card text-center col-12">
                                         <div class="card-body" id="details">
                                             <img src="icons/globe.ico" id="countryIcon" alt="">
@@ -175,32 +143,23 @@
                                             <button class="btn btn-info btn-sm" id="add-button">Compare</button>
                                         </div>
                                     </div>
-                                </div>				
-                            </div>
-                        </div>
-                    </div>			
-
-
+                                </div>
+                            </div>			
+                        </div>			
+                    </div>
                 </div>
-            </div>
-        </div>
-        </div>
-        <div class="card">
-            <div class="card-header" role="tab" id="headingTwo">
-                <h5 class="mb-0">
-                    <a class="collapsed" data-toggle="collapse" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                        Statistics View
-                    </a>
-                </h5>
-            </div>
-            <div id="collapseTwo" class="collapse show" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion">
-                <div class="card-body">
 
-                    <div class="row" id="aggPanelRow">
-
-
-                        <div class="col-12">
-                            <div class="card">
+                <div class="card">
+                    <div class="card-header" role="tab" id="headingTwo">
+                        <h5 class="mb-0">
+                            <a class="collapsed" data-toggle="collapse" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                Statistics View
+                            </a>
+                        </h5>
+                    </div>
+                    <div id="collapseTwo" class="collapse show" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion">
+                        <div class="card-body">
+                            <div class="card" id="aggPanelRow">
                                 <div class="card-header">
                                     <div>
                                         <span class="yearRangeText">
@@ -242,8 +201,6 @@
                                         </nav>
                                     </div>
                                     <div class="row">
-
-
                                         <div class="col-8" id="aggPanelDiv">
                                             <svg id="aggPanel"></svg>
                                         </div>
@@ -266,23 +223,25 @@
                                 </div>
                             </div>
                         </div>
-                    </div>            	  
-
-
-
-
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header"></div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-8" id="rankViewDiv">
+                                <svg id="rankView"></svg>
+                            </div>                      
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
 
-
-
-
-
         <script src="https://d3js.org/d3.v4.js"></script>
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.9.0/d3-legend.js"></script>
-        <script type="text/javascript" src="bower_components/d3-tip/index.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.9.0/d3-legend.js"></script>
+        <script src="bower_components/d3-tip/index.js"></script>
         <script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
         <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
@@ -290,11 +249,17 @@
         <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
         <script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.0.0/bootstrap-slider.min.js"></script>
-        <script type="application/javascript" src="js/yearChart.js"></script>
-        <script type="application/javascript" src="js/map.js"></script>
-        <script type="application/javascript" src="js/infoPanel.js"></script>
-        <script type="application/javascript" src="js/aggPanel.js"></script>
-		<script type="application/javascript" src="js/rankView.js"></script>
-        <script type="application/javascript" src="js/script.js"></script>
+        <script src="https://www.w3schools.com/lib/w3.js"></script>
+        <script src="js/yearChart.js"></script>
+        <script src="js/map.js"></script>
+        <script src="js/infoPanel.js"></script>
+        <script src="js/aggPanel.js"></script>
+        <script src="js/rankView.js"></script>
+        <script src="js/script.js"></script>
+        <script>
+            w3.includeHTML(function () {
+                d3.select("#navbar-home").classed("active", true);
+            });
+        </script>
     </body>
 </html>

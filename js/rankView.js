@@ -5,13 +5,14 @@ class RankView {
 		this.rankView = d3.select("#rankView")
 							.attr("width", this.svgWidth)
 							.attr("height", this.svgHeight);
-		this.category = "pop";
+		this.category = "gdp";
 	}
 
 	update() {
 		let wd = "148";
-		let data = window.dataset[this.category]["2015"];
+		let data = window.dataset[this.category]["2014"];
 		let metaInfo = [];
+		let barWidth = 15, barHeight = 200;
 		
 		for (let i in data) {
 			metaInfo.push({
@@ -26,26 +27,28 @@ class RankView {
 			d.rank = i+1;
 		});
 		let maxData = d3.max(metaInfo, d=>d.stats);
-		console.log(maxData);
+		console.log(metaInfo);
 		let groups = this.rankView.selectAll("g")
 									.data([metaInfo])
 									.enter().append("g")
-									.attr("transform", "translate(0,10)");
+									.attr("transform", "translate(0,0)");
 		groups.append("rect")
 				.attr("x", 0)
 				.attr("y", 0)
-				.attr("height", 200)
-				.attr("width", 100)
-				.style("fill", "grey");
+				.attr("height", barWidth*metaInfo.length)
+				.attr("width", barHeight)
+				.style("fill", "AliceBlue");
 
 		let areaGenerator = d3.area()
-								.x((d, i)=>i+10)
-								.y((d, i)=>i+10)
+								.x((d)=>d.stats/maxData*barHeight)
+								.y1((d, i)=>i*barWidth);
 
 		groups.append("path")
+				.style("fill", "CornflowerBlue")
 				.attr("d", areaGenerator)
-				.style("fill", "black")
-				.style("stroke", "grey");
+				.on("mousemove", function(){
+					console.log(d3.event, d3.event.mouseY/barWidth, metaInfo[Math.floor(d3.event.mouseY/barWidth)]);
+				});
 
 
 	}
