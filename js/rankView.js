@@ -1,11 +1,11 @@
 class RankView {
 	constructor() {
-		this.svgWidth = 400;
+		this.svgWidth = 800;
 		this.svgHeight = 400;
 		this.rankView = d3.select("#rankView")
 							.attr("width", this.svgWidth)
 							.attr("height", this.svgHeight);
-		this.category = "gdp";
+		this.category = ["pop", "gdp", "cpi"];
         this.rankTip = d3.select("body").append("div")
         				.attr("class", "agg-tooltip")
         				.style("opacity", 0);
@@ -15,34 +15,50 @@ class RankView {
 		let wd = clikedCountry, countryName = wdMap[wd];
 		console.log(wd, countryName)
 		console.log(year);
-		let data = window.dataset[this.category][year];
 		let metaInfo = [];
-		let barWidth = 8, barHeight = 120;
-		
-		for (let i in data) {
-			metaInfo.push({
-				wd: i,
-				stats: data[i]
-			})
-		}
-		metaInfo.sort(function(a, b) { return d3.descending(a.stats, b.stats); });
-		metaInfo = metaInfo.splice(0, 41);
-		let thisRank = -1;
+		let barWidth = 8, barHeight = 120, chartPadding = 100, selectedNum = 41;
+		this.category.forEach(function(category){
+			let data = window.dataset[category][year];
+			let metaG = []
+			for (let i in data) {
+				metaG.push({
+					wd: i,
+					stats: data[i]
+				})
+			}
+			metaInfo.push(metaG);
+		})
+		for (let i = 0; i < metaInfo.length-1; ++i) {
+			metaInfo[i].sort(function(a, b) { return d3.descending(a.stats, b.stats); });
+			metaInfo[i] = metaInfo[i].splice(0, selectedNum);
+		};
+		let thisRank = [];
 		for (let i in metaInfo) {
-			if (metaInfo[i].wd === wd) thisRank = +i+1;
-			metaInfo[i].rank = +i+1;
+			let flag = false;
+			for (let j in metaInfo[i]) {
+				if (metaInfo[i][j].wd === wd) {
+					flag = true;
+					thisRank.push(+j+1);
+				}
+				metaInfo[i][j].rank = +j+1;
+			}
+			if (!flag) thisRank.push(-1);
 		}
-		let maxData = d3.max(metaInfo, d=>d.stats);
-		//console.log(metaInfo);
+		let maxData = [];
+		for (let i in metaInfo) {
+			if (thisRank[i] == -1) maxData.push(-1);
+			else maxData.push(d3.max(metaInfo[i], d=>d.stats));
+		}
+		console.log(maxData);
+
 		let groups = this.rankView.selectAll("g")
-									.data([metaInfo])
-									.attr("transform", "translate(10,10)");
+									.data(metaInfo);
 
 		groups = groups.enter().append("g").merge(groups);
-		
+		groups.attr("transform", (d,i)=>"translate("+i*(barHeight+chartPadding)+",10)");
 		groups.html("");
 
-		let tipShow = function(event) {
+		/*let tipShow = function(event) {
             this.rankTip.transition()
                 .duration(200)
                 .style("opacity", .9);
@@ -75,26 +91,26 @@ class RankView {
             this.rankTip.transition()
                 .duration(500)
                 .style("opacity", 0);
-		}.bind(this);
+		}.bind(this);*/
 
 		groups.append("rect")
 				.attr("x", 0)
 				.attr("y", 0)
-				.attr("height", barWidth*(metaInfo.length-1))
+				.attr("height", (d,i)=>barWidth*(selectedNum-1))
 				.attr("width", barHeight)
 				.style("fill", "AliceBlue")
 				.on("mousemove", function(){
-					tipShow(d3.event);
+					//tipShow(d3.event);
 				})
 				.on("mouseout", function(){
-					tipUnshow();
+					//tipUnshow();
 				});
 
 		let areaGenerator = d3.area()
 								.x0(0)
-								.x1(function(d){
-									//console.log(d.stats/maxData*barHeight);
-									return d.stats/maxData*barHeight;
+								.x1(function(d, i){
+									console.log(d.stats, i);
+									return d.stats/maxData[i]*barHeight;
 								})
 								.y(function(d, i){
 									//console.log(i*barWidth, i);
@@ -105,13 +121,13 @@ class RankView {
 				.style("fill", "CornflowerBlue")
 				.attr("d", areaGenerator)
 				.on("mousemove", function(){
-					tipShow(d3.event);
+					//tipShow(d3.event);
 				})
 				.on("mouseout", function(){
-					tipUnshow();
+					//tipUnshow();
 				});
 
-		if (thisRank != -1) {
+		/*if (thisRank != -1) {
 			groups.append("circle")
 					.attr("cx", metaInfo[thisRank-1].stats/maxData*barHeight)
 					.attr("cy", (thisRank-1)*barWidth)
@@ -139,6 +155,6 @@ class RankView {
 					.on("mouseout", function(){
 						tipUnshow();
 					});
-		}
+		}*/
 	}
 }

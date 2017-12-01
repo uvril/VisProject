@@ -329,8 +329,8 @@ class Map {
                             }
                         }
                 }(this));
-
-            this.rankView.update(this.clickedCountry, this.wdMap, this.year);
+            if (this.clickedCountry != null) 
+                this.rankView.update(this.clickedCountry, this.wdMap, this.year);
 
             let graticule = d3.geoGraticule();
 
