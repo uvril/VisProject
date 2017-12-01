@@ -1,7 +1,8 @@
 class Map {
 
-    constructor(infoPanel) {
+    constructor(infoPanel, rankView) {
         this.curData = null;
+        this.wdMap = {};
         this.mapContainer = d3.select("#mapContainer");
         this.svgBounds = this.mapContainer.node().getBoundingClientRect();
         this.svgWidth = this.svgBounds.width - 40;
@@ -10,6 +11,7 @@ class Map {
         this.path = d3.geoPath()
             .projection(this.projection);		
         this.infoPanel = infoPanel;
+        this.rankView = rankView;
         let mapSvg = d3.select("#map")
             .attr("width", this.svgWidth)
             .attr("height", this.svgHeight);
@@ -254,6 +256,7 @@ class Map {
 				if (geoData.features[i].properties.wikidata === "212429") {
 					geoData.features[i].properties.wikidata = "142";
 				}
+                this.wdMap[geoData.features[i].properties.wikidata] = geoData.features[i].properties.NAME;
 			}
 		
             this.curData = geoData;
@@ -322,6 +325,7 @@ class Map {
                                                 });
                                 outThis.svgText.selectAll("textPath").style("fill-opacity", d1 => d1.properties.wikidata === d.properties.wikidata ? 1 : 0.4);
                                 outThis.infoPanel.updateInfo(d.properties, year);
+                                outThis.rankView.update(d, outThis.wdMap);
                             }
                         }
                 }(this));

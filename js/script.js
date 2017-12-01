@@ -45,10 +45,9 @@ d3.json("data/pop.json", function(err, popdata) {
 			    push_data("events", evtdata);
                 let aggPanel = new AggPanel();
                 let infoPanel = new InfoPanel(aggPanel);
-                let map = new Map(infoPanel);
+                let rankView = new RankView();
+                let map = new Map(infoPanel, rankView);
                 let yearChart = new YearChart(map); 
-		    let rankView = new RankView();
-		    rankView.update()
             })
         })
     })

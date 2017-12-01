@@ -6,10 +6,14 @@ class RankView {
 							.attr("width", this.svgWidth)
 							.attr("height", this.svgHeight);
 		this.category = "gdp";
+        this.rankTip = d3.select("body").append("div")
+        				.attr("class", "agg-tooltip")
+        				.style("opacity", 0);
+
 	}
 
-	update() {
-		let wd = "148";
+	update(clikedCountry, wdMap) {
+		let wd = clikedCountry.properties.wikidata, countryName = clikedCountry.properties.NAME;
 		let data = window.dataset[this.category]["2014"];
 		let metaInfo = [];
 		let barWidth = 8, barHeight = 120;
@@ -28,26 +32,48 @@ class RankView {
 			metaInfo[i].rank = +i+1;
 		}
 		let maxData = d3.max(metaInfo, d=>d.stats);
-		console.log(metaInfo);
+		//console.log(metaInfo);
 		let groups = this.rankView.selectAll("g")
 									.data([metaInfo])
 									.enter().append("g")
 									.attr("transform", "translate(0,0)");
+
+		let tipShow = function(event) {
+            this.rankTip.transition()
+                .duration(200)
+                .style("opacity", .9);
+            this.rankTip.html(wdMap[metaInfo[Math.floor(event.layerY/barWidth)].wd])
+                .style("left", (event.pageX) + "px")
+                .style("top", (event.pageY-28) + "px");
+		}.bind(this);
+
+		let tipUnshow = function() {
+            this.rankTip.transition()
+                .duration(500)
+                .style("opacity", 0);
+		}.bind(this);
+
 		groups.append("rect")
 				.attr("x", 0)
 				.attr("y", 0)
 				.attr("height", barWidth*metaInfo.length)
 				.attr("width", barHeight)
-				.style("fill", "AliceBlue");
+				.style("fill", "AliceBlue")
+				.on("mousemove", function(){
+					tipShow(d3.event);
+				})
+				.on("mouseout", function(){
+					tipShow(d3.event);
+				});
 
 		let areaGenerator = d3.area()
 								.x0(0)
 								.x1(function(d){
-									console.log(d.stats/maxData*barHeight);
+									//console.log(d.stats/maxData*barHeight);
 									return d.stats/maxData*barHeight;
 								})
 								.y(function(d, i){
-									console.log(i*barWidth, i);
+									//console.log(i*barWidth, i);
 									return i*barWidth;
 								});
 
@@ -55,7 +81,10 @@ class RankView {
 				.style("fill", "CornflowerBlue")
 				.attr("d", areaGenerator)
 				.on("mousemove", function(){
-					console.log(d3,event, metaInfo[Math.floor(d3.event.layerY/barWidth)]);
+					tipShow(d3.event);
+				})
+				.on("mouseout", function(){
+					tipUnshow(d3.event);
 				});
 
 		groups.append("circle")
@@ -64,7 +93,13 @@ class RankView {
 				.attr("r", 5)
 				.style("fill", "yellow")
 				.style("fill-opacity", 0.5)
-				.style("stroke", "black");
+				.style("stroke", "black")
+				.on("mousemove", function(){
+					tipShow(d3.event);
+				})
+				.on("mouseout", function(){
+					tipShow(d3.event);
+				});
 
 		groups.append("line")
 				.attr("x1", 0)
@@ -73,6 +108,11 @@ class RankView {
 				.attr("y2", (thisRank-1)*barWidth)
 				.style("stroke", "black")
 				.style("stroke-width", "2px")
-
+				.on("mousemove", function(){
+					tipShow(d3.event);
+				})
+				.on("mouseout", function(){
+					tipShow(d3.event);
+				});
 	}
 }
