@@ -23,7 +23,8 @@ class RankView {
 			for (let i in data) {
 				metaG.push({
 					wd: i,
-					stats: data[i]
+					stats: data[i],
+					category: metaInfo.length
 				})
 			}
 			metaInfo.push(metaG);
@@ -46,10 +47,10 @@ class RankView {
 		}
 		let maxData = [];
 		for (let i in metaInfo) {
-			if (thisRank[i] == -1) maxData.push(-1);
+			if (metaInfo[i].length == 0) maxData.push(-1);
 			else maxData.push(d3.max(metaInfo[i], d=>d.stats));
 		}
-		console.log(maxData);
+		console.log(metaInfo, maxData, thisRank);
 
 		let groups = this.rankView.selectAll("g")
 									.data(metaInfo);
@@ -97,7 +98,7 @@ class RankView {
 				.attr("x", 0)
 				.attr("y", 0)
 				.attr("height", (d,i)=>barWidth*(selectedNum-1))
-				.attr("width", barHeight)
+				.attr("width", (d,i)=>maxData[i]!=-1?barHeight:0)
 				.style("fill", "AliceBlue")
 				.on("mousemove", function(){
 					//tipShow(d3.event);
@@ -106,14 +107,16 @@ class RankView {
 					//tipUnshow();
 				});
 
-		let areaGenerator = d3.area()
+		let areaGenerator = d3.area(maxData)
 								.x0(0)
 								.x1(function(d, i){
-									console.log(d.stats, i);
-									return d.stats/maxData[i]*barHeight;
+									if (maxData[d.category] == -1) return 0;
+									//console.log(d.stats, i, d.stats/maxData[d.category], maxData[d.category]);
+									return d.stats/maxData[d.category]*barHeight;
 								})
 								.y(function(d, i){
 									//console.log(i*barWidth, i);
+									if (maxData[d.category] == -1) return 0;
 									return i*barWidth;
 								});
 
@@ -127,34 +130,32 @@ class RankView {
 					//tipUnshow();
 				});
 
-		/*if (thisRank != -1) {
-			groups.append("circle")
-					.attr("cx", metaInfo[thisRank-1].stats/maxData*barHeight)
-					.attr("cy", (thisRank-1)*barWidth)
-					.attr("r", 5)
-					.style("fill", "yellow")
-					.style("fill-opacity", 0.5)
-					.style("stroke", "black")
-					.on("mousemove", function(){
-						tipShow(d3.event);
-					})
-					.on("mouseout", function(){
-						tipUnshow();
-					});
+		groups.append("circle")
+				.attr("cx", (d, i)=>thisRank[i] !=-1? metaInfo[i][thisRank[i]-1].stats/maxData[i]*barHeight:0)
+				.attr("cy", (d, i)=>thisRank[i] !=-1? (thisRank[i]-1)*barWidth:0)
+				.attr("r", (d, i)=>thisRank[i] !=-1? 5:0)
+				.style("fill", "yellow")
+				.style("fill-opacity", 0.5)
+				.style("stroke", "black")
+				.on("mousemove", function(){
+					//tipShow(d3.event);
+				})
+				.on("mouseout", function(){
+					//tipUnshow();
+				});
 
-			groups.append("line")
-					.attr("x1", 0)
-					.attr("x2", metaInfo[thisRank-1].stats/maxData*barHeight-5)
-					.attr("y1", (thisRank-1)*barWidth)
-					.attr("y2", (thisRank-1)*barWidth)
-					.style("stroke", "black")
-					.style("stroke-width", "2px")
-					.on("mousemove", function(){
-						tipShow(d3.event);
-					})
-					.on("mouseout", function(){
-						tipUnshow();
-					});
-		}*/
+		/*groups.append("line")
+				.attr("x1", 0)
+				.attr("x2", metaInfo[thisRank-1].stats/maxData*barHeight-5)
+				.attr("y1", (thisRank-1)*barWidth)
+				.attr("y2", (thisRank-1)*barWidth)
+				.style("stroke", "black")
+				.style("stroke-width", "2px")
+				.on("mousemove", function(){
+					tipShow(d3.event);
+				})
+				.on("mouseout", function(){
+					tipUnshow();
+				});*/
 	}
 }
