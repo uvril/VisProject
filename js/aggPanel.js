@@ -319,9 +319,10 @@ class AggPanel {
 						tip.transition()
 							.duration(200)
 							.style("opacity", .9);
+                        console.log(d3.event);
 						tip.html("year:"+d.year+"<br>"+"stats:"+d3.format(",d")(d.stats))
-							.style("left", (d3.event.pageX) + "px")
-							.style("top", (d3.event.pageY-28) + "px");
+							.style("left", (d3.event.clientX) + "px")
+							.style("top", (d3.event.clientY-28) + "px");
 					}
 	        	}(setStroke, this.trans, this.aggtip))
 	        	.on("mouseout", function(setStroke, trans, tip){

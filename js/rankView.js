@@ -39,8 +39,8 @@ class RankView {
 				.style("fill", "grey");
 
 		let areaGenerator = d3.area()
-								.x((d, i)=>i)
-								.y((d, i)=>i)
+								.x((d, i)=>i+10)
+								.y((d, i)=>i+10)
 
 		groups.append("path")
 				.attr("d", areaGenerator)
