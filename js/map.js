@@ -3,27 +3,21 @@ class Map {
     constructor(infoPanel) {
         this.curData = null;
         this.mapContainer = d3.select("#mapContainer");
-        this.svgBounds = this.mapContainer.node().getBoundingClientRect();
-        this.svgWidth = this.svgBounds.width - 40;
-        this.svgHeight = this.svgWidth/875*500;
-        this.projection = d3.geoPatterson().scale(this.svgWidth/875*130).translate([this.svgBounds.width/2, this.svgWidth/875*250]);
+        let mapSvg = d3.select("#mapSvg")
+		.attr("preserveAspectRatio", "xMinYMin meet")
+	   .attr("viewBox", "0 0 960 500")
+	   //class to make it responsive
+	   .classed("svg-content-responsive", true)
+	   .select("#map"); 		
+        this.projection = d3.geoPatterson();
         this.path = d3.geoPath()
             .projection(this.projection);		
         this.infoPanel = infoPanel;
-        let mapSvg = d3.select("#map")
-            .attr("width", this.svgWidth)
-            .attr("height", this.svgHeight);
-        let legendHeight = 80;
-        this.legendWidth = this.svgWidth * 0.8;
-        this.mapLegend =  d3.select("#map-legend")
-                            .attr("width", this.legendWidth)
-                            .attr("height", legendHeight)
-                            .append("g")
-                            .attr("class", "legendQuantile");
         this.svgDefs = mapSvg.append("defs");
         this.svgPath = mapSvg.append("g");
         this.svgGra = mapSvg.append("g");
         this.svgText = mapSvg.append("g");
+        this.mapLegend = this.mapContainer.select("#map-legend");
         let mapZoom = d3.zoom()
             .scaleExtent([1, 16])
             .on("zoom", function () {
@@ -83,31 +77,34 @@ class Map {
     addLayer() {
         this.data = window.dataset[this.category][this.year];
         let domain = this.domain[this.category];
-        console.log(domain+"!!!");
         //let range = this.generateColor("#E0F2D4", "#192F0A", domain.length);
         let range = ["#F2F2F2", "#E0F2D4", "#A3D77F", "#66BC29", "#537E35"]
         this.colorScale = d3.scaleQuantile()
                             .domain(domain)
                             .range(range);
-        let colNum = 5, linePadding = 15, rectHeight = 20, colPadding =5;
+        let colNum = 5, linePadding = 15, rectWidth = 20, rectHeight = 20, colPadding =5, rectPad = 10;
+		let svgBounds = this.mapContainer.node().getBoundingClientRect();	
+		console.log(svgBounds);
+        //this.mapLegend.attr("transform", "translate(0,"+(svgBounds.width*500/960*0.7-5*(rectHeight+rectPad))+")");
+
         let legendG = this.mapLegend.selectAll("g")
                         .data(domain)
                         .enter().append("g")
         legendG.append("rect")
-                .attr("x", (d, i)=>i%colNum*(this.legendWidth/colNum))
-                .attr("y", (d, i)=>Math.floor(i/colNum)*(linePadding+rectHeight))
-                .attr("width", this.legendWidth/colNum-colPadding)
+                .attr("x", 0)
+                .attr("y", (d, i) => (rectHeight + rectPad) * i)
+                .attr("width", rectWidth)
                 .attr("height", rectHeight)
                 .style("fill", d=>this.colorScale(d));
         legendG.append("text")
-        		.attr("x", (d, i)=>i%colNum*(this.legendWidth/colNum)+this.legendWidth/colNum/2)
-        		.attr("y", (d, i)=>Math.floor(i/colNum)*(linePadding+rectHeight)+rectHeight+13)
+        		.attr("y", (d, i) => (rectHeight + rectPad) * i + rectHeight * 0.5)
+        		.attr("x", rectWidth + 20)
+				.style("alignment-baseline", "central")
         		.text(function(d, i){
         			if (i == 0) return "Less than "+d3.format(".2s")(domain[1]);
         			else if (i == domain.length-1) return "More than "+d3.format(".2s")(domain[domain.length-1]);
         			return d3.format(".2s")(d)+" to "+d3.format(".2s")(domain[i+1]);
-        		})
-        		.style("text-anchor", "middle");
+        		});
         this.svgPath.selectAll("path")
             .style("fill", function(outThis) {
                     return function(d){
