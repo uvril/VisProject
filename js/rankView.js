@@ -9,12 +9,13 @@ class RankView {
         this.rankTip = d3.select("body").append("div")
         				.attr("class", "agg-tooltip")
         				.style("opacity", 0);
-
 	}
 
-	update(clikedCountry, wdMap) {
-		let wd = clikedCountry.properties.wikidata, countryName = clikedCountry.properties.NAME;
-		let data = window.dataset[this.category]["2014"];
+	update(clikedCountry, wdMap, year) {
+		let wd = clikedCountry, countryName = wdMap[wd];
+		console.log(wd, countryName)
+		console.log(year);
+		let data = window.dataset[this.category][year];
 		let metaInfo = [];
 		let barWidth = 8, barHeight = 120;
 		
@@ -35,8 +36,11 @@ class RankView {
 		//console.log(metaInfo);
 		let groups = this.rankView.selectAll("g")
 									.data([metaInfo])
-									.enter().append("g")
-									.attr("transform", "translate(0,0)");
+									.attr("transform", "translate(10,10)");
+
+		groups = groups.enter().append("g").merge(groups);
+		
+		groups.html("");
 
 		let tipShow = function(event) {
             this.rankTip.transition()
@@ -47,12 +51,11 @@ class RankView {
             	start = 0;
             	end = 6;
             }
-            if (end > metaInfo.length-1){
-            	end = metaInfo.length-1;
-            	start = metaInfo.length-1-6;
+            if (end > metaInfo.length-2){
+            	end = metaInfo.length-2;
+            	start = metaInfo.length-2-6;
             }
             let html = "";
-            //console.log(start, end);
             for (let i = start; i <= end; ++i) {
             	let star = "";
             	if (i == thisRank-1) 
@@ -77,7 +80,7 @@ class RankView {
 		groups.append("rect")
 				.attr("x", 0)
 				.attr("y", 0)
-				.attr("height", barWidth*metaInfo.length)
+				.attr("height", barWidth*(metaInfo.length-1))
 				.attr("width", barHeight)
 				.style("fill", "AliceBlue")
 				.on("mousemove", function(){
@@ -107,6 +110,7 @@ class RankView {
 				.on("mouseout", function(){
 					tipUnshow();
 				});
+
 		if (thisRank != -1) {
 			groups.append("circle")
 					.attr("cx", metaInfo[thisRank-1].stats/maxData*barHeight)

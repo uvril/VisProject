@@ -325,10 +325,12 @@ class Map {
                                                 });
                                 outThis.svgText.selectAll("textPath").style("fill-opacity", d1 => d1.properties.wikidata === d.properties.wikidata ? 1 : 0.4);
                                 outThis.infoPanel.updateInfo(d.properties, year);
-                                outThis.rankView.update(d, outThis.wdMap);
+                                outThis.rankView.update(outThis.clickedCountry, outThis.wdMap, outThis.year);
                             }
                         }
                 }(this));
+
+            this.rankView.update(this.clickedCountry, this.wdMap, this.year);
 
             let graticule = d3.geoGraticule();
 
