@@ -42,7 +42,28 @@ class RankView {
             this.rankTip.transition()
                 .duration(200)
                 .style("opacity", .9);
-            this.rankTip.html(wdMap[metaInfo[Math.floor(event.layerY/barWidth)].wd])
+            let curRank = Math.floor(event.layerY/barWidth), start = curRank-3, end = curRank+3;
+            if (start < 0) {
+            	start = 0;
+            	end = 6;
+            }
+            if (end > metaInfo.length-1){
+            	end = metaInfo.length-1;
+            	start = metaInfo.length-1-6;
+            }
+            let html = "";
+            //console.log(start, end);
+            for (let i = start; i <= end; ++i) {
+            	let star = "";
+            	if (i == thisRank-1) 
+            		star = "❤";
+            	if (i == curRank) 
+            		html += "<font size=\"4\"><b>#" + (i+1).toString() + " " + wdMap[metaInfo[i].wd] + " (" + d3.format(".2s")(metaInfo[i].stats) + ") " + star + "<br><\/b>" + "<\/font>";
+            	else if (i == curRank-1 || i == curRank+1) 
+            		html += "<font size=\"3\">#" + (i+1).toString() + " (" + wdMap[metaInfo[i].wd] + " " + d3.format(".2s")(metaInfo[i].stats) + ") " + star + "<br><\/font>";
+            	else html += "<font size=\"2\">#" + (i+1).toString() + " (" + wdMap[metaInfo[i].wd] + " " + d3.format(".2s")(metaInfo[i].stats) + ") " + star + "<br><\/font>";
+            }
+            this.rankTip.html(html)
                 .style("left", (event.pageX) + "px")
                 .style("top", (event.pageY-28) + "px");
 		}.bind(this);
@@ -63,7 +84,7 @@ class RankView {
 					tipShow(d3.event);
 				})
 				.on("mouseout", function(){
-					tipShow(d3.event);
+					tipUnshow();
 				});
 
 		let areaGenerator = d3.area()
@@ -84,35 +105,36 @@ class RankView {
 					tipShow(d3.event);
 				})
 				.on("mouseout", function(){
-					tipUnshow(d3.event);
+					tipUnshow();
 				});
+		if (thisRank != -1) {
+			groups.append("circle")
+					.attr("cx", metaInfo[thisRank-1].stats/maxData*barHeight)
+					.attr("cy", (thisRank-1)*barWidth)
+					.attr("r", 5)
+					.style("fill", "yellow")
+					.style("fill-opacity", 0.5)
+					.style("stroke", "black")
+					.on("mousemove", function(){
+						tipShow(d3.event);
+					})
+					.on("mouseout", function(){
+						tipUnshow();
+					});
 
-		groups.append("circle")
-				.attr("cx", metaInfo[thisRank-1].stats/maxData*barHeight)
-				.attr("cy", (thisRank-1)*barWidth)
-				.attr("r", 5)
-				.style("fill", "yellow")
-				.style("fill-opacity", 0.5)
-				.style("stroke", "black")
-				.on("mousemove", function(){
-					tipShow(d3.event);
-				})
-				.on("mouseout", function(){
-					tipShow(d3.event);
-				});
-
-		groups.append("line")
-				.attr("x1", 0)
-				.attr("x2", metaInfo[thisRank-1].stats/maxData*barHeight-5)
-				.attr("y1", (thisRank-1)*barWidth)
-				.attr("y2", (thisRank-1)*barWidth)
-				.style("stroke", "black")
-				.style("stroke-width", "2px")
-				.on("mousemove", function(){
-					tipShow(d3.event);
-				})
-				.on("mouseout", function(){
-					tipShow(d3.event);
-				});
+			groups.append("line")
+					.attr("x1", 0)
+					.attr("x2", metaInfo[thisRank-1].stats/maxData*barHeight-5)
+					.attr("y1", (thisRank-1)*barWidth)
+					.attr("y2", (thisRank-1)*barWidth)
+					.style("stroke", "black")
+					.style("stroke-width", "2px")
+					.on("mousemove", function(){
+						tipShow(d3.event);
+					})
+					.on("mouseout", function(){
+						tipUnshow();
+					});
+		}
 	}
 }
