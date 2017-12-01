@@ -1,7 +1,8 @@
 class Map {
 
-    constructor(infoPanel) {
+    constructor(infoPanel, rankView) {
         this.curData = null;
+        this.wdMap = {};
         this.mapContainer = d3.select("#mapContainer");
         let mapSvg = d3.select("#mapSvg")
 		.attr("preserveAspectRatio", "xMinYMin meet")
@@ -13,6 +14,17 @@ class Map {
         this.path = d3.geoPath()
             .projection(this.projection);		
         this.infoPanel = infoPanel;
+        this.rankView = rankView;
+        let mapSvg = d3.select("#map")
+            .attr("width", this.svgWidth)
+            .attr("height", this.svgHeight);
+        let legendHeight = 80;
+        this.legendWidth = this.svgWidth * 0.8;
+        this.mapLegend =  d3.select("#map-legend")
+                            .attr("width", this.legendWidth)
+                            .attr("height", legendHeight)
+                            .append("g")
+                            .attr("class", "legendQuantile");
         this.svgDefs = mapSvg.append("defs");
         this.svgPath = mapSvg.append("g");
         this.svgGra = mapSvg.append("g");
@@ -251,6 +263,7 @@ class Map {
 				if (geoData.features[i].properties.wikidata === "212429") {
 					geoData.features[i].properties.wikidata = "142";
 				}
+                this.wdMap[geoData.features[i].properties.wikidata] = geoData.features[i].properties.NAME;
 			}
 		
             this.curData = geoData;
@@ -319,9 +332,12 @@ class Map {
                                                 });
                                 outThis.svgText.selectAll("textPath").style("fill-opacity", d1 => d1.properties.wikidata === d.properties.wikidata ? 1 : 0.4);
                                 outThis.infoPanel.updateInfo(d.properties, year);
+                                outThis.rankView.update(outThis.clickedCountry, outThis.wdMap, outThis.year);
                             }
                         }
                 }(this));
+            if (this.clickedCountry != null) 
+                this.rankView.update(this.clickedCountry, this.wdMap, this.year);
 
             let graticule = d3.geoGraticule();
 
