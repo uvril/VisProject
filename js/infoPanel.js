@@ -23,9 +23,9 @@ class InfoPanel {
 				this.collapseIcon();
 			}
 		}.bind(this));
-        this.colorMap = {"Judaism": "#1f77b4", "Syncretic religions" : "#ff7f0e", "Islam": "#2ca02c", "Buddhism": "#dbdb8d", "Zoroastrian": "#d62728", 
-                                "Christianity": "#9467bd", "Taoism": "#8c564b", "Shinto": "#e377c2", "Other religions": "#7f7f7f", 
-                                "Non-religious": "#bdbdbd", "Hindu": "#bcbd22", "Animist religions": "#17becf", "Baha'i": "#c7e9c0",
+        this.colorMap = {"Judaism": "#1f77b4", "Syncretic religions" : "#ff7f0e", "Islam": "#2ca02c", "Taoism": "#dbdb8d", "Non-religious": "#d62728", 
+                                "Christianity": "#9467bd", "Animist religions": "#8c564b", "Shinto": "#e377c2", "Other religions": "#7f7f7f", 
+                                "Zoroastrian": "#bdbdbd", "Hindu": "#bcbd22", "Buddhism": "#17becf", "Baha'i": "#c7e9c0",
                                 "Jain": "#c6dbef", "Confucianism": "#9e9ac8", "Sikh": "#7b4173", "Others": "#d6616b"};
      $('#sidebar').on('hidden.bs.collapse', function() {
 		 d3.select("#sidebaricon").classed("fa-chevron-right",true).classed("fa-chevron-left",false).style("left","0px");
@@ -177,23 +177,25 @@ for (let k in radarData) {
                                     .attr("r", innerRad-10)
                                     .style("fill", "white");
 
-                groupP.append("text")
-                    .attr("id", "centerTitle")
-                    .attr("x", 0)
-                    .attr("y", cirText)
-                    .text("Population")
-                    .style("text-anchor", "middle")
-                    .style("font-weight", "bold");
-                groupP.append("text")
-                    .attr("id", "centerNum")
-                    .attr("x", 0)
-                    .attr("y", cirText+20)
-                    .text(function(){
-                        if (latestPop == 0) return "";
-                        else return d3.format(".4s")(latestPop.stats);
-                    })
-                    .style("text-anchor", "middle");
-                    
+                if (donutData.length != 0) {                  
+                    groupP.append("text")
+                        .attr("id", "centerTitle")
+                        .attr("x", 0)
+                        .attr("y", cirText)
+                        .text("Population")
+                        .style("text-anchor", "middle")
+                        .style("font-weight", "bold");
+                    groupP.append("text")
+                        .attr("id", "centerNum")
+                        .attr("x", 0)
+                        .attr("y", cirText+20)
+                        .text(function(){
+                            if (latestPop == 0) return "";
+                            else return d3.format(".4s")(latestPop.stats);
+                        })
+                        .style("text-anchor", "middle");
+                }
+                
                 groupP.append("text")
                     .attr("id", "centerPct")
                     .attr("x", 0)
