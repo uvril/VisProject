@@ -331,3 +331,7 @@
 #map text {
     font-family: Optima;
 }
+
+.table-align {
+    text-align : left;
+}
