@@ -84,14 +84,16 @@ class InfoPanel {
 
                 this.legend.html("");
                 let rectH = 10, rectW = 10, rectPadding = 10, rectX = 0, textPadding = 5;
+                let legendSize = (donutData.length-1)*(rectH+rectPadding)+rectH;
+                console.log(legendSize, this.donutH/2+100);
                 let groupL = this.legend.append("g")
-                                .attr("transform", "translate(0," + this.donutH/2 + ")")
+                                .attr("transform", "translate(0," + (this.donutH/2-legendSize/2) + ")")
                                 .data([donutData]);
                 let legendsR = groupL.selectAll("rect")
                                     .data(d=>d);
                 legendsR = legendsR.enter().append("rect").merge(legendsR)
                                     .attr("x", rectX)
-                                    .attr("y", (d, i)=>rectPadding+i*(rectH+rectPadding))
+                                    .attr("y", (d, i)=>i*(rectH+rectPadding))
                                     .attr("height", rectH)
                                     .attr("width", rectW)
                                     .style("fill", (d, i)=>color[i]);
@@ -99,7 +101,7 @@ class InfoPanel {
                                         .data(d=>d);
                 legendsT = legendsT.enter().append("text").merge(legendsT)
                                     .attr("x", rectX+textPadding+rectW)
-                                    .attr("y", (d, i)=>rectPadding+i*(rectH+rectPadding)+rectH)
+                                    .attr("y", (d, i)=>i*(rectH+rectPadding)+rectH)
                                     .text(d=>d.religion)
                                     .style("text-archor", "middle")
                                     .style("font-size", "11px");
