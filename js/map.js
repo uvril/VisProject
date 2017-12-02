@@ -51,7 +51,7 @@ class Map {
         this.layers.select("#map-pop")
             .on("click", function() {
                 this.layers.selectAll(".active").classed("active", false);
-                this.layers.select("#map-heat").classed("active", true);
+                this.layers.select("#map-pop").classed("active", true);
                 this.category = "pop";
                 this.mapLegend.html("");
                 this.addLayer();
@@ -59,7 +59,7 @@ class Map {
         this.layers.select("#map-gdp")
             .on("click", function() {
                 this.layers.selectAll(".active").classed("active", false);
-                this.layers.select("#map-heat").classed("active", true);
+                this.layers.select("#map-gdp").classed("active", true);
                 this.category = "gdp";
                 this.mapLegend.html("");
                 this.addLayer();

@@ -36,6 +36,7 @@ class AggPanel {
             this.pathG.transition(this.trans).style("opacity", d => this.showEvents ? 0.1 : 1)
             this.circleG.transition(this.trans).style("opacity", d => this.showEvents ? 0.1 : 1)
             this.yAxisG.transition(this.trans).style("opacity", d => this.showEvents ? 0.1 : 1)
+			aggRow.select("#showEvents").classed("active", this.showEvents);
         }.bind(this));
         this.xScale = d3.scaleLinear()
             .domain([this.startYear, this.endYear])
@@ -85,19 +86,22 @@ class AggPanel {
             .y(d=>this.yScale(+d.stats));
         this.category = "pop";
         aggRow.select("#agg-pop").on("click", function(){
-			aggRow.selectAll(".nav-link").classed("active", false);
+			aggRow.select("#agg-gdp").classed("active", false);	
+			aggRow.select("#agg-cpi").classed("active", false);		
 			aggRow.select("#agg-pop").classed("active", true);
         	this.category = "pop";
         	this.updateRange(this.startYear, this.endYear);
         }.bind(this));
         aggRow.select("#agg-gdp").on("click", function(){
-			aggRow.selectAll(".nav-link").classed("active", false);
+			aggRow.select("#agg-cpi").classed("active", false);		
+			aggRow.select("#agg-pop").classed("active", false);		
 			aggRow.select("#agg-gdp").classed("active", true);			
         	this.category = "gdp";
         	this.updateRange(this.startYear, this.endYear);
         }.bind(this));
         aggRow.select("#agg-cpi").on("click", function(){
-			aggRow.selectAll(".nav-link").classed("active", false);
+			aggRow.select("#agg-pop").classed("active", false);		
+			aggRow.select("#agg-gdp").classed("active", false);
 			aggRow.select("#agg-cpi").classed("active", true);			
         	this.category = "cpi";
         	this.updateRange(this.startYear, this.endYear);
