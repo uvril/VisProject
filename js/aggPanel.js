@@ -260,15 +260,15 @@ class AggPanel {
             return "translate(0," + (200 - nc*5) + ")";
         });
 //add hovoring over line and legend
-		let lineThick = 2, lineThin = 1, legendFontBig = 10, legendFontSmall = 8;
+		let lineThick = 2, lineThin = 1, legendFontBig = 15, legendFontSmall = 12;
 		let setStroke = function(id, lineSize, lineOpacity, legendFontSize) {
+            d3.select("#l" + id.toString())
+                .select("text")
+                .style("font-size", legendFontSize);
 			if (d3.select("#"+id.toString()).style("opacity") == "0") return;
 			d3.select("#"+id.toString())
 				.style("stroke-width", lineSize)
 				.style("opacity", lineOpacity);
-    		d3.select("#l" + id.toString())
-    			.select("text")
-    			.style("font-size", legendFontSize);
 		};
 //add paths		
 		//console.log(this.dataset);
@@ -411,7 +411,7 @@ class AggPanel {
 				.style("stroke", function(outerThis) {
 					return d=>outerThis.colors[outerThis.selectedCountry[d].index];
 				}(this))
-				.style("fill", "none")
+				.style("fill", d=>this.colors[this.selectedCountry[d].index])
         		.style("font-size", legendFontSmall);
 	    lTextSel.on("mouseover", function(){
 	        		let pathid = this.parentNode.id.slice(1);
@@ -425,12 +425,12 @@ class AggPanel {
 	    let lCirSel = legendGSel.selectAll("circle").data(d => [d]);
 	    lCirSel.exit().remove();
 	    lCirSel = lCirSel.enter().append("circle").merge(lCirSel);
-	    lCirSel.attr("cx", 3)
+	    lCirSel.attr("cx", 1.5)
 				.attr("cy", function() {
                     let cnt = this.parentNode.getAttribute("data-cnt");
-                    return legendFontBig*(parseInt(cnt)+1);
+                    return legendFontBig*(parseInt(cnt)+0.8);
 				})
-				.attr("r", 3)
+				.attr("r", 5)
 				.style("stroke", function(outerThis) {
 					return d=>outerThis.colors[outerThis.selectedCountry[d].index];
 				}(this))
