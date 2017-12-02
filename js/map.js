@@ -51,7 +51,7 @@ class Map {
         this.layers.select("#map-pop")
             .on("click", function() {
                 this.layers.selectAll(".active").classed("active", false);
-                this.layers.select("#map-heat").classed("active", true);
+                this.layers.select("#map-pop").classed("active", true);
                 this.category = "pop";
                 this.mapLegend.html("");
                 this.addLayer();
@@ -59,7 +59,7 @@ class Map {
         this.layers.select("#map-gdp")
             .on("click", function() {
                 this.layers.selectAll(".active").classed("active", false);
-                this.layers.select("#map-heat").classed("active", true);
+                this.layers.select("#map-gdp").classed("active", true);
                 this.category = "gdp";
                 this.mapLegend.html("");
                 this.addLayer();
@@ -99,13 +99,28 @@ class Map {
         this.data = window.dataset[this.category][this.year];
         let domain = this.domain[this.category];
         //let range = this.generateColor("#E0F2D4", "#192F0A", domain.length);
-        let range = ["#F2F2F2", "#E0F2D4", "#A3D77F", "#66BC29", "#537E35"]
+        let range = ["#E0F2D4", "#c7e595", "#A3D77F", "#66BC29", "#537E35"]
         this.colorScale = d3.scaleQuantile()
                             .domain(domain)
                             .range(range);
         let colNum = 5, linePadding = 15, rectWidth = 20, rectHeight = 20, colPadding =5, rectPad = 10;
 
-        let legendG = this.mapLegend.selectAll("g")
+		let noDataG = this.mapLegend.append("g");
+		let hasDataG = this.mapLegend.append("g").attr("transform", "translate(0,30)");
+		noDataG.append("rect")
+                .attr("x", 0)
+                .attr("y", 0)
+                .attr("width", rectWidth)
+                .attr("height", rectHeight)
+                .style("fill", "#d9d9d9");
+		
+        noDataG.append("text")
+				.attr("x", rectWidth + 20)
+        		.attr("y", rectHeight * 0.5)
+				.style("alignment-baseline", "central")
+        		.text("No data");
+		
+        let legendG = hasDataG.selectAll("g")
                         .data(domain)
                         .enter().append("g")
         legendG.append("rect")

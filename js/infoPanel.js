@@ -1,6 +1,6 @@
 class InfoPanel {
     constructor(aggPanel) {
-        this.contentObj = d3.select("#details");
+        this.contentObj = d3.select("#infoPanelCard");
         this.infoTable = this.contentObj.select("#basicInfoTable");
         this.aggPanel = aggPanel;
         this.donutH = 250;
@@ -12,7 +12,17 @@ class InfoPanel {
         this.legendW = 120;
         this.legend = d3.select("#donut-legend")
                         .attr("height", this.legendH)
-                        .attr("width", this.legendW);
+                        .attr("width", this.legendW);			
+		this.sidebarIcon = d3.select("#sidebaricon");
+		this.sidebarIcon.on("click", function () {
+			let isShow = d3.select("#sidebar").classed("show");
+			if (!isShow) {
+				this.showIcon();
+			}
+			else {
+				this.collapseIcon();
+			}
+		}.bind(this));
         this.colorMap = {"Judaism": "#1f77b4", "Sikh": "#ff7f0e", "Islam": "#2ca02c", "Buddhism": "#dbdb8d", "Zoroastrian": "#d62728", 
                         "Christianity": "#9467bd", "Taoism": "#8c564b", "Shinto": "#e377c2", "Other religions": "#7f7f7f", 
                         "Non-religious": "#bdbdbd", "Hindu": "#bcbd22", "Animist religions": "#17becf", "Baha'i": "#c7e9c0",
@@ -25,8 +35,21 @@ class InfoPanel {
 	 });		
 		
     }
+	
+	collapseIcon() {
+		 let i = this.sidebarIcon;
+		 i.transition().duration(350).style("left","0px");
+		 i.classed("fa-chevron-right",true).classed("fa-chevron-left",false);
+	}
+	
+	showIcon() {
+		 let i = this.sidebarIcon;
+		 i.transition().duration(350).style("left","400px");
+		 i.classed("fa-chevron-right",false).classed("fa-chevron-left",true);
+	}
 
     updateInfo(oneCountryInfo, year) {
+		this.sidebarIcon.style("visibility", "initial");
         let wd = +oneCountryInfo.wikidata;
         this.contentObj.selectAll("#countryNameLabel")
             .text(oneCountryInfo.NAME);
@@ -193,6 +216,7 @@ class InfoPanel {
                     }.bind(this));
 					let isShow = d3.select("#sidebar").classed("show");
 					if (!isShow) {
+						this.showIcon();
 						$('#sidebaricon').trigger("click");
 					}
             }.bind(this))
