@@ -96,9 +96,9 @@ class Map {
         $("#yearSelect").on("slideStop", function(event) {
             this.drawMap(+event.value);
         }.bind(this));
-        this.colorMap = {"Judaism": "#1f77b4", "Syncretic religions" : "#ff7f0e", "Islam": "#2ca02c", "Buddhism": "#dbdb8d", "Non-religious": "#d62728", 
-                                "Christianity": "#9467bd", "Taoism": "#8c564b", "Shinto": "#e377c2", "Other religions": "#7f7f7f", 
-                                "Zoroastrian": "#bdbdbd", "Hindu": "#bcbd22", "Animist religions": "#17becf", "Baha'i": "#c7e9c0",
+        this.colorMap = {"Judaism": "#1f77b4", "Syncretic religions" : "#ff7f0e", "Islam": "#2ca02c", "Taoism": "#dbdb8d", "Non-religious": "#d62728", 
+                                "Christianity": "#9467bd", "Animist religions": "#8c564b", "Shinto": "#e377c2", "Other religions": "#7f7f7f", 
+                                "Zoroastrian": "#bdbdbd", "Hindu": "#bcbd22", "Buddhism": "#17becf", "Baha'i": "#c7e9c0",
                                 "Jain": "#c6dbef", "Confucianism": "#9e9ac8", "Sikh": "#7b4173", "Others": "#d6616b"};
         this.drawMap(defaultYear);	
     }
@@ -115,6 +115,38 @@ class Map {
                             return outThis.colorMap[outThis.data[d.properties.wikidata][0].religion];
                     }
             }(this));
+        let domain = ["Christianity", "Syncretic religions", "Buddhism", "Hindu", "Non-religious", "Shinto", "Islam"];
+        let rectWidth = 20, rectHeight = 20, rectPad = 10;
+        let noDataG = this.mapLegend.append("g");
+        let hasDataG = this.mapLegend.append("g").attr("transform", "translate(0,30)");
+        noDataG.append("rect")
+                .attr("x", 0)
+                .attr("y", 0)
+                .attr("width", rectWidth)
+                .attr("height", rectHeight)
+                .style("fill", "#d9d9d9");
+        
+        noDataG.append("text")
+                .attr("x", rectWidth + 20)
+                .attr("y", rectHeight * 0.5)
+                .style("alignment-baseline", "central")
+                .text("No data");
+        
+        let legendG = hasDataG.selectAll("g")
+                        .data(domain)
+                        .enter().append("g")
+        legendG.append("rect")
+                .attr("x", 0)
+                .attr("y", (d, i) => (rectHeight + rectPad) * i)
+                .attr("width", rectWidth)
+                .attr("height", rectHeight)
+                .style("fill", d=>this.colorMap[d]);
+        legendG.append("text")
+                .attr("y", (d, i) => (rectHeight + rectPad) * i + rectHeight * 0.5)
+                .attr("x", rectWidth + 20)
+                .style("alignment-baseline", "central")
+                .text(d=>d);
+        this.mapLegend.attr("transform", "translate(50, 200)");
     }
 
     addLayer() {
@@ -125,8 +157,7 @@ class Map {
         this.colorScale = d3.scaleQuantile()
                             .domain(domain)
                             .range(range);
-        let colNum = 5, linePadding = 15, rectWidth = 20, rectHeight = 20, colPadding =5, rectPad = 10;
-
+        let rectWidth = 20, rectHeight = 20, rectPad = 10;
 		let noDataG = this.mapLegend.append("g");
 		let hasDataG = this.mapLegend.append("g").attr("transform", "translate(0,30)");
 		noDataG.append("rect")
