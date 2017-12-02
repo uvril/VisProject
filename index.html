@@ -21,7 +21,7 @@
                                 <a class="nav-link active" href="#mapViewTab" role="tab" data-toggle="tab" id="ma1p-ori">Map View</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#statisticsViewTab" role="tab" data-toggle="tab" id="ma1p-or3i">Statistics View</a>
+                                <a class="nav-link" href="#statisticsViewTab" role="tab" data-toggle="tab" id="ma1p-or3i">Comparison View</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="#rankViewTab" role="tab" data-toggle="tab" id="ma1p-ordi">Rank View</a>
@@ -87,7 +87,7 @@
                                                                         <td id="table-hos"></td>
                                                                     </tr>
                                                                     <tr>
-                                                                        <th scope="row" colspan="2">Statistics<br><div id="table-radar" ></div></th>
+                                                                        <th scope="row" colspan="2">National Power<br><div id="table-radar" ></div></th>
                                                                         
                                                                     </tr>																	
                                                                     <tr>
@@ -153,6 +153,9 @@
                                         </ul>
                                     </div>
                                     <div class="card-body">
+                                        <div class="alert alert-danger" role="alert" id="noCntryAlert">
+                                          Please select at least one country in Map View!
+                                        </div>
                                         <div class="row">
                                             <div class="col-8" id="aggPanelDiv">
                                                 <svg id="aggPanel"></svg>

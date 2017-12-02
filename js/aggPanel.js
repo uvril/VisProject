@@ -1,5 +1,6 @@
 class AggPanel {
 	constructor	() {
+        this.noCntryAlert = d3.select("#noCntryAlert");
         this.trans = d3.transition()
             .duration(1000)
             .ease(d3.easeLinear);
@@ -119,6 +120,8 @@ class AggPanel {
                     .remove()
                     .draw();
 					outerThis.update();
+                    if ($.isEmptyObject(outerThis.selectedCountry))
+                        outerThis.noCntryAlert.style("display", "block");
 				}
 			}(this));
 		d3.select("#statisticsViewTab").classed("active", false).classed("show", false);
@@ -176,6 +179,7 @@ class AggPanel {
         this.aggList.row.add([countryName, datStart, datEnd, ico]).draw();
         this.updateDataset();
 		this.update();
+        this.noCntryAlert.style("display", "none");
 	}
 
 //update dataset, xscale and yscale
