@@ -97,7 +97,8 @@ class InfoPanel {
                                     .attr("x", rectX+textPadding+rectW)
                                     .attr("y", (d, i)=>rectPadding+i*(rectH+rectPadding)+rectH)
                                     .text(d=>d.religion)
-                                    .style("text-archor", "middle");
+                                    .style("text-archor", "middle")
+                                    .style("font-size", "11px");
 
                 d3.select("#add-button")
                     .on("click", function(){
