@@ -108,7 +108,9 @@ class Map {
         this.svgPath.selectAll("path")
             .style("fill", function(outThis) {
                     return function(d){
-                        console.log(outThis.data[d.properties.wikidata], d.properties.wikidata, d.properties.NAME);
+                        if (d.properties.wikidata === outThis.clickedCountry)
+                            return outThis.clickedColor;
+                        //console.log(outThis.data[d.properties.wikidata], d.properties.wikidata, d.properties.NAME);
                         if (d.properties.wikidata in outThis.data)
                             return outThis.colorMap[outThis.data[d.properties.wikidata][0].religion];
                     }
