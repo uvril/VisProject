@@ -48,20 +48,26 @@ class Map {
         this.category = null;
         this.layers = d3.select("#map-bnt");
         //d.properties.wikidata
-        this.layers.selectAll("#map-pop")
+        this.layers.select("#map-pop")
             .on("click", function() {
+                this.layers.selectAll(".active").classed("active", false);
+                this.layers.select("#map-heat").classed("active", true);
                 this.category = "pop";
                 this.mapLegend.html("");
                 this.addLayer();
             }.bind(this));
-        this.layers.selectAll("#map-gdp")
+        this.layers.select("#map-gdp")
             .on("click", function() {
+                this.layers.selectAll(".active").classed("active", false);
+                this.layers.select("#map-heat").classed("active", true);
                 this.category = "gdp";
                 this.mapLegend.html("");
                 this.addLayer();
             }.bind(this));
-        this.layers.selectAll("#map-ori")
+        this.layers.select("#map-ori")
             .on("click", function() {
+                this.layers.selectAll(".active").classed("active", false);
+                this.layers.select("#map-ori").classed("active", true);
                 this.category = null;
                 this.mapLegend.html("");
                 this.drawMap(this.year);
