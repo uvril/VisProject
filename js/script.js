@@ -42,11 +42,14 @@ d3.json("data/pop.json", function(err, popdata) {
         d3.json("data/cpi.json", function(err, cpidata){
 			push_data("cpi", cpidata);
             d3.json("data/events.json", function(err, evtdata){
-			    push_data("events", evtdata);
-                let aggPanel = new AggPanel();
-                let infoPanel = new InfoPanel(aggPanel);
-                let rankView = new RankView();
-                let map = new Map(infoPanel, rankView, 2016);
+                push_data("events", evtdata);
+                d3.json("data/religion.json", function(err, rdata){
+                    push_data("religion", rdata);  
+                    let aggPanel = new AggPanel();
+                    let infoPanel = new InfoPanel(aggPanel);
+                    let rankView = new RankView();
+                    let map = new Map(infoPanel, rankView, 2016);
+                })
             })
         })
     })

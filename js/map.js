@@ -72,6 +72,14 @@ class Map {
                 this.mapLegend.html("");
                 this.drawMap(this.year);
             }.bind(this));
+        this.layers.select("#map-rel")
+            .on("click", function() {
+                this.layers.selectAll(".active").classed("active", false);
+                this.layers.select("#map-rel").classed("active", true);
+                this.category = "religion";
+                this.mapLegend.html("");
+                this.addReligionLayer();
+            }.bind(this));
         this.domain = {};
         this.domain.pop = [0, 1e6, 1e7, 1e8, 1e9];
         this.domain.gdp = [0, 1e10, 1e11, 1e12, 1e13];
@@ -88,11 +96,23 @@ class Map {
         $("#yearSelect").on("slideStop", function(event) {
             this.drawMap(+event.value);
         }.bind(this));
-        this.colorMap = {"Judaism": "#1f77b4", "Sikh": "#ff7f0e", "Islam": "#2ca02c", "Buddhism": "#dbdb8d", "Zoroastrian": "#d62728", 
+        this.colorMap = {"Judaism": "#1f77b4", "Syncretic religions" : "#ff7f0e", "Islam": "#2ca02c", "Buddhism": "#dbdb8d", "Non-religious": "#d62728", 
                                 "Christianity": "#9467bd", "Taoism": "#8c564b", "Shinto": "#e377c2", "Other religions": "#7f7f7f", 
-                                "Non-religious": "#bdbdbd", "Hindu": "#bcbd22", "Animist religions": "#17becf", "Baha'i": "#c7e9c0",
-                                "Jain": "#c6dbef", "Confucianism": "#9e9ac8", "Syncretic religions": "#7b4173", "Others": "#d6616b"};
+                                "Zoroastrian": "#bdbdbd", "Hindu": "#bcbd22", "Animist religions": "#17becf", "Baha'i": "#c7e9c0",
+                                "Jain": "#c6dbef", "Confucianism": "#9e9ac8", "Sikh": "#7b4173", "Others": "#d6616b"};
         this.drawMap(defaultYear);	
+    }
+
+    addReligionLayer(){
+        this.data = window.dataset[this.category];
+        this.svgPath.selectAll("path")
+            .style("fill", function(outThis) {
+                    return function(d){
+                        console.log(outThis.data[d.properties.wikidata], d.properties.wikidata, d.properties.NAME);
+                        if (d.properties.wikidata in outThis.data)
+                            return outThis.colorMap[outThis.data[d.properties.wikidata][0].religion];
+                    }
+            }(this));
     }
 
     addLayer() {
@@ -325,7 +345,18 @@ class Map {
                             if (map.currentMouse != null) {
                                 if (d.properties.wikidata != outThis.clickedCountry) {
                                     d3.select(map.currentMouse)
-                                    .style("fill", d=>outThis.category != null? outThis.colorScale(+outThis.data[d.properties.wikidata]): null);
+                                    .style("fill", function(d){
+                                        if (outThis.category != null) {
+                                            if (outThis.category != "religion")
+                                                return outThis.colorScale(+outThis.data[d.properties.wikidata]);
+                                            else {
+                                                if (d.properties.wikidata in outThis.data)
+                                                    return outThis.colorMap[outThis.data[d.properties.wikidata][0].religion];
+                                                else return null;
+                                            }
+                                        }
+                                        else return null;
+                                    })
                                     map.currentMouse = null;
                                 }
                                 else {
@@ -345,7 +376,13 @@ class Map {
                                                         return outThis.clickedColor;
                                                     }
                                                     else if (outThis.category != null) {
-                                                        return outThis.colorScale(+outThis.data[d1.properties.wikidata]);
+                                                        if (outThis.category != "religion")
+                                                            return outThis.colorScale(+outThis.data[d1.properties.wikidata]);
+                                                        else {
+                                                            if (d1.properties.wikidata in outThis.data)
+                                                                return outThis.colorMap[outThis.data[d1.properties.wikidata][0].religion];
+                                                            else return null;
+                                                        }
                                                     }
                                                     else return null;
                                                     

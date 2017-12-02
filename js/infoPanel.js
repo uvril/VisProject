@@ -23,10 +23,10 @@ class InfoPanel {
 				this.collapseIcon();
 			}
 		}.bind(this));
-        this.colorMap = {"Judaism": "#1f77b4", "Sikh": "#ff7f0e", "Islam": "#2ca02c", "Buddhism": "#dbdb8d", "Zoroastrian": "#d62728", 
-                        "Christianity": "#9467bd", "Taoism": "#8c564b", "Shinto": "#e377c2", "Other religions": "#7f7f7f", 
-                        "Non-religious": "#bdbdbd", "Hindu": "#bcbd22", "Animist religions": "#17becf", "Baha'i": "#c7e9c0",
-                        "Jain": "#c6dbef", "Confucianism": "#9e9ac8", "Syncretic religions": "#7b4173", "Others": "#d6616b"};
+        this.colorMap = {"Judaism": "#1f77b4", "Syncretic religions" : "#ff7f0e", "Islam": "#2ca02c", "Buddhism": "#dbdb8d", "Zoroastrian": "#d62728", 
+                                "Christianity": "#9467bd", "Taoism": "#8c564b", "Shinto": "#e377c2", "Other religions": "#7f7f7f", 
+                                "Non-religious": "#bdbdbd", "Hindu": "#bcbd22", "Animist religions": "#17becf", "Baha'i": "#c7e9c0",
+                                "Jain": "#c6dbef", "Confucianism": "#9e9ac8", "Sikh": "#7b4173", "Others": "#d6616b"};
      $('#sidebar').on('hidden.bs.collapse', function() {
 		 d3.select("#sidebaricon").classed("fa-chevron-right",true).classed("fa-chevron-left",false).style("left","0px");
 	 });
@@ -62,7 +62,6 @@ class InfoPanel {
             this.contentObj.select("#countryInfo").style("visibility", "visible");
         }
         d3.json("data/stat/" + wd + ".json", function(err, data) { 
-            d3.json("data/religion.json", function(err, rdata){
                 this.infoTable.select("#table-capital").html(data.capital[0]);
                 this.infoTable.select("#table-continent").html(data.continent.join(', '));
                 this.infoTable.select("#table-hos").html(data.headState[0]);
@@ -85,7 +84,7 @@ class InfoPanel {
                     this.infoTable.select("#table-hdi").html("");
                 }
 
-                console.log(rdata);
+                let rdata = window.dataset["religion"];
                 let donutData = [], seletedNum = 5, others = 0, sum=0;
 
                 for (let i in rdata[wd]) {
@@ -219,7 +218,6 @@ class InfoPanel {
 						this.showIcon();
 						$('#sidebaricon').trigger("click");
 					}
-            }.bind(this))
         }.bind(this));
 
     }
