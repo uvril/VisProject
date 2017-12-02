@@ -121,6 +121,7 @@ class AggPanel {
 					outerThis.update();
 				}
 			}(this));
+		d3.select("#statisticsViewTab").classed("active", false).classed("show", false);
 	}
 
 	updateYearText(startYear, endYear) {
