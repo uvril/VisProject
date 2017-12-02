@@ -326,8 +326,6 @@ class Map {
                             }
                         }
                 }(this));
-            if (this.clickedCountry != null) 
-                this.rankView.update(this.clickedCountry, this.wdMap, this.year);
 
             let graticule = d3.geoGraticule();
 
@@ -341,6 +339,12 @@ class Map {
                 .attr('fill', 'none'); 
 
             this.updateText();
+
+            if (this.clickedCountry != null) {
+                this.rankView.update(this.clickedCountry, this.wdMap, this.year);
+                this.svgText.selectAll("textPath")
+                    .style("fill-opacity", d => d.properties.wikidata === this.clickedCountry ? 1 : 0.4);
+            }
 
             }.bind(this));
     }
