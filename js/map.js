@@ -21,7 +21,7 @@ class Map {
         this.svgText = mapSvg.append("g");
         this.mapLegend = this.mapContainer.select("#map-legend");
         let mapZoom = d3.zoom()
-            .scaleExtent([1, 16])
+            .scaleExtent([1, 32])
             .on("zoom", function () {
                 this.curScale = d3.event.transform;
                 this.zoomed();
@@ -48,20 +48,26 @@ class Map {
         this.category = null;
         this.layers = d3.select("#map-bnt");
         //d.properties.wikidata
-        this.layers.selectAll("#map-pop")
+        this.layers.select("#map-pop")
             .on("click", function() {
+                this.layers.selectAll(".active").classed("active", false);
+                this.layers.select("#map-heat").classed("active", true);
                 this.category = "pop";
                 this.mapLegend.html("");
                 this.addLayer();
             }.bind(this));
-        this.layers.selectAll("#map-gdp")
+        this.layers.select("#map-gdp")
             .on("click", function() {
+                this.layers.selectAll(".active").classed("active", false);
+                this.layers.select("#map-heat").classed("active", true);
                 this.category = "gdp";
                 this.mapLegend.html("");
                 this.addLayer();
             }.bind(this));
-        this.layers.selectAll("#map-ori")
+        this.layers.select("#map-ori")
             .on("click", function() {
+                this.layers.selectAll(".active").classed("active", false);
+                this.layers.select("#map-ori").classed("active", true);
                 this.category = null;
                 this.mapLegend.html("");
                 this.drawMap(this.year);
@@ -180,7 +186,7 @@ class Map {
                 return l/w > 4 / this.curScale.k;
             }
             return false;
-        }.bind(this));
+        }.bind(this));		
         this.drawText(lCntry);
     }
 
@@ -198,15 +204,12 @@ class Map {
                 return line([p[0], p[2], p[1]]);
             }.bind(this));
 
-        this.svgText
-            .html("")
-            .selectAll("text")
-            .data(lCntry)
-            .enter()
-            .append("text")
-            .attr("transform", "translate(0,0)")
-            //.style("text-anchor", "middle")				
-            .append("textPath")
+        let svgTextSel = this.svgText.selectAll("text").data(lCntry);
+		svgTextSel.exit().remove();
+		svgTextSel = svgTextSel.enter().append("text").merge(svgTextSel);
+		
+        let svgTextPathSel = svgTextSel.html("").append("textPath");
+            svgTextPathSel
             .attr("xlink:href", d => "#"+d.properties.wikidata)				
             .attr("textLength", function (d) {
                 let box = this.getPath(d);
@@ -219,7 +222,7 @@ class Map {
         }.bind(this))
         .attr("startOffset", "5%")
         .style("fill", "black")
-        .style("fill-opacity", ".9")
+        .style("fill-opacity", d => d.properties.wikidata === this.clickedCountry ? 1 : 0.4)
             .style("font-size", function (d, i, n) {
                 let node = d3.select(n[i]);
                 let l = node.attr("textLength");

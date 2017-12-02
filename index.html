@@ -52,6 +52,33 @@
 
                             <div class="col-12" id="middleWare">
                                 <div class="card text-center">
+                                <div class="card-header">
+                                    <div>
+                                        <span class="yearRangeText">
+                                            <b id="yearSelectText">1960</b>
+                                        </span>
+                                        <div class="yearRangeSlider"> 
+                                            <input id="yearSelect" type="text"/><br/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="card-header">
+                                    <ul class="nav nav-tabs card-header-tabs" id="map-bnt">
+                                        <li class="nav-item">
+                                            <a class="nav-link active" ihref="#" id="map-ori">Plain Map</a>
+                                        </li>
+                                        <li class="nav-item dropdown">
+                                            <a class="nav-link dropdown-toggle" id="map-heat" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Heat Map</a>
+                                            <div class="dropdown-menu">
+                                                <a class="dropdown-item" id="map-pop" href="#">Population</a>
+                                                <a class="dropdown-item" id="map-gdp" href="#">GDP</a>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+
+
                                     <div class="card-body" id="mapContainer">
 
                                         <div class="svg-container">
@@ -67,22 +94,6 @@
                                             <button type="button" class="btn btn-default" id="reset"><span class="fa fa-retweet" aria-hidden="true"></span></button>
                                         </div>
 
-                                        <div class="text-center" style="position:absolute;float:left;left:5%;top:12%;">
-                                            <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#mapList">Heat Map</button>
-                                            <div id="mapList" class="collapse in">
-                                                <div class="btn-group-vertical" data-toggle="buttons" id="map-bnt">
-                                                    <label class="btn btn-primary active" id="map-ori">
-                                                        <input type="radio" name="options" checked> None
-                                                    </label>
-                                                    <label class="btn btn-primary" id="map-pop">
-                                                        <input type="radio" name="options" > Poplation
-                                                    </label>
-                                                        <label class="btn btn-primary" id="map-gdp">
-                                                            <input type="radio" name="options" > GDP
-                                                        </label>
-                                                </div>
-                                            </div>
-                                        </div>
 
 
                                     </div>
@@ -148,8 +159,6 @@
                                         </div>
                                     </div>
 
-
-
                         </div>
                     </div>			
                 </div>			
@@ -180,7 +189,7 @@
                                 <div class="card-body">
                                     <div class="row">
                                         <nav class="navbar navbar-expand-lg navbar-light bg-light">
-                                            <a class="navbar-brand" href="#">Navbar</a>
+                                            <a class="navbar-brand" href="#">Data</a>
                                             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                                                 <span class="navbar-toggler-icon"></span>
                                             </button>
