@@ -28,7 +28,7 @@
     display: inline-block;
     position: relative;
     width: 100%;
-    padding-bottom: 100%; /* aspect ratio */
+	height:600px;
     vertical-align: top;
     overflow: hidden;
 }
@@ -40,9 +40,9 @@
 }
 
 #float-button-group {
-    position:fixed;
-    left:150px;
-    top:100px;
+    position:absolute;
+    left:90%;
+    top:30%;
     opacity:0.5;
 }
 
@@ -86,7 +86,7 @@
     background: 	#D3D3D3;
 }
 
-#yearSlider .slider-selection {
+.yearRangeSlider .slider-selection {
     background: #aad4e5;
 }
 

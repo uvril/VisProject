@@ -1,6 +1,6 @@
 class Map {
 
-    constructor(infoPanel, rankView) {
+    constructor(infoPanel, rankView, defaultYear) {
         this.curData = null;
         this.wdMap = {};
         this.mapContainer = d3.select("#mapContainer");
@@ -80,6 +80,16 @@ class Map {
         this.year = null;
         this.clickedCountry = null;
         this.clickedColor = "95c5de";
+        d3.select("yearSelectText").text(defaultYear);
+        $("#yearSelect").slider({min: 1960, max: 2016,  value: defaultYear});
+        $("#yearSelect").on("slide", function(event) {
+            d3.select("#yearSelectText").text(event.value);
+        }.bind(this));
+        $("#yearSelect").on("slideStop", function(event) {
+            this.drawMap(+event.value);
+        }.bind(this));
+		
+        this.drawMap(defaultYear);	
     }
 
     addLayer() {
@@ -91,9 +101,6 @@ class Map {
                             .domain(domain)
                             .range(range);
         let colNum = 5, linePadding = 15, rectWidth = 20, rectHeight = 20, colPadding =5, rectPad = 10;
-		let svgBounds = this.mapContainer.node().getBoundingClientRect();	
-		console.log(svgBounds);
-        //this.mapLegend.attr("transform", "translate(0,"+(svgBounds.width*500/960*0.7-5*(rectHeight+rectPad))+")");
 
         let legendG = this.mapLegend.selectAll("g")
                         .data(domain)
@@ -122,6 +129,7 @@ class Map {
                         return outThis.colorScale((+outThis.data[d.properties.wikidata]));
                     }
             }(this));
+        this.mapLegend.attr("transform", "translate(50, 260)");			
     }
 
     generateColor(startColor, endColor, numIntervals){
@@ -245,6 +253,7 @@ class Map {
     }
 
     drawMap(year) {
+        year = fYear(year);
         this.year = year;
         if (this.category != null)
             this.data = window.dataset[this.category][year];
@@ -349,6 +358,11 @@ class Map {
                     .style("fill-opacity", d => d.properties.wikidata === this.clickedCountry ? 1 : 0.4);
             }
 
+
+		let svgBounds = this.mapContainer.select("#mapSvg").node().getBoundingClientRect();	
+		console.log(svgBounds);
+		this.mapContainer.select(".svg-container").attr("style","height:"+svgBounds.height+"px");	
+			
             }.bind(this));
     }
 
