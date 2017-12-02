@@ -327,7 +327,10 @@ class Map {
         year = fYear(year);
         this.year = year;
         if (this.category != null)
-            this.data = window.dataset[this.category][year];
+            if (this.category != "religion")
+                this.data = window.dataset[this.category][year];
+            else this.data = window.dataset[this.category];
+
         let filename = "data/map/cntry" + year + ".json";
 
         d3.json(filename, function (geoData) {
@@ -353,7 +356,15 @@ class Map {
                     return function(d) {
                         if (d.properties.wikidata === outThis.clickedCountry) return outThis.clickedColor;
                         else {
-                            if (outThis.category != null) return outThis.colorScale(+outThis.data[d.properties.wikidata]);
+                            if (outThis.category != null) {
+                                if (outThis.category != "religion")
+                                    return outThis.colorScale(+outThis.data[d.properties.wikidata]);
+                                else {
+                                    if (d.properties.wikidata in outThis.data)
+                                        return outThis.colorMap[outThis.data[d.properties.wikidata][0].religion];
+                                    else return null;
+                                }
+                            }
                             else return null;
                         }
                     }
