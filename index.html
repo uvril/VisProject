@@ -7,7 +7,7 @@
         <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap4.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.0.0/css/bootstrap-slider.min.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-        <link rel="stylesheet" href="styles.css"/>
+        <link rel="stylesheet" href="styles.css"/>		
     </head>
 
     <body>
@@ -65,7 +65,7 @@
                                         <a href="#" data-target="#sidebar" data-toggle="collapse">
                                             <i id="sidebaricon" class="fa fa-chevron-right fa-2x py-2 p-1" style="position:absolute;top:50%;left:0;z-index:999;visibility:hidden"></i>
                                         </a>
-                                        <div class="collapse width" id="sidebar" style="position:absolute;top:10%;float:left;">
+                                        <div class="collapse width" id="sidebar" style="position:absolute;top:15%;float:left;">
                                             <div class="card" id="infoPanelCard" style="word-wrap:normal">
                                                 <div class="card-header">
                                                     <div class="countryIconDiv" align="center">
@@ -76,32 +76,20 @@
                                                 <div class="card-body" id="details">
                                                     <div id="nav-info">
                                                         <div id="countryInfo" style="visibility:hidden">
-                                                            <table class="table table-align" id="basicInfoTable">
+                                                            <table class="table table-align table-sm" id="basicInfoTable">
                                                                 <tbody>
                                                                     <tr>
                                                                         <th scope="row">Capital</th>
                                                                         <td id="table-capital"></td>
                                                                     </tr>
                                                                     <tr>
-                                                                        <th scope="row">Continent</th>
-                                                                        <td id="table-continent"></td>
-                                                                    </tr>
-                                                                    <tr>
                                                                         <th scope="row">Head of State</th>
                                                                         <td id="table-hos"></td>
                                                                     </tr>
                                                                     <tr>
-                                                                        <th scope="row">Head of Gov</th>
-                                                                        <td id="table-hog"></td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <th scope="row">Population</th>
-                                                                        <td id="table-population"></td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <th scope="row">HDI</th>
-                                                                        <td id="table-hdi"></td>
-                                                                    </tr>
+                                                                        <th scope="row" colspan="2">Statistics<br><div id="table-radar" ></div></th>
+                                                                        
+                                                                    </tr>																	
                                                                     <tr>
                                                                         <th scope="row">Religions<br><svg id="donut-legend"></svg></th>
                                                                         <td id="table-religions">
@@ -227,6 +215,10 @@
         <script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.0.0/bootstrap-slider.min.js"></script>
         <script src="https://www.w3schools.com/lib/w3.js"></script>
+		
+		
+
+		<script src="js/radar.js"></script>		
         <script src="js/map.js"></script>
         <script src="js/infoPanel.js"></script>
         <script src="js/aggPanel.js"></script>
@@ -238,6 +230,7 @@ w3.includeHTML(function () {
 });
         </script>
 
+		
 
     </body>
 </html>

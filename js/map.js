@@ -5,11 +5,11 @@ class Map {
         this.wdMap = {};
         this.mapContainer = d3.select("#mapContainer");
         let mapSvg = d3.select("#mapSvg")
-		.attr("preserveAspectRatio", "xMinYMin meet")
-	   .attr("viewBox", "0 0 960 500")
-	   //class to make it responsive
-	   .classed("svg-content-responsive", true)
-	   .select("#map"); 		
+            .attr("preserveAspectRatio", "xMinYMin meet")
+            .attr("viewBox", "0 0 960 500")
+        //class to make it responsive
+            .classed("svg-content-responsive", true)
+            .select("#map"); 		
         this.projection = d3.geoPatterson();
         this.path = d3.geoPath()
             .projection(this.projection);		
@@ -29,7 +29,7 @@ class Map {
         mapSvg.call(mapZoom);
         this.currentMouse = null;
         this.curScale = d3.zoomIdentity;
-        
+
         this.mapContainer.select("#zoom-in")
             .on("click", function() {
                 mapSvg.call(mapZoom.scaleBy, 1.2);
@@ -97,9 +97,9 @@ class Map {
             this.drawMap(+event.value);
         }.bind(this));
         this.colorMap = {"Judaism": "#1f77b4", "Syncretic religions" : "#ff7f0e", "Islam": "#2ca02c", "Buddhism": "#dbdb8d", "Non-religious": "#d62728", 
-                                "Christianity": "#9467bd", "Taoism": "#8c564b", "Shinto": "#e377c2", "Other religions": "#7f7f7f", 
-                                "Zoroastrian": "#bdbdbd", "Hindu": "#bcbd22", "Animist religions": "#17becf", "Baha'i": "#c7e9c0",
-                                "Jain": "#c6dbef", "Confucianism": "#9e9ac8", "Sikh": "#7b4173", "Others": "#d6616b"};
+            "Christianity": "#9467bd", "Taoism": "#8c564b", "Shinto": "#e377c2", "Other religions": "#7f7f7f", 
+            "Zoroastrian": "#bdbdbd", "Hindu": "#bcbd22", "Animist religions": "#17becf", "Baha'i": "#c7e9c0",
+            "Jain": "#c6dbef", "Confucianism": "#9e9ac8", "Sikh": "#7b4173", "Others": "#d6616b"};
         this.drawMap(defaultYear);	
     }
 
@@ -107,13 +107,13 @@ class Map {
         this.data = window.dataset[this.category];
         this.svgPath.selectAll("path")
             .style("fill", function(outThis) {
-                    return function(d){
-                        if (d.properties.wikidata === outThis.clickedCountry)
-                            return outThis.clickedColor;
-                        //console.log(outThis.data[d.properties.wikidata], d.properties.wikidata, d.properties.NAME);
-                        if (d.properties.wikidata in outThis.data)
-                            return outThis.colorMap[outThis.data[d.properties.wikidata][0].religion];
-                    }
+                return function(d){
+                    if (d.properties.wikidata === outThis.clickedCountry)
+                        return outThis.clickedColor;
+                    //console.log(outThis.data[d.properties.wikidata], d.properties.wikidata, d.properties.NAME);
+                    if (d.properties.wikidata in outThis.data)
+                        return outThis.colorMap[outThis.data[d.properties.wikidata][0].religion];
+                }
             }(this));
     }
 
@@ -123,51 +123,51 @@ class Map {
         //let range = this.generateColor("#E0F2D4", "#192F0A", domain.length);
         let range = ["#E0F2D4", "#c7e595", "#A3D77F", "#66BC29", "#537E35"]
         this.colorScale = d3.scaleQuantile()
-                            .domain(domain)
-                            .range(range);
+            .domain(domain)
+            .range(range);
         let colNum = 5, linePadding = 15, rectWidth = 20, rectHeight = 20, colPadding =5, rectPad = 10;
 
-		let noDataG = this.mapLegend.append("g");
-		let hasDataG = this.mapLegend.append("g").attr("transform", "translate(0,30)");
-		noDataG.append("rect")
-                .attr("x", 0)
-                .attr("y", 0)
-                .attr("width", rectWidth)
-                .attr("height", rectHeight)
-                .style("fill", "#d9d9d9");
-		
+        let noDataG = this.mapLegend.append("g");
+        let hasDataG = this.mapLegend.append("g").attr("transform", "translate(0,30)");
+        noDataG.append("rect")
+            .attr("x", 0)
+            .attr("y", 0)
+            .attr("width", rectWidth)
+            .attr("height", rectHeight)
+            .style("fill", "#d9d9d9");
+
         noDataG.append("text")
-				.attr("x", rectWidth + 20)
-        		.attr("y", rectHeight * 0.5)
-				.style("alignment-baseline", "central")
-        		.text("No data");
-		
+            .attr("x", rectWidth + 20)
+            .attr("y", rectHeight * 0.5)
+            .style("alignment-baseline", "central")
+            .text("No data");
+
         let legendG = hasDataG.selectAll("g")
-                        .data(domain)
-                        .enter().append("g")
+            .data(domain)
+            .enter().append("g")
         legendG.append("rect")
-                .attr("x", 0)
-                .attr("y", (d, i) => (rectHeight + rectPad) * i)
-                .attr("width", rectWidth)
-                .attr("height", rectHeight)
-                .style("fill", d=>this.colorScale(d));
+            .attr("x", 0)
+            .attr("y", (d, i) => (rectHeight + rectPad) * i)
+            .attr("width", rectWidth)
+            .attr("height", rectHeight)
+            .style("fill", d=>this.colorScale(d));
         legendG.append("text")
-        		.attr("y", (d, i) => (rectHeight + rectPad) * i + rectHeight * 0.5)
-        		.attr("x", rectWidth + 20)
-				.style("alignment-baseline", "central")
-        		.text(function(d, i){
-        			if (i == 0) return "Less than "+d3.format(".2s")(domain[1]);
-        			else if (i == domain.length-1) return "More than "+d3.format(".2s")(domain[domain.length-1]);
-        			return d3.format(".2s")(d)+" to "+d3.format(".2s")(domain[i+1]);
-        		});
+            .attr("y", (d, i) => (rectHeight + rectPad) * i + rectHeight * 0.5)
+            .attr("x", rectWidth + 20)
+            .style("alignment-baseline", "central")
+            .text(function(d, i){
+                if (i == 0) return "Less than "+d3.format(".2s")(domain[1]);
+                else if (i == domain.length-1) return "More than "+d3.format(".2s")(domain[domain.length-1]);
+                return d3.format(".2s")(d)+" to "+d3.format(".2s")(domain[i+1]);
+            });
         this.svgPath.selectAll("path")
             .style("fill", function(outThis) {
-                    return function(d){
-                        //console.log(d.properties.NAME, data[d.properties.wikidata], colorScale((+data[d.properties.wikidata])));
-                        if (d.properties.wikidata === outThis.clickedCountry)
-                            return outThis.clickedColor;
-                        return outThis.colorScale((+outThis.data[d.properties.wikidata]));
-                    }
+                return function(d){
+                    //console.log(d.properties.NAME, data[d.properties.wikidata], colorScale((+data[d.properties.wikidata])));
+                    if (d.properties.wikidata === outThis.clickedCountry)
+                        return outThis.clickedColor;
+                    return outThis.colorScale((+outThis.data[d.properties.wikidata]));
+                }
             }(this));
         this.mapLegend.attr("transform", "translate(50, 260)");			
     }
@@ -175,11 +175,11 @@ class Map {
     generateColor(startColor, endColor, numIntervals){
         function colorToHex(color) {
             let rgbToHex = function (rgb) { 
-              var hex = Number(rgb).toString(16);
-              if (hex.length < 2) {
-                   hex = "0" + hex;
-              }
-              return hex;
+                var hex = Number(rgb).toString(16);
+                if (hex.length < 2) {
+                    hex = "0" + hex;
+                }
+                return hex;
             };
             if (color.substr(0, 1) === '#') {
                 return color;
@@ -192,8 +192,8 @@ class Map {
         };
         let list = [];
         let tmp = d3.scaleLinear()
-                    .domain([0, numIntervals-1])
-                    .range([startColor, endColor]);
+            .domain([0, numIntervals-1])
+            .range([startColor, endColor]);
         for (let i = 0; i < numIntervals; ++i) {
             list.push(colorToHex(tmp(i)));
         }
@@ -221,7 +221,7 @@ class Map {
         var c = this.projection([+props.c1, +props.c2]);
         return [p1, p2, c];
     }
-    
+
     updateText() {
         if (this.curData == null) return;
         let lCntry = this.curData.features.filter(function (d) {
@@ -253,24 +253,24 @@ class Map {
             }.bind(this));
 
         let svgTextSel = this.svgText.selectAll("text").data(lCntry);
-		svgTextSel.exit().remove();
-		svgTextSel = svgTextSel.enter().append("text").merge(svgTextSel);
-		
-        let svgTextPathSel = svgTextSel.html("").append("textPath");
-            svgTextPathSel
+        svgTextSel.exit().remove();
+        svgTextSel = svgTextSel.enter().append("text").merge(svgTextSel);
+
+        let svgTextPathSel = svgTextSel.html("").attr("pointer-events", "none").append("textPath");
+        svgTextPathSel
             .attr("xlink:href", d => "#"+d.properties.wikidata)				
             .attr("textLength", function (d) {
                 let box = this.getPath(d);
                 return 0.9*this.calc_dist(box);
             }.bind(this))
-        .text(function (d) {
-            let str = d.properties.NAME;
-            if (str == "unclaimed") str = "";
-            return str.toUpperCase();
-        }.bind(this))
-        .attr("startOffset", "5%")
-        .style("fill", "black")
-        .style("fill-opacity", d => d.properties.wikidata === this.clickedCountry ? 1 : 0.4)
+            .text(function (d) {
+                let str = d.properties.NAME;
+                if (str == "unclaimed") str = "";
+                return str.toUpperCase();
+            }.bind(this))
+            .attr("startOffset", "5%")
+            .style("fill", "black")
+            .style("fill-opacity", d => d.properties.wikidata === this.clickedCountry ? 1 : 0.4)
             .style("font-size", function (d, i, n) {
                 let node = d3.select(n[i]);
                 let l = node.attr("textLength");
@@ -301,13 +301,13 @@ class Map {
 
         d3.json(filename, function (geoData) {
 
-			for (let i = 0; i < geoData.features.length; ++i) {
-				if (geoData.features[i].properties.wikidata === "212429") {
-					geoData.features[i].properties.wikidata = "142";
-				}
+            for (let i = 0; i < geoData.features.length; ++i) {
+                if (geoData.features[i].properties.wikidata === "212429") {
+                    geoData.features[i].properties.wikidata = "142";
+                }
                 this.wdMap[geoData.features[i].properties.wikidata] = geoData.features[i].properties.NAME;
-			}
-		
+            }
+
             this.curData = geoData;
 
             this.svgPath
@@ -342,11 +342,11 @@ class Map {
 
                 })
                 .on("mouseout", function(outThis) {
-                        return function(d) {
-                            let map = window.map;
-                            if (map.currentMouse != null) {
-                                if (d.properties.wikidata != outThis.clickedCountry) {
-                                    d3.select(map.currentMouse)
+                    return function(d) {
+                        let map = window.map;
+                        if (map.currentMouse != null) {
+                            if (d.properties.wikidata != outThis.clickedCountry) {
+                                d3.select(map.currentMouse)
                                     .style("fill", function(d){
                                         if (outThis.category != null) {
                                             if (outThis.category != "religion")
@@ -359,42 +359,42 @@ class Map {
                                         }
                                         else return null;
                                     })
-                                    map.currentMouse = null;
-                                }
-                                else {
-                                    d3.select(map.currentMouse)
-                                    .style("fill", outThis.clickedColor);
-                                }
+                                map.currentMouse = null;
                             }
-                       } 
-                }(this))
-                .on("click", function(outThis) {
-                        return function(d){
-                            if (d.properties.NAME != "unclaimed") {
-                                outThis.svgPath.selectAll("path")
-                                                .style("fill", function(d1){
-                                                    if (d1.properties.wikidata === d.properties.wikidata) {
-                                                        outThis.clickedCountry = d1.properties.wikidata;
-                                                        return outThis.clickedColor;
-                                                    }
-                                                    else if (outThis.category != null) {
-                                                        if (outThis.category != "religion")
-                                                            return outThis.colorScale(+outThis.data[d1.properties.wikidata]);
-                                                        else {
-                                                            if (d1.properties.wikidata in outThis.data)
-                                                                return outThis.colorMap[outThis.data[d1.properties.wikidata][0].religion];
-                                                            else return null;
-                                                        }
-                                                    }
-                                                    else return null;
-                                                    
-                                                });
-                                outThis.svgText.selectAll("textPath").style("fill-opacity", d1 => d1.properties.wikidata === d.properties.wikidata ? 1 : 0.4);
-                                outThis.infoPanel.updateInfo(d.properties, year);
-                                outThis.rankView.update(outThis.clickedCountry, outThis.wdMap, outThis.year);
+                            else {
+                                d3.select(map.currentMouse)
+                                    .style("fill", outThis.clickedColor);
                             }
                         }
-					
+                    } 
+                }(this))
+                .on("click", function(outThis) {
+                    return function(d){
+                        if (d.properties.NAME != "unclaimed") {
+                            outThis.svgPath.selectAll("path")
+                                .style("fill", function(d1){
+                                    if (d1.properties.wikidata === d.properties.wikidata) {
+                                        outThis.clickedCountry = d1.properties.wikidata;
+                                        return outThis.clickedColor;
+                                    }
+                                    else if (outThis.category != null) {
+                                        if (outThis.category != "religion")
+                                            return outThis.colorScale(+outThis.data[d1.properties.wikidata]);
+                                        else {
+                                            if (d1.properties.wikidata in outThis.data)
+                                                return outThis.colorMap[outThis.data[d1.properties.wikidata][0].religion];
+                                            else return null;
+                                        }
+                                    }
+                                    else return null;
+
+                                });
+                            outThis.svgText.selectAll("textPath").style("fill-opacity", d1 => d1.properties.wikidata === d.properties.wikidata ? 1 : 0.4);
+                            outThis.infoPanel.updateInfo(d.properties, year);
+                            outThis.rankView.update(outThis.clickedCountry, outThis.wdMap, outThis.year);
+                        }
+                    }
+
                 }(this));
 
             let graticule = d3.geoGraticule();
@@ -417,12 +417,12 @@ class Map {
             }
 
 
-		let svgBounds = this.mapContainer.select("#mapSvg").node().getBoundingClientRect();	
-		console.log(svgBounds);
-		this.mapContainer.select(".svg-container").attr("style","height:"+svgBounds.height+"px");	
-			
-            }.bind(this));
-			
+            let svgBounds = this.mapContainer.select("#mapSvg").node().getBoundingClientRect();	
+            console.log(svgBounds);
+            this.mapContainer.select(".svg-container").attr("style","height:"+svgBounds.height+"px");	
+
+        }.bind(this));
+
     }
 
 }

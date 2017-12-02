@@ -63,25 +63,39 @@ class InfoPanel {
         }
         d3.json("data/stat/" + wd + ".json", function(err, data) { 
                 this.infoTable.select("#table-capital").html(data.capital[0]);
-                this.infoTable.select("#table-continent").html(data.continent.join(', '));
-                this.infoTable.select("#table-hos").html(data.headState[0]);
-                this.infoTable.select("#table-hog").html(data.headGov[0]);
+                if (data.headState[0]) {
+                    this.infoTable.select("#table-hos").html(data.headState[0]);
+                }
+            else {
+
+                this.infoTable.select("#table-hos").html(data.headGov[0]);
+            }
+			
+
+// Config for the Radar chart
+var config = {
+    w: 200,
+    h: 200,
+    maxValue: 100,
+    levels: 5,
+    ExtraWidthX: 200
+}
+
+let radarData = window.dataset.radar[wd];
+let rd = [{"area":"GDP","value":queryNewestData(window.dataset.gdp, wd)/185691000000}];
+console.log(radarData);
+for (let k in radarData) {
+	rd.push({"area":k,"value":radarData[k]*100});
+}
+
+    RadarChart.draw("#table-radar", [rd], config);
+
+
+	
                 let latestPopYear = 0, latestPop = 0;
                 if (data.pop.length > 0) {
                     latestPopYear = d3.max(data.pop, d => +d.year);
                     latestPop = data.pop.filter(d => +d.year === latestPopYear)[0]
-                    this.infoTable.select("#table-population").html(latestPop.stats+" ("+latestPop.year+")");
-                }
-                else {
-                    this.infoTable.select("#table-population").html("");
-                }
-                if (data.hdi.length > 0) {
-                    let latestHDIYear = d3.max(data.hdi, d => +d.year);
-                    let latestHDI = data.hdi.filter(d => +d.year === latestHDIYear)[0]
-                    this.infoTable.select("#table-hdi").html(latestHDI.stats+" ("+latestHDI.year+")");
-                }
-                else {
-                    this.infoTable.select("#table-hdi").html("");
                 }
 
                 let rdata = window.dataset["religion"];
