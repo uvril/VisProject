@@ -58,8 +58,8 @@
 
                                     <div class="card-body" id="mapContainer">
 
- <a href="#" data-target="#sidebar" data-toggle="collapse">
-									<i class="fa fa-navicon fa-2x py-2 p-1" style="position:absolute;top:50%;left:0%"></i>
+									<a href="#" data-target="#sidebar" data-toggle="collapse">
+									<i id="sidebaricon" class="fa fa-chevron-right fa-2x py-2 p-1" style="position:absolute;top:50%;left:0;z-index:999"></i>
 									</a>
                                     <div class="collapse width" id="sidebar" style="position:absolute;top:10%;float:left;">
                                         <div class="card" id="mySidenav" style="word-wrap:normal">
@@ -118,7 +118,9 @@
                                                 <button class="btn btn-info btn-sm" id="add-button">Select</button>
                                             </div>
                                         </div>
-                                    </div>									
+                                    </div>	
+
+								
 									
                                         <div class="svg-container">
                                             <svg id="mapSvg">
@@ -223,7 +225,7 @@
                     <div class="card-header" role="tab" id="headingThree">
                         <h5 class="mb-0">
                             <a class="collapsed" data-toggle="collapse" href="#collapseThree" aria-expanded="false" aria-controls="collapseTwo">
-                                Top 50 Countries in three different dimensions
+                                Rank View
                             </a>
                         </h5>
                     </div>
@@ -262,5 +264,7 @@ w3.includeHTML(function () {
     d3.select("#navbar-home").classed("active", true);
 });
         </script>
+		
+		
     </body>
 </html>

@@ -13,6 +13,13 @@ class InfoPanel {
         this.legend = d3.select("#donut-legend")
                         .attr("height", this.legendH)
                         .attr("width", this.legendW);
+	 $('#sidebar').on('hidden.bs.collapse', function() {
+		 d3.select("#sidebaricon").classed("fa-chevron-right",true).classed("fa-chevron-left",false).style("left","0px");
+	 });
+     $('#sidebar').on('shown.bs.collapse', function() {
+		 d3.select("#sidebaricon").classed("fa-chevron-right",false).classed("fa-chevron-left",true).style("left","400px");
+	 });		
+		
     }
 
     updateInfo(oneCountryInfo, year) {
@@ -110,6 +117,10 @@ class InfoPanel {
                     .on("click", function(){
                         this.aggPanel.insertCountry(oneCountryInfo.NAME, wd);
                     }.bind(this));
+					let isShow = d3.select("#sidebar").classed("show");
+					if (!isShow) {
+						$('#sidebaricon').trigger("click");
+					}
             }.bind(this))
         }.bind(this));
 
