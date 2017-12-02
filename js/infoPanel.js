@@ -13,14 +13,30 @@ class InfoPanel {
         this.legend = d3.select("#donut-legend")
                         .attr("height", this.legendH)
                         .attr("width", this.legendW);
-	 $('#sidebar').on('hidden.bs.collapse', function() {
-		 d3.select("#sidebaricon").classed("fa-chevron-right",true).classed("fa-chevron-left",false).style("left","0px");
-	 });
-     $('#sidebar').on('shown.bs.collapse', function() {
-		 d3.select("#sidebaricon").classed("fa-chevron-right",false).classed("fa-chevron-left",true).style("left","400px");
-	 });		
-		
+						
+		this.sidebarIcon = d3.select("#sidebaricon");
+		this.sidebarIcon.on("click", function () {
+			let isShow = d3.select("#sidebar").classed("show");
+			if (!isShow) {
+				this.showIcon();
+			}
+			else {
+				this.collapseIcon();
+			}
+		}.bind(this));
     }
+	
+	collapseIcon() {
+		 let i = this.sidebarIcon;
+		 i.transition().duration(350).style("left","0px");
+		 i.classed("fa-chevron-right",true).classed("fa-chevron-left",false);
+	}
+	
+	showIcon() {
+		 let i = this.sidebarIcon;
+		 i.transition().duration(350).style("left","400px");
+		 i.classed("fa-chevron-right",false).classed("fa-chevron-left",true);
+	}
 
     updateInfo(oneCountryInfo, year) {
         let wd = +oneCountryInfo.wikidata;
@@ -119,6 +135,7 @@ class InfoPanel {
                     }.bind(this));
 					let isShow = d3.select("#sidebar").classed("show");
 					if (!isShow) {
+						this.showIcon();
 						$('#sidebaricon').trigger("click");
 					}
             }.bind(this))
