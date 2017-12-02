@@ -163,23 +163,25 @@ class InfoPanel {
                                     .attr("r", innerRad-10)
                                     .style("fill", "white");
 
-                groupP.append("text")
-                    .attr("id", "centerTitle")
-                    .attr("x", 0)
-                    .attr("y", cirText)
-                    .text("Population")
-                    .style("text-anchor", "middle")
-                    .style("font-weight", "bold");
-                groupP.append("text")
-                    .attr("id", "centerNum")
-                    .attr("x", 0)
-                    .attr("y", cirText+20)
-                    .text(function(){
-                        if (latestPop == 0) return "";
-                        else return d3.format(".4s")(latestPop.stats);
-                    })
-                    .style("text-anchor", "middle");
-                    
+                if (donutData.length != 0) {                  
+                    groupP.append("text")
+                        .attr("id", "centerTitle")
+                        .attr("x", 0)
+                        .attr("y", cirText)
+                        .text("Population")
+                        .style("text-anchor", "middle")
+                        .style("font-weight", "bold");
+                    groupP.append("text")
+                        .attr("id", "centerNum")
+                        .attr("x", 0)
+                        .attr("y", cirText+20)
+                        .text(function(){
+                            if (latestPop == 0) return "";
+                            else return d3.format(".4s")(latestPop.stats);
+                        })
+                        .style("text-anchor", "middle");
+                }
+                
                 groupP.append("text")
                     .attr("id", "centerPct")
                     .attr("x", 0)
