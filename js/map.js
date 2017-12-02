@@ -21,7 +21,7 @@ class Map {
         this.svgText = mapSvg.append("g");
         this.mapLegend = this.mapContainer.select("#map-legend");
         let mapZoom = d3.zoom()
-            .scaleExtent([1, 16])
+            .scaleExtent([1, 32])
             .on("zoom", function () {
                 this.curScale = d3.event.transform;
                 this.zoomed();
@@ -180,7 +180,7 @@ class Map {
                 return l/w > 4 / this.curScale.k;
             }
             return false;
-        }.bind(this));
+        }.bind(this));		
         this.drawText(lCntry);
     }
 
@@ -198,15 +198,12 @@ class Map {
                 return line([p[0], p[2], p[1]]);
             }.bind(this));
 
-        this.svgText
-            .html("")
-            .selectAll("text")
-            .data(lCntry)
-            .enter()
-            .append("text")
-            .attr("transform", "translate(0,0)")
-            //.style("text-anchor", "middle")				
-            .append("textPath")
+        let svgTextSel = this.svgText.selectAll("text").data(lCntry);
+		svgTextSel.exit().remove();
+		svgTextSel = svgTextSel.enter().append("text").merge(svgTextSel);
+		
+        let svgTextPathSel = svgTextSel.html("").append("textPath");
+            svgTextPathSel
             .attr("xlink:href", d => "#"+d.properties.wikidata)				
             .attr("textLength", function (d) {
                 let box = this.getPath(d);
@@ -219,7 +216,7 @@ class Map {
         }.bind(this))
         .attr("startOffset", "5%")
         .style("fill", "black")
-        .style("fill-opacity", ".9")
+        .style("fill-opacity", d => d.properties.wikidata === this.clickedCountry ? 1 : 0.4)
             .style("font-size", function (d, i, n) {
                 let node = d3.select(n[i]);
                 let l = node.attr("textLength");
