@@ -12,8 +12,7 @@ class InfoPanel {
         this.legendW = 120;
         this.legend = d3.select("#donut-legend")
                         .attr("height", this.legendH)
-                        .attr("width", this.legendW);
-						
+                        .attr("width", this.legendW);			
 		this.sidebarIcon = d3.select("#sidebaricon");
 		this.sidebarIcon.on("click", function () {
 			let isShow = d3.select("#sidebar").classed("show");
@@ -24,6 +23,17 @@ class InfoPanel {
 				this.collapseIcon();
 			}
 		}.bind(this));
+        this.colorMap = {"Judaism": "#1f77b4", "Sikh": "#ff7f0e", "Islam": "#2ca02c", "Buddhism": "#dbdb8d", "Zoroastrian": "#d62728", 
+                        "Christianity": "#9467bd", "Taoism": "#8c564b", "Shinto": "#e377c2", "Other religions": "#7f7f7f", 
+                        "Non-religious": "#bdbdbd", "Hindu": "#bcbd22", "Animist religions": "#17becf", "Baha'i": "#c7e9c0",
+                        "Jain": "#c6dbef", "Confucianism": "#9e9ac8", "Syncretic religions": "#7b4173", "Others": "#d6616b"};
+     $('#sidebar').on('hidden.bs.collapse', function() {
+		 d3.select("#sidebaricon").classed("fa-chevron-right",true).classed("fa-chevron-left",false).style("left","0px");
+	 });
+     $('#sidebar').on('shown.bs.collapse', function() {
+		 d3.select("#sidebaricon").classed("fa-chevron-right",false).classed("fa-chevron-left",true).style("left","400px");
+	 });		
+		
     }
 	
 	collapseIcon() {
@@ -83,13 +93,14 @@ class InfoPanel {
                     sum += +rdata[wd][i].tot;
                 }
                 if (others != 0) donutData.push({"religion": "Others", "tot": others, "pct":others/sum});
+                console.log(this.colorMap);
                 console.log(donutData);
                 let pie = d3.pie()
                             .value(d=>d.tot);
                 let arc = d3.arc()
                             .innerRadius(100)
                             .outerRadius(80);
-                let color = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b", "#e377c2", "#7f7f7f", "#bcbd22", "#17becf"];
+                
                 this.donut.html("");
                 let groupP = this.donut.append("g")
                             .attr("transform", "translate(" + this.donutW/2 +", " + this.donutH/2 + ")")
@@ -101,8 +112,7 @@ class InfoPanel {
                             });
                 paths = paths.enter().append("path").merge(paths)
                             .filter(d=>d.data.tot != 0)
-                            .attr("id", d=>d.data.religion+d.data.pct)
-                            .style("fill", (d, i)=>color[i]);
+                            .style("fill", (d, i)=>this.colorMap[d.data.religion]);
                 paths.attr("d", arc);
 
                 this.legend.html("");
@@ -119,7 +129,7 @@ class InfoPanel {
                                     .attr("y", (d, i)=>i*(rectH+rectPadding))
                                     .attr("height", rectH)
                                     .attr("width", rectW)
-                                    .style("fill", (d, i)=>color[i]);
+                                    .style("fill", (d, i)=>this.colorMap[d.religion]);
                 let legendsT = groupL.selectAll("text")
                                         .data(d=>d);
                 legendsT = legendsT.enter().append("text").merge(legendsT)
