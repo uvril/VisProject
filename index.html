@@ -14,29 +14,6 @@
     <body>
         <div w3-include-html="header.html"></div>
 
-
-
-        <div class="card text-center col-12">
-            <div class="card-body" id="yearChart">
-                <nav aria-label="Year navigation">
-                    <ul class="pagination pagination-lg justify-content-center">
-                        <li class="page-item" id="yearPrev">
-                            <a class="page-link" href="#" aria-label="Previous">
-                                <span aria-hidden="true">&laquo;</span>
-                                <span class="sr-only">Previous</span>
-                            </a>
-                        </li>
-                        <li class="page-item"><input type="text" style="z-index:9999;text-align:center" class="page-link" id="yearText" placeholder="Year" value="2016"></li>
-                        <li class="page-item disabled"  id="yearNext">
-                            <a class="page-link" href="#" aria-label="Next">
-                                <span aria-hidden="true">&raquo;</span>
-                                <span class="sr-only">Next</span>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
-            </div>				
-        </div>		
         <div id="accordion" role="tablist">
             <div class="container-fluid">
                 <div class="card">
@@ -55,7 +32,7 @@
                                 <div class="card-header">
                                     <div>
                                         <span class="yearRangeText">
-                                            <b id="yearSelectText">1960</b>
+                                            <b id="yearSelectText">2016</b>
                                         </span>
                                         <div class="yearRangeSlider"> 
                                             <input id="yearSelect" type="text"/><br/>
@@ -66,7 +43,7 @@
                                 <div class="card-header">
                                     <ul class="nav nav-tabs card-header-tabs" id="map-bnt">
                                         <li class="nav-item">
-                                            <a class="nav-link active" ihref="#" id="map-ori">Plain Map</a>
+                                            <a class="nav-link active" href="#" id="map-ori">Plain Map</a>
                                         </li>
                                         <li class="nav-item dropdown">
                                             <a class="nav-link dropdown-toggle" id="map-heat" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Heat Map</a>
@@ -81,25 +58,9 @@
 
                                     <div class="card-body" id="mapContainer">
 
-                                        <div class="svg-container">
-                                            <svg id="mapSvg">
-                                                <g id="map"></g>
-                                                <g id="map-legend" class="legendQuantile"></g>
-                                            </svg>
-                                        </div>
-
-                                        <div class="btn-group-vertical" role="group" aria-label="..." id="float-button-group">
-                                            <button type="button" class="btn btn-default" id="zoom-in"><span class="fa fa-search-plus" aria-hidden="true"></span></button>
-                                            <button type="button" class="btn btn-default" id="zoom-out"><span class="fa fa-search-minus" aria-hidden="true"></span></button>
-                                            <button type="button" class="btn btn-default" id="reset"><span class="fa fa-retweet" aria-hidden="true"></span></button>
-                                        </div>
-
-
-
-                                    </div>
-                                </div>
-                            </div>
-                                    <a href="#" data-target="#sidebar" data-toggle="collapse"><i class="fa fa-navicon fa-2x py-2 p-1" style="position:absolute;top:10%;left:60%"></i></a>
+ <a href="#" data-target="#sidebar" data-toggle="collapse">
+									<i class="fa fa-navicon fa-2x py-2 p-1" style="position:absolute;top:50%;left:0%"></i>
+									</a>
                                     <div class="collapse width" id="sidebar" style="position:absolute;top:10%;float:left;">
                                         <div class="card" id="mySidenav" style="word-wrap:normal">
                                             <div class="card-header">
@@ -157,7 +118,25 @@
                                                 <button class="btn btn-info btn-sm" id="add-button">Select</button>
                                             </div>
                                         </div>
+                                    </div>									
+									
+                                        <div class="svg-container">
+                                            <svg id="mapSvg">
+                                                <g id="map"></g>
+                                                <g id="map-legend" class="legendQuantile"></g>
+                                            </svg>
+                                        </div>
+
+                                        <div class="btn-group-vertical" role="group" aria-label="..." id="float-button-group">
+                                            <button type="button" class="btn btn-default" id="zoom-in"><span class="fa fa-search-plus" aria-hidden="true"></span></button>
+                                            <button type="button" class="btn btn-default" id="zoom-out"><span class="fa fa-search-minus" aria-hidden="true"></span></button>
+                                            <button type="button" class="btn btn-default" id="reset"><span class="fa fa-retweet" aria-hidden="true"></span></button>
+                                        </div>
+
                                     </div>
+                                </div>
+                            </div>
+                                   
 
                         </div>
                     </div>			
@@ -273,7 +252,6 @@
         <script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.0.0/bootstrap-slider.min.js"></script>
         <script src="https://www.w3schools.com/lib/w3.js"></script>
-        <script src="js/yearChart.js"></script>
         <script src="js/map.js"></script>
         <script src="js/infoPanel.js"></script>
         <script src="js/aggPanel.js"></script>
