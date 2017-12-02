@@ -6,11 +6,15 @@ class InfoPanel {
         this.donut = d3.select("#donut")
                         .attr("height", 200)
                         .attr("width", 200);
+        this.legend = d3.select("#donut-legend")
+                        .attr("height", 200)
+                        .attr("width", 120);
     }
 
     updateInfo(oneCountryInfo, year) {
         let wd = +oneCountryInfo.wikidata;
-        this.contentObj.selectAll("#countryNameLabel").text(oneCountryInfo.NAME);
+        this.contentObj.selectAll("#countryNameLabel")
+            .text(oneCountryInfo.NAME);
         this.contentObj.select("#countryIcon").attr("src", "icons/" + wd + ".png");
         if (wd < 0) {
             this.contentObj.select("#countryInfo").style("visibility", "hidden");
@@ -43,31 +47,57 @@ class InfoPanel {
                 }
 
                 console.log(rdata);
-                let donutData = rdata[wd], seletedNum = 5;
+                let donutData = [], seletedNum = 5, others = 0, sum=0;
 
+                for (let i in rdata[wd]) {
+                    if (+rdata[wd][i].pct < 0.01)
+                        others += +rdata[wd][i].tot;
+                    else donutData.push(rdata[wd][i]);
+                    sum += +rdata[wd][i].tot;
+                }
+                if (others != 0) donutData.push({"religion": "Others", "tot": others, "pct":others/sum});
+                console.log(donutData);
                 let pie = d3.pie()
-                            .value(d=>d.tot)
-                let color = ["#1f77b4","#aec7e8","#ff7f0e","#ffbb78","#2ca02c","#98df8a","#d62728","#ff9896","#9467bd","#c5b0d5","#8c564b","#c49c94","#e377c2","#f7b6d2","#7f7f7f","#c7c7c7","#bcbd22","#dbdb8d","#17becf"];
-                this.donut.html("");
-                let group = this.donut.append("g")
-                            .attr("transform", "translate(100, 100)")
-                            .data([donutData]);
-                let paths = group.selectAll("path")
-                            .data(function(d){
-                                return pie(d);
-                            });
-                            
+                            .value(d=>d.tot);
                 let arc = d3.arc()
                             .innerRadius(100)
                             .outerRadius(80);
+                let color = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b", "#e377c2", "#7f7f7f", "#bcbd22", "#17becf"];
+                this.donut.html("");
+                let groupP = this.donut.append("g")
+                            .attr("transform", "translate(100, 100)")
+                            .data([donutData]);
+                let paths = groupP.selectAll("path")
+                            .data(function(d){
+                                console.log(d);
+                                return pie(d);
+                            });
                 paths = paths.enter().append("path").merge(paths)
                             .filter(d=>d.data.tot != 0)
-                            .attr("id", d=>d.data.religion)
+                            .attr("id", d=>d.data.religion+d.data.pct)
                             .style("fill", (d, i)=>color[i]);
                 paths.attr("d", arc);
-                console.log("!!!");
 
-
+                this.legend.html("");
+                let rectH = 10, rectW = 10, rectPadding = 10, rectX = 0, textPadding = 5;
+                let groupL = this.legend.append("g")
+                                .attr("transform", "translate(0,0)")
+                                .data([donutData]);
+                let legendsR = groupL.selectAll("rect")
+                                    .data(d=>d);
+                legendsR = legendsR.enter().append("rect").merge(legendsR)
+                                    .attr("x", rectX)
+                                    .attr("y", (d, i)=>rectPadding+i*(rectH+rectPadding))
+                                    .attr("height", rectH)
+                                    .attr("width", rectW)
+                                    .style("fill", (d, i)=>color[i]);
+                let legendsT = groupL.selectAll("text")
+                                        .data(d=>d);
+                legendsT = legendsT.enter().append("text").merge(legendsT)
+                                    .attr("x", rectX+textPadding+rectW)
+                                    .attr("y", (d, i)=>rectPadding+i*(rectH+rectPadding)+rectH)
+                                    .text(d=>d.religion)
+                                    .style("text-archor", "middle");
 
                 d3.select("#add-button")
                     .on("click", function(){
