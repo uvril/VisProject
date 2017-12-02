@@ -44,9 +44,10 @@ class InfoPanel {
                 this.infoTable.select("#table-continent").html(data.continent.join(', '));
                 this.infoTable.select("#table-hos").html(data.headState[0]);
                 this.infoTable.select("#table-hog").html(data.headGov[0]);
+                let latestPopYear = 0, latestPop = 0;
                 if (data.pop.length > 0) {
-                    let latestPopYear = d3.max(data.pop, d => +d.year);
-                    let latestPop = data.pop.filter(d => +d.year === latestPopYear)[0]
+                    latestPopYear = d3.max(data.pop, d => +d.year);
+                    latestPop = data.pop.filter(d => +d.year === latestPopYear)[0]
                     this.infoTable.select("#table-population").html(latestPop.stats+" ("+latestPop.year+")");
                 }
                 else {
@@ -73,11 +74,12 @@ class InfoPanel {
                 if (others != 0) donutData.push({"religion": "Others", "tot": others, "pct":others/sum});
                 console.log(this.colorMap);
                 console.log(donutData);
+                let innerRad = 80, outerRad = 100;
                 let pie = d3.pie()
                             .value(d=>d.tot);
                 let arc = d3.arc()
-                            .innerRadius(100)
-                            .outerRadius(80);
+                            .innerRadius(innerRad)
+                            .outerRadius(outerRad);
                 
                 this.donut.html("");
                 let groupP = this.donut.append("g")
@@ -88,10 +90,79 @@ class InfoPanel {
                                 console.log(d);
                                 return pie(d);
                             });
+                let pathAnim = function(path, dir) {
+                    switch(dir) {
+                        case 0:
+                            path.transition(d3.easeBounce)
+                                .duration(500)
+                                .attr('d', d3.arc()
+                                    .innerRadius(innerRad)
+                                    .outerRadius(outerRad)
+                                );
+                            break;
+
+                        case 1:
+                            path.transition()
+                                .attr('d', d3.arc()
+                                    .innerRadius(innerRad)
+                                    .outerRadius(outerRad * 1.08)
+                                );
+                            break;
+                    }
+                }
                 paths = paths.enter().append("path").merge(paths)
                             .filter(d=>d.data.tot != 0)
-                            .style("fill", (d, i)=>this.colorMap[d.data.religion]);
+                            .style("fill", (d, i)=>this.colorMap[d.data.religion])
+                            .on("mouseover", function(outThis) {
+                                return function(d, i){
+                                    d3.select("#centerTitle")
+                                        .text(d.data.religion);
+                                    d3.select("#centerPct")
+                                        .text(d3.format(".2%")(d.data.pct))
+                                        .style("fill", outThis.colorMap[d.data.religion]);
+                                    d3.select("#centerNum")
+                                        .text(d3.format(".4s")(+latestPop.stats*(+d.data.pct)));
+                                    pathAnim(d3.select(this), 1);
+                                }
+                            }(this))
+                            .on("mouseout", function() {
+                                d3.select("#centerTitle")
+                                    .text("Population");
+                                d3.select("#centerPct").text("");
+                                d3.select("#centerNum").text(d3.format(".4s")(latestPop.stats));
+                                pathAnim(d3.select(this), 0);
+                            })
                 paths.attr("d", arc);
+
+                let cirText = -15;
+                let centerCir = groupP.append("circle")
+                                    .attr("cx", 0)
+                                    .attr("cy", 0)
+                                    .attr("r", innerRad-10)
+                                    .style("fill", "white");
+
+                groupP.append("text")
+                    .attr("id", "centerTitle")
+                    .attr("x", 0)
+                    .attr("y", cirText)
+                    .text("Population")
+                    .style("text-anchor", "middle")
+                    .style("font-weight", "bold");
+                groupP.append("text")
+                    .attr("id", "centerNum")
+                    .attr("x", 0)
+                    .attr("y", cirText+20)
+                    .text(function(){
+                        if (latestPop == 0) return "";
+                        else return d3.format(".4s")(latestPop.stats);
+                    })
+                    .style("text-anchor", "middle");
+                    
+                groupP.append("text")
+                    .attr("id", "centerPct")
+                    .attr("x", 0)
+                    .attr("y", cirText+40)
+                    .style("text-anchor", "middle");
 
                 this.legend.html("");
                 let rectH = 10, rectW = 10, rectPadding = 10, rectX = 0, textPadding = 5;
@@ -114,7 +185,6 @@ class InfoPanel {
                                     .attr("x", rectX+textPadding+rectW)
                                     .attr("y", (d, i)=>i*(rectH+rectPadding)+rectH)
                                     .text(d=>d.religion)
-                                    .style("text-archor", "middle")
                                     .style("font-size", "11px");
 
                 d3.select("#add-button")
