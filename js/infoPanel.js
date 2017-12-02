@@ -3,12 +3,16 @@ class InfoPanel {
         this.contentObj = d3.select("#details");
         this.infoTable = this.contentObj.select("#basicInfoTable");
         this.aggPanel = aggPanel;
+        this.donutH = 250;
+        this.donutW = 220;
         this.donut = d3.select("#donut")
-                        .attr("height", 200)
-                        .attr("width", 200);
+                        .attr("height", this.donutH)
+                        .attr("width", this.donutW);
+        this.legendH = 250;
+        this.legendW = 120;
         this.legend = d3.select("#donut-legend")
-                        .attr("height", 200)
-                        .attr("width", 120);
+                        .attr("height", this.legendH)
+                        .attr("width", this.legendW);
     }
 
     updateInfo(oneCountryInfo, year) {
@@ -65,7 +69,7 @@ class InfoPanel {
                 let color = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b", "#e377c2", "#7f7f7f", "#bcbd22", "#17becf"];
                 this.donut.html("");
                 let groupP = this.donut.append("g")
-                            .attr("transform", "translate(100, 100)")
+                            .attr("transform", "translate(" + this.donutW/2 +", " + this.donutH/2 + ")")
                             .data([donutData]);
                 let paths = groupP.selectAll("path")
                             .data(function(d){
@@ -81,7 +85,7 @@ class InfoPanel {
                 this.legend.html("");
                 let rectH = 10, rectW = 10, rectPadding = 10, rectX = 0, textPadding = 5;
                 let groupL = this.legend.append("g")
-                                .attr("transform", "translate(0,0)")
+                                .attr("transform", "translate(0," + this.donutH/2 + ")")
                                 .data([donutData]);
                 let legendsR = groupL.selectAll("rect")
                                     .data(d=>d);
