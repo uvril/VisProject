@@ -1,6 +1,6 @@
 class InfoPanel {
     constructor(aggPanel) {
-        this.contentObj = d3.select("#details");
+        this.contentObj = d3.select("#infoPanelCard");
         this.infoTable = this.contentObj.select("#basicInfoTable");
         this.aggPanel = aggPanel;
         this.donutH = 250;
@@ -49,6 +49,7 @@ class InfoPanel {
 	}
 
     updateInfo(oneCountryInfo, year) {
+		this.sidebarIcon.style("visibility", "initial");
         let wd = +oneCountryInfo.wikidata;
         this.contentObj.selectAll("#countryNameLabel")
             .text(oneCountryInfo.NAME);

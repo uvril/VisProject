@@ -59,22 +59,17 @@
                                     <div class="card-body" id="mapContainer">
 
 									<a href="#" data-target="#sidebar" data-toggle="collapse">
-									<i id="sidebaricon" class="fa fa-chevron-right fa-2x py-2 p-1" style="position:absolute;top:50%;left:0;z-index:999"></i>
+									<i id="sidebaricon" class="fa fa-chevron-right fa-2x py-2 p-1" style="position:absolute;top:50%;left:0;z-index:999;visibility:hidden"></i>
 									</a>
                                     <div class="collapse width" id="sidebar" style="position:absolute;top:10%;float:left;">
-                                        <div class="card" id="mySidenav" style="word-wrap:normal">
+                                        <div class="card" id="infoPanelCard" style="word-wrap:normal">
                                             <div class="card-header">
-                                                <h5 class="mb-0">
-                                                    Information Panel
-                                                </h5>
-                                            </div>
-                                            <div class="card-body" id="details">
                                                 <div class="countryIconDiv" align="center">
                                                 <img src="icons/globe.ico" id="countryIcon" alt="">
                                                 </div>
-                                                <h4 class="card-title text-center" id="countryNameLabel"></h4>
-
-
+                                                <h4 class="card-title text-center" id="countryNameLabel"></h4>											
+                                            </div>
+                                            <div class="card-body" id="details">
                                                 <div id="nav-info">
                                                     <div id="countryInfo" style="visibility:hidden">
                                                         <table class="table table-align" id="basicInfoTable">
