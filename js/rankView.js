@@ -9,6 +9,7 @@ class RankView {
         this.rankTip = d3.select("body").append("div")
         				.attr("class", "agg-tooltip")
         				.style("opacity", 0);
+		d3.select("#rankViewTab").classed("active", false).classed("show", false);
 	}
 
 	update(clikedCountry, wdMap, year) {
