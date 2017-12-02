@@ -43,11 +43,19 @@ class InfoPanel {
                 }
 
                 console.log(rdata);
-                let donutData = rdata[wd], seletedNum = 5;
+                let donutData = [], seletedNum = 5, others = 0, sum=0;
 
+                for (let i in rdata[wd]) {
+                    if (+rdata[wd][i].pct < 0.01)
+                        others += +rdata[wd][i].tot;
+                    else donutData.push(rdata[wd][i]);
+                    sum += +rdata[wd][i].tot;
+                }
+                if (others != 0) donutData.push({"religion": "Others", "tot": others, "pct":others/sum});
+                console.log(donutData);
                 let pie = d3.pie()
                             .value(d=>d.tot)
-                let color = ["#1f77b4","#aec7e8","#ff7f0e","#ffbb78","#2ca02c","#98df8a","#d62728","#ff9896","#9467bd","#c5b0d5","#8c564b","#c49c94","#e377c2","#f7b6d2","#7f7f7f","#c7c7c7","#bcbd22","#dbdb8d","#17becf"];
+                let color = ["#1f77b4","#aec7e8","#ff7f0e","#ffbb78","#2ca02c","#d62728","#ff9896","#9467bd","#c5b0d5","#8c564b","#c49c94","#e377c2","#f7b6d2","#7f7f7f","#c7c7c7","#bcbd22","#dbdb8d","#17becf"];
                 this.donut.html("");
                 let group = this.donut.append("g")
                             .attr("transform", "translate(100, 100)")
@@ -62,10 +70,9 @@ class InfoPanel {
                             .outerRadius(80);
                 paths = paths.enter().append("path").merge(paths)
                             .filter(d=>d.data.tot != 0)
-                            .attr("id", d=>d.data.religion)
+                            .attr("id", d=>d.data.religion+d.data.pct)
                             .style("fill", (d, i)=>color[i]);
                 paths.attr("d", arc);
-                console.log("!!!");
 
 
 
