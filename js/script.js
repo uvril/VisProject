@@ -27,30 +27,32 @@ function queryData(d, wd, ys, ye) {
     }
     return ret;
 }
-function push_data(dataName, d) {
-
-	window.dataset[dataName] = d;
+function loadData(dataNames, callback) {
+    if (dataNames.length == 0) {
+        callback();
+    }
+    else {
+        dataName = dataNames[0];
+        d3.json("data/"+dataName+".json", function(err, curData) {
+            window.dataset[dataName] = curData;
+            loadData(dataNames.slice(1), callback);
+        });
+    }
 }
-	
+
+function loadComplete() {
+    document.getElementById("loader").style.display = "none";
+    document.getElementById("mainContainer").style.opacity = "1";	
+}
+
 window.wdmap = {}
 window.dataset = {}
 window.dataset.years = [-2000, -1000, -500, -323, -200, -1, 400, 600, 800, 1000, 1279, 1492, 1530, 1650, 1715, 1783, 1815, 1880, 1914, 1920, 1938, 1945, 1946, 1947, 1948, 1949, 1950, 1951, 1952, 1953, 1954, 1955, 1956, 1957, 1958, 1959, 1960, 1961, 1962, 1963, 1964, 1965, 1966, 1968, 1970, 1971, 1972, 1973, 1974, 1976, 1977, 1979, 1980, 1981, 1984, 1985, 1986, 1987, 1991, 1992, 1993, 1994, 1995, 2000, 2001, 2003, 2007, 2009, 2011, 2012, 2015];
-d3.json("data/pop.json", function(err, popdata) { 
-	push_data("pop", popdata);
-    d3.json("data/gdp.json", function(err, gdpdata){
-		push_data("gdp", gdpdata);
-        d3.json("data/cpi.json", function(err, cpidata){
-			push_data("cpi", cpidata);
-            d3.json("data/events.json", function(err, evtdata){
-                push_data("events", evtdata);
-                d3.json("data/religion.json", function(err, rdata){
-                    push_data("religion", rdata);  
-                    let aggPanel = new AggPanel();
-                    let infoPanel = new InfoPanel(aggPanel);
-                    let rankView = new RankView();
-                    let map = new Map(infoPanel, rankView, 2016);
-                })
-            })
-        })
-    })
+loadData(["pop", "gdp", "cpi", "events", "religion"], function () {
+    let aggPanel = new AggPanel();
+    let infoPanel = new InfoPanel(aggPanel);
+    let rankView = new RankView();
+    let map = new Map(infoPanel, rankView, 2016);
+    loadComplete();
 });
+

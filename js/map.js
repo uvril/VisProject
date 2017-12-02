@@ -394,6 +394,7 @@ class Map {
                                 outThis.rankView.update(outThis.clickedCountry, outThis.wdMap, outThis.year);
                             }
                         }
+					
                 }(this));
 
             let graticule = d3.geoGraticule();
@@ -421,6 +422,7 @@ class Map {
 		this.mapContainer.select(".svg-container").attr("style","height:"+svgBounds.height+"px");	
 			
             }.bind(this));
+			
     }
 
 }

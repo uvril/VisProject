@@ -13,7 +13,7 @@
     <body>
         <div w3-include-html="header.html"></div>
         <div id="accordion" role="tablist">
-            <div class="container-fluid">
+            <div class="container-fluid" id="mainContainer" style="opacity:0.4">
                 <div class="card">
                     <div class="card-header" role="tab" id="headingOne">
                         <ul class="nav nav-tabs card-header-tabs" role="tablist">
@@ -212,6 +212,8 @@
                 </div>			
             </div>
         </div>
+		
+		<div id="loader"></div>
 
 
         <script src="https://d3js.org/d3.v4.js"></script>
