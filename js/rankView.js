@@ -1,15 +1,15 @@
 class RankView {
 	constructor() {
-		this.svgWidth = 800;
-		this.svgHeight = 500;
+		this.svgWidth = 350;
+		this.svgHeight = 450;
 		this.rankView = d3.select("#rankView")
 							.attr("width", this.svgWidth)
 							.attr("height", this.svgHeight);
-		this.category = ["pop", "gdp", "cpi"];
+		this.category = ["pop", "gdp"];
         this.rankTip = d3.select("body").append("div")
         				.attr("class", "agg-tooltip")
+						.style("z-index", 1000)
         				.style("opacity", 0);
-		d3.select("#rankViewTab").classed("active", false).classed("show", false);
 	}
 
 	update(clikedCountry, wdMap, year) {
@@ -62,6 +62,7 @@ class RankView {
 		groups.html("");
 
 		let tipShow = function(mouseevent, category) {
+			console.log(mouseevent);
             this.rankTip.transition()
                 .duration(200)
                 .style("opacity", .9);
