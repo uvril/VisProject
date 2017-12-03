@@ -332,7 +332,8 @@ class AggPanel {
 							.transition()
 							.duration(200)
 							.attr("r", 5)
-							.style("opacity", 0.5);
+							.style("fill-opacity", 0.5)
+                            .style("stroke", "black");
 						setStroke(pathid, (lineThin+0.5)+"px", "1", legendFontBig+"px");
 						tip.transition()
 							.duration(200)
@@ -354,7 +355,8 @@ class AggPanel {
 							.transition()
 							.duration(500)
 							.attr("r", 2.5)
-							.style("opacity", 1);
+							.style("fill-opacity", 1)
+                            .style("stroke", null);;
 						setStroke(pathid, lineThin+"px", "0.5", legendFontSmall+"px");	
 						tip.transition()
 							.duration(500)
