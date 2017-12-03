@@ -11,8 +11,8 @@ var RadarChart = {
      radians: 2 * Math.PI,
      opacityArea: 0.5,
      ToRight: 5,
-     TranslateX: 80,
-     TranslateY: 30,
+     TranslateX: 82,
+     TranslateY: 60,
      ExtraWidthX: 100,
      ExtraWidthY: 100,
      color: d3.scaleOrdinal().range(["#6F257F", "#CA0D59"])
@@ -26,9 +26,8 @@ var RadarChart = {
       }
     }
     
-    cfg.maxValue = 100;
-    console.log(d);
-    var allAxis = (d[0].map(function(i, j){return i.area}));
+
+    var allAxis = d[0];
     var total = allAxis.length;
     var radius = cfg.factor*Math.min(cfg.w/2, cfg.h/2);
     var Format = d3.format('%');
@@ -40,8 +39,6 @@ var RadarChart = {
         .attr("height", cfg.h+cfg.ExtraWidthY)
         .append("g")
         .attr("transform", "translate(" + cfg.TranslateX + "," + cfg.TranslateY + ")");
-
-		var tooltip;
 	
     //Circular segments
     for(var j=0; j<cfg.levels; j++){
@@ -79,16 +76,43 @@ var RadarChart = {
       .style("stroke", "grey")
       .style("stroke-width", "1px");
 
-    axis.append("text")
-      .attr("class", "legend")
-      .text(function(d){return d})
-      .style("font-family", "sans-serif")
-      .style("font-size", "11px")
+    let axisLabels = axis.append("g").attr("class", "legend");
+	
+	axisLabels.append("text")
+      .text(d => d.area)
       .attr("text-anchor", "middle")
       .attr("dy", "1.5em")
       .attr("transform", function(d, i){return "translate(0, -10)"})
+	  .style("font-weight", "bold")	  
       .attr("x", function(d, i){return cfg.w/2*(1-cfg.factorLegend*Math.sin(i*cfg.radians/total))-60*Math.sin(i*cfg.radians/total);})
-      .attr("y", function(d, i){return cfg.h/2*(1-Math.cos(i*cfg.radians/total))-20*Math.cos(i*cfg.radians/total);});
+      .attr("y", function(d, i){
+		  let ret = cfg.h/2*(1-Math.cos(i*cfg.radians/total))-20*Math.cos(i*cfg.radians/total);
+		  if (i == 0) return ret-20;else return ret;
+	});
+	  
+	axisLabels.append("text")
+      .text(function (d) {
+		  let ret = Math.round(d.value);
+		  if (ret == 0) return "N/A";
+		  return ret;
+	  })
+      .attr("text-anchor", "middle")
+      .attr("dy", "1.5em")
+      .attr("transform", function(d, i){return "translate(0, -10)"})
+	  .style("fill", function(d) {
+		  let v = d.value;
+		  if (v<=20) return "grey";
+		  else if (v<=40) return "green";
+		  else if (v<=60) return "gold";
+		  else if (v<=80) return "orange";
+		  else return "red";
+	  })
+	  .style("font-weight", "bold")
+      .attr("x", function(d, i){return cfg.w/2*(1-cfg.factorLegend*Math.sin(i*cfg.radians/total))-60*Math.sin(i*cfg.radians/total);})
+      .attr("y", function(d, i){
+		  let ret = cfg.h/2*(1-Math.cos(i*cfg.radians/total))-20*Math.cos(i*cfg.radians/total);
+		  if (i == 0) return ret;else return ret+20;
+		});	  
 
  
     d.forEach(function(y, x){

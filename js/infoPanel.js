@@ -27,13 +27,7 @@ class InfoPanel {
         this.colorMap = {"Judaism": "#1f77b4", "Syncretic religions" : "#ff7f0e", "Islam": "#2ca02c", "Taoism": "#dbdb8d", "Non-religious": "#d62728", 
             "Christianity": "#9467bd", "Animist religions": "#8c564b", "Shinto": "#e377c2", "Other religions": "#7f7f7f", 
             "Zoroastrian": "#bdbdbd", "Hindu": "#bcbd22", "Buddhism": "#17becf", "Baha'i": "#c7e9c0",
-            "Jain": "#c6dbef", "Confucianism": "#9e9ac8", "Sikh": "#7b4173", "Others": "#d6616b"};
-        $('#sidebar').on('hidden.bs.collapse', function() {
-            d3.select("#sidebaricon").classed("fa-chevron-right",true).classed("fa-chevron-left",false).style("left","0px");
-        });
-        $('#sidebar').on('shown.bs.collapse', function() {
-            d3.select("#sidebaricon").classed("fa-chevron-right",false).classed("fa-chevron-left",true).style("left","400px");
-        });		
+            "Jain": "#c6dbef", "Confucianism": "#9e9ac8", "Sikh": "#7b4173", "Others": "#d6616b"};	
     }
 
     setMapObject(mapObj) {
@@ -48,7 +42,7 @@ class InfoPanel {
 
     showIcon() {
         let i = this.sidebarIcon;
-        i.transition().duration(350).style("left","400px");
+        i.transition().duration(350).style("left","460px");
         i.classed("fa-chevron-right",false).classed("fa-chevron-left",true);
     }
 
@@ -82,16 +76,21 @@ class InfoPanel {
                 h: 200,
                 maxValue: 100,
                 levels: 5,
-                ExtraWidthX: 200
+                ExtraWidthX: 160
             }
 
             let radarData = window.dataset.radar[wd];
+			let convgdp = queryNewestData(window.dataset.gdp, wd)/185691000000;
+			if (convgdp >= 1.2)
+				convgdp = Math.sqrt(Math.log10(convgdp) * 50)*10;
+			else
+				convgdp = Math.sqrt(convgdp)*10;
             let rd = [
-                {"area":"Economy","value":queryNewestData(window.dataset.gdp, wd)/185691000000},
-                {"area":"Development","value":radarData.HDI*100},
+				{"area":"Military","value":radarData.GFP*100},
                 {"area":"Democracy","value":radarData.EIU*100},
+                {"area":"Development","value":radarData.HDI*100},
                 {"area":"Environment","value":radarData.EPI*100},
-                {"area":"Military","value":radarData.GFP*100}
+                {"area":"Economy","value": convgdp}
             ];
 
             RadarChart.draw("#table-radar", [rd], config);

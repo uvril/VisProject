@@ -23,10 +23,7 @@
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="#statisticsViewTab" role="tab" data-toggle="tab" id="ma1p-or3i">Comparison View</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#rankViewTab" role="tab" data-toggle="tab" id="ma1p-ordi">Rank View</a>
-                            </li>										
+                            </li>									
                         </ul>					
                     </div>
 
@@ -72,11 +69,24 @@
                                                     <div class="countryIconDiv" align="center">
                                                         <img src="icons/globe.ico" id="countryIcon" alt="">
                                                     </div>
-                                                    <h4 class="card-title text-center" id="countryNameLabel"></h4>											
+                                                    <h4 class="card-title text-center" id="countryNameLabel"></h4>	
+
+									<ul class="nav nav-tabs card-header-tabs nav-fill">
+                                            <li class="nav-item">
+                                                <a class="nav-link active" href="#countryInfo" data-toggle="tab" role="tab">Information</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" data-toggle="tab" role="tab" href="#powerInfo">Scores</a>
+                                            </li>								
+                                            <li class="nav-item">
+                                                <a class="nav-link" data-toggle="tab" role="tab" href="#rankingInfo">Ranking</a>
+                                            </li>												
+                                        </ul>
+													
                                                 </div>
                                                 <div class="card-body" id="details">
-                                                    <div id="nav-info">
-                                                        <div id="countryInfo" style="visibility:hidden">
+                                                    <div id="nav-info" class="tab-content">
+                                                        <div id="countryInfo" class="tab-pane fade show active" role="tabpanel">
                                                             <table class="table table-align table-sm" id="basicInfoTable">
                                                                 <tbody>
                                                                     <tr>
@@ -86,11 +96,7 @@
                                                                     <tr>
                                                                         <th scope="row">Head of State</th>
                                                                         <td id="table-hos"></td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <th scope="row" colspan="2">National Power<br><div id="table-radar" ></div></th>
-                                                                        
-                                                                    </tr>																	
+                                                                    </tr>															
                                                                     <tr>
                                                                         <th scope="row">Religions<br><svg id="donut-legend"></svg></th>
                                                                         <td id="table-religions">
@@ -100,6 +106,13 @@
                                                                 </tbody>
                                                             </table>
                                                         </div>
+														<div id="powerInfo" class="tab-pane fade" role="tabpanel"> 
+															<div id="table-radar" ></div>
+														</div>														
+														<div id="rankingInfo" class="tab-pane fade" role="tabpanel">
+															<svg id="rankView"></svg>
+														</div>
+
                                                     </div>
                                                 </div>
                                                 <div class="card-footer">
@@ -140,16 +153,16 @@
                                     <div class="card-header">
                                         <ul class="nav nav-pills card-header-pills" id="agg-nav">
                                             <li class="nav-item">
-                                                <a class="nav-link active" href="#" id="agg-pop">Population</a>
+                                                <button type="button" class="btn btn-link nav-link active" id="agg-pop">Population</button>
                                             </li>
                                             <li class="nav-item">
-                                                <a class="nav-link" href="#" id="agg-gdp">GDP</a>
+                                                <button type="button" class="btn btn-link nav-link" id="agg-gdp">GDP</button>
                                             </li>
                                             <li class="nav-item">
-                                                <a class="nav-link" href="#" id="agg-cpi">CPI</a>
+                                                <button type="button" class="btn btn-link nav-link" id="agg-cpi">CPI</button>
                                             </li>
                                             <li class="nav-item" style="padding-left: 50px">
-                                                <a class="nav-link" href="#" id="showEvents">Show Events</a>
+                                                 <button type="button" class="btn btn-link nav-link" id="showEvents">Show Events</button>
                                             </li>
                                         </ul>
                                     </div>
@@ -177,26 +190,6 @@
                                             </div>							
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div role="tabpanel" class="tab-pane fade in active show" id="rankViewTab">
-                            <div class="card-body">
-                                <div class="card">
-                                    <div class="card-header" role="tab" id="headingThree">
-                                        <h5 class="mb-0">
-                                            <a class="collapsed" data-toggle="collapse" href="#collapseThree" aria-expanded="false" aria-controls="collapseTwo">
-                                                Rank View
-                                            </a>
-                                        </h5>
-                                    </div>
-                                        <div class="card-body">
-                                            <div class="row">
-                                                <div class="col-8" id="rankViewDiv">
-                                                    <svg id="rankView"></svg>
-                                                </div>                      
-                                            </div>
-                                        </div>
                                 </div>
                             </div>
                         </div>
