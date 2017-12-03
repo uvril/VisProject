@@ -42,7 +42,7 @@ class InfoPanel {
 
     showIcon() {
         let i = this.sidebarIcon;
-        i.transition().duration(350).style("left","460px");
+        i.transition().duration(350).style("left","400px");
         i.classed("fa-chevron-right",false).classed("fa-chevron-left",true);
     }
 
