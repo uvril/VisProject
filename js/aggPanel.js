@@ -315,7 +315,7 @@ class AggPanel {
 		cirSel = cirSel.enter().append("circle").merge(cirSel);
 	    cirSel.transition(this.trans).attr("cx", d=>this.xScale(+d.year))
 	        	.attr("cy", d=>this.yScale(+d.stats))
-	        	.attr("r", 2)
+	        	.attr("r", 2.5)
 	        	.style("opacity", 1)
                 .style("fill", function(outerThis) {
                 	return function (d, i) {
@@ -324,24 +324,28 @@ class AggPanel {
                 	}
                 }(this));
         cirSel
-	        	.on("mouseover", function(setStroke, trans, tip){
+	        	.on("mouseover", function(setStroke, trans, tip, category){
 					return function(d) {
 						if (d.disabled == true) return;
 						let pathid = this.parentNode.id.slice(1);
 						d3.select(this)
 							.transition()
 							.duration(200)
-							.attr("r", 4)
+							.attr("r", 5)
 							.style("opacity", 0.5);
 						setStroke(pathid, (lineThin+0.5)+"px", "1", legendFontBig+"px");
 						tip.transition()
 							.duration(200)
-							.style("opacity", .9);
-						tip.html("year:"+d.year+"<br>"+"stats:"+d3.format(",d")(d.stats))
+							.style("opacity", .8);
+                        let stats = "";
+                        if (category == "pop") stats = "Population";
+                        else if (category == "gdp") stats = "GDP";
+                        else if (category == "cpi") stats = "CPI";
+						tip.html("<strong>Selected Year</strong>: "+d.year+"<br>"+"<strong>"+ stats + "</strong>: "+d3.format(",d")(d.stats))
 							.style("left", (d3.event.pageX) + "px")
-							.style("top", (d3.event.pageY-28) + "px");
+							.style("top", (d3.event.pageY-40) + "px");
 					}
-	        	}(setStroke, this.trans, this.aggtip))
+	        	}(setStroke, this.trans, this.aggtip, this.category))
 	        	.on("mouseout", function(setStroke, trans, tip){
 					return function(d) {
 						if (d.disabled == true) return;
@@ -349,7 +353,7 @@ class AggPanel {
 						d3.select(this)
 							.transition()
 							.duration(500)
-							.attr("r", 2)
+							.attr("r", 2.5)
 							.style("opacity", 1);
 						setStroke(pathid, lineThin+"px", "0.5", legendFontSmall+"px");	
 						tip.transition()
