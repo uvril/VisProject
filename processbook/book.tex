@@ -53,20 +53,19 @@ have changed over time) as well as comparison among countries in different dimen
 an interactive visualization on history.
 
 \section{Related Work}
-When searching for project ideas, we found that there are some good vitualizations for history already,
-such as Delicious Visual Map of History(https://waitbutwhy.com/2015/02/delicious-visual-map-history.html), World Population History(http://worldpopulationhistory.org/map/1700/mercator/1.8000000000000005/-1339.8571428571427/-55.971428571428646/), Histography(https://histography.io)
-and so on. However, plenty of them focuses on different aspects (e.g history events, population, empires) of history 
-so it is difficult for users to get an overview.
-What's more, some of them are even static, which means users can not interact with the graph. 
-figure??
-figure??
-figure??
-Among the visualizations, Chronas(http://chronas.org/history) did the best job. It includes many aspects
+When searching for project ideas, we found that there are some good
+visualizations for history already, such as Delicious Visual Map of
+History,
+World Population
+History,
+Histography and so on. However, plenty of them focuses
+on different aspects (e.g history events, population, empires) of history so it
+is difficult for users to get an overview.  What's more, some of them are even
+static, which means users can not interact with the graph. 
+Among the visualizations, Chronas did the best job. It includes many aspects
 and also animations on the process of history over years.
-figure??
-figure??
 However it only focuses on displaying the overviews, without showing any analysis on each single country.
-Besides, some visualizations are too complicated to be understood as figure ?? shows. Therefore, we think
+Besides, some visualizations are too complicated to be understood. Therefore, we think
 making a interactive and general visualization on history is crucial.
 
 
@@ -80,7 +79,7 @@ as well as the historical rise and fall. Our visualization is able to show the f
 
     \item Show the basic information (e.g. capital) of a specified country.
 
-    \item Show the comparision on different aspects of a specified country.
+    \item Show the comparison on different aspects of a specified country.
 
     \item Show the religious composition of a specified country.
 
@@ -98,7 +97,7 @@ as well as the historical rise and fall. Our visualization is able to show the f
 
 \section{Data and Resources}
 In our project, we used a very wide range of data and resources. We spent a lot of time on data collection and processing.
-    All data were processed into json format and different catagories
+    All data were processed into json format and different categories
     of data are stored in different files. For example, "pop.json" stores all population data.
     If the data file is a historical dataset, then the year attribute is the root attribute, and the country ID is the secondary attribute.
     Otherwise, the country ID is the root attribute.
@@ -107,11 +106,11 @@ In following sections, we will describe the sources of the data, and how we proc
     A major challenge we encountered when processing the data was the issue of country indexing. Our dataset contained 
     formal countries that no longer exist, so we couldn't use any modern country code to index the countries.
     Moreover, there are countries that have alternative names. For example, "South Korea" and "Republic of Korea" are the same country,
-    but they are used interchangably in different datasets.
+    but they are used interchangeably in different datasets.
     Therefore we have to insure that they point to the same identifier.
     We tried several methods to solve this problem and 
-    finally we decided to use the Wikidata id as the country index. It can uniquely represent any item that appers in wikipedia.
-    Moreover, it helped us to retrieve data from wikidata. In our project, the Capital of a country and Head of State of a country are retrieved by wikidata.
+    finally we decided to use the Wikidata id as the country index. It can uniquely represent any item that appears in Wikipedia.
+    Moreover, it helped us to retrieve data from Wikidata. In our project, the Capital of a country and Head of State of a country are retrieved by Wikidata.
 
     We can use Wikidata queries to convert a country name to its Wikidata ID, using the following query:
 
@@ -125,20 +124,19 @@ In following sections, we will describe the sources of the data, and how we proc
         }
         \end{verbatim}
 
-        Figure \ref{} illustrates an example for looking up the wikidata id for United States. From the result we can see that the wikidata id for United States is 30.
         However, for some countries that have alternative names, we had to manually build the mapping for them.
 
         The converted mapping is stored in \textbf{data/wd.csv}.
 
         For non-historical dataset, most of them contains an ISO 3166 country code field to help identify the countries. With the country code,
-        we could convert them to wikidata id using the following query:
+        we could convert them to Wikidata id using the following query:
 
         \begin{verbatim}
         SELECT ?name WHERE {
         ?name wdt:P298 "COUNTRYCODE".
         }
         \end{verbatim}
-        Figure \ref{} illustrates an example for looking up the wikidata id for country with country code "DZA".
+
         With the country code, we didn't need to worry about the alternative name things. However, as explained above,
         it works only for non-historical dataset.
         
@@ -156,7 +154,7 @@ In following sections, we will describe the sources of the data, and how we proc
         \end{verbatim}
 
         This query retrieves the world map at 1946 with the metadata of country name as well as
-        the wikidata id for the country. The wikidata ID is essential for future data collection
+        the Wikidata id for the country. The Wikidata ID is essential for future data collection
         such as population.
 
         Therefore, we wrote a script to automatically download all map data
@@ -171,21 +169,26 @@ In following sections, we will describe the sources of the data, and how we proc
 \subsection{National Flag Icon Resource}
 
     We used the national flag icons from https://vathanx.deviantart.com/.
-    The origional icons were named "flag\_of\_COUNTRYNAME" respectively. We used data/wd.csv
+    The original icons were named "flag\_of\_COUNTRYNAME" respectively. We used data/wd.csv
     to convert them into names "WIKIDATAID.ico". These icons are stored in folder \textbf{icons/}.
 
 
 \subsection{Statistics Data}
     The statistics data were retrieved from wikidata. Since we used the Wikidata ID as the unique ID of countries,
-    retrieving information from wikidata was very easy.
+    retrieving information from Wikidata was very easy.
 
 \subsection{Population, GDP, CPI Historical Data}
     
-    We collected the original data from the World Bank and the source links are  https://data.worldbank.org/indicator/SP.POP.TOTL, https://data.worldbank.org/indicator/NY.GDP.MKTP.CD, https://data.worldbank.org/indicator/FP.CPI.TOTL. We extracted the country indexing, year and the statistics and stored them in \textbf{data/pop.json}, \textbf{data/gdp.json}, \textbf{data/cpi.json} respectively.
+    We collected the original data from the World Bank website.
+    We extracted the country
+    indexing, year and the statistics and stored them in
+    \textbf{data/pop.json}, \textbf{data/gdp.json}, \textbf{data/cpi.json}
+    respectively.
 
 \subsection{National Power Radar Plot Data}
     The National Power Radar used five datasets: GDP for economy, HDI for
     development, EIU for democracy, EPI for environment, and GFP for military.
+    The data are collected by the official websites of the organizations issuing them.
     Since these datasets have different domains, we scaled all data into range
     $[0,100]$ before plotting them on the screen.
 
@@ -193,8 +196,9 @@ In following sections, we will describe the sources of the data, and how we proc
 
 \subsection{Religion Data}
     
-    The original dataset from http://www.thearda.com/Archive/Files/Descriptions/WRDNATL.asp provides very detailed catagory. To simplify visualization,
-    we only used a coarse granularity of catagory (say, Christianity), instead of detailed catagories (say, Catholics).
+    The original dataset from Thearda.com provides very detailed category. To
+    simplify visualization, we only used a coarse granularity of category (say,
+    Christianity), instead of detailed categories (say, Catholics).
 
 \section{Design Evolution}
     \subsection{Dataset Change}
@@ -205,163 +209,239 @@ In following sections, we will describe the sources of the data, and how we proc
         In order to make our visualization consist, we made the hard decision to use only recent data.
 
     \subsection{Visualization Change}
-        Our original design is shown in Figure \ref{}. However, when implementing it, we realized that there were a lot of issues in this design.
+        Our original design is shown in Figure \ref{fig:original}. However, when implementing it, we realized that there were a lot of issues in this design.
 
-        The major issue is that we underestimed the spaced needed for world map. Since we are showing a world map and wish that
-        each country is selectable, the map requires a very large space. Figure \ref{} shows the original design. We can see that it's very hard to select a desired country, even with zooming.
-        Therefore, we deside to use the whole screen for world map, and reorganize other panels either aggregated in map or create a new tab for them.
+        The major issue is that we underestimate the spaced needed for world map. Since we are showing a world map and wish that
+        each country is selectable, the map requires a very large space. If we use a small space like what we've described in the proposal, it can be very hard to select a desired country, even with zooming.
+        Therefore, we decide to use the whole screen for world map, and reorganize other panels either aggregated in map or create a new tab for them.
 
-        Besides, we find that if we just list the statistics like GDP as Figure \ref{}, these information overlap with the information in the comparison panel.
+        Besides, we find that if we just list the statistics like GDP as the original design, these information overlap with the information in the comparison panel.
         Therefore, we adopted a different visualization: we now use a radar chart to represent an overview of national power in different aspects,
         and a donut chart to show the religion in the country. In other words, visualizations in information panels are supposed to be fancy and highly intuitive,
         and those in comparison panel should be formal, accurate and detailed.
+\begin{figure}[h!]
+    \begin{center}
+        \includegraphics[width=\textwidth]{figs/original.jpg}
+        \caption{Original design in our proposal.}
+        \label{fig:original}
+    \end{center}
+\end{figure}
 \newpage
 
 \section{Implementation}
+Our implementation is mostly based on d3. We also use two external plugins: DataTable and SlideBar. Our styling is based on Bootstrap 4.
+\subsection{Miscellaneous}
+\subsubsection{Loader}
+In our project, there are a lot of data to be read before the visualization
+could work, which may take several seconds.  We add a tiny spinning ring as the loader while loading
+the data. After all data are loaded, the loader will disappear and the user can
+start having fun with the visualizations.
+The design is shown below:
+\subsubsection{Header}
+The header is used to switch the page to process book, screencast and about pages.
+We simply use a bootstrap nav-bar component as the header.
+The design is shown below:
 
-\paragraph{Get started!} (Nov 4)
-
-After spending a lot of time on data collecting, we successfully collected
-the raw data of the historical country borders. The data we collected come
-from two different data sets:
-
-\begin{itemize}
-    \item For maps after World War II (1946-2017), we collect from www.thenmap.net.
-        Although this website doesn't provide the off-the-shelf dataset, one of its
-        APIs supports querying for the world map at a specific year after WW2. The API
-        we used looks like following:
-
-        \begin{verbatim}
-        wget http://api.thenmap.net/v1/world-2/geo|data/1946?data_props=name|wikidata
-        \end{verbatim}
-
-        This query retrieves the world map at 1946 with the metadata of country name as well as
-        the wikidata id for the country. The wikidata ID is essential for future data collection
-        such as population.
-
-    \item For maps from 2000BC to 1945, we find the dataset in a cartography forum (http://www.cartotalk.com/index.php?showtopic=3462).
-        The author is anonymous.
-        The dataset only contains a few years. That's reasonable enouth -- we never expect to
-        find a dataset contains all data from 2000BC to 2017AD!
-
-\end{itemize}
-
-For other data (e.g. population), it seems promising to retrieve them from Wikidata.
-We plan to explore the possibility for that.
-The first dataset already includes the Wikidata ID for all countries.
-We may have to do some data processing on the second dataset to add the Wikidata ID information to it.
-
-\newpage
-\paragraph{Implementing the map} (Nov 5)
-
-We implemented a prototype of the map chart and the year chart.
-It looks like the follwing (Figure \ref{fig:nov5}):
-
+\subsection{Map View}
+Figure \ref{fig:mapoverview} is an overview of the Map View. The components are explained below:
 \begin{figure}[h!]
     \begin{center}
-        \includegraphics[width=0.9\textwidth]{figs/Nov5.jpg}
-        \caption{Current state of our project, Nov 5.}
-        \label{fig:nov5}
+        \includegraphics[width=\textwidth]{figs/mapoverview.jpg}
+        \caption{An overview of Map View.}
+        \label{fig:mapoverview}
     \end{center}
 \end{figure}
 
-For the year chart, there is a slide bar and a circle which we can drag to choose the desired year.
-When the choice of year is updated, the map chart read the dataset with the nearest year before the selected year,
-and draw it on the screen. The projection we currently use is d3.geoPatterson().
+\subsubsection{Year Selection}
+We used a combination of text and slider for year selections.
+The text shows the current year, and the slider is used to change the year.
+They are put at the top of map view.
 
-Adding label is quite challenging. If we simply put all labels on the map,
-then there will be a mess in Europe. Currently we only show the labels for countries
-with areas larger than a threshold. That doesn't work for countries with large area but extremely
-long names (e.g. Democratic Republic of the Congo). Whether or not a label is shown
-should depend on both country area and the length of country name. We should think carefully about it.
+\subsubsection{Map}
+In the map, we draw the country borders according to the GeoJSON data.
+We further add zoom functionality to the country so that we can choose countries that have small areas.
 
-The location of the labels is another issue. Currently we put the label
-at the centroid of the corresponding path. But it doesn't work for some countries like the U.S.
-The label of U.S. is actually located inside Canada because of Alaska.
-We have to find a smarter way to locate the labels.
-
-\newpage
-\paragraph{Layout design, and more on label placement} (Nov 6)
-
-We finished a prototype of the info panel. We also improved the label placement.
-As shown in Figure \ref{fig:nov6}, now it looks better, isn't it?
-
-\begin{figure}[h!]
-    \begin{center}
-        \includegraphics[width=0.8\textwidth]{figs/Nov6.png}
-        \caption{Current state of our project, Nov 6.}
-        \label{fig:nov6}
-    \end{center}
-\end{figure}
-
-As shown in the above figure, the information of the capital of a given country
-has already been successfully shown. We use Wikidata to retrieve all such information.
-The query uses SPARQL. As an example, if we want to know the current capital of Russia,
-the language looks like the following:
-
-\begin{verbatim}
-SELECT ?name WHERE {
-            wd:Q159 wdt:P36 ?link.
-            ?link rdfs:label ?name.
-            filter (lang(?name) = "en").
-}
-\end{verbatim}
-
-Where wd:Q159 is the wikidata id of Russia, wdt:P36 is the wikidata id of the property ``capital is'',
-and the variable ?link becomes the capital of Russia. Note that ?link itself is also a wikidata id,
-which is Q649 in this case. We want to know what Q649 is, so we use the second line in the where clause to retrieve
-the its label, and use the third line to restrict the answer to be in English.
-
-For the label placement, we devised a smarter way to put the labels. We first decompose
-each country into continous polygons, and pick the polygon with largest area (e.g. for the U.S., only the continent part will remain).
-Then we calculated the longest segment within the polygon, and place the label on that line.
+The non-trivial part is the country name placement. Country names are essential in our project,
+but if we just simply put the labels at the centroids, the result can be terrible (shown in Figure \ref{fig:badcnname}). We finally come up with an elegant
+design (on our own!): we first decompose each country into continuous polygons, and pick the polygon with largest area (e.g. for the U.S., only the continent part will remain).
+Then we calculated the longest segment within the polygon (using Rotating Calipers Algorithm), and place the label on that line.
 The font size will be dynamically adjusted according to the ratio between the segment length and the label length.
 
+When a user move mouse over a country, it will be filled with light blue. When a user click on a country, it will be filled with dark blue, and 
+an information panel is shown.
 
-\newpage
-\paragraph{Information retrieval ready} (Nov 7)
+The design is shown in Figure \ref{fig:ourcnname}:
 
-We finished most information retrieval part, as well as the css style for selected country.
-We also did a little improvement on label placing:
-instead of just placing the text on the diameter of the polygon, now the text is placed on a curve
-going from one end of the diameter to the centroid, then to the other end of the diameter.
-As shown in Figure \ref{fig:nov7}, it significantly improve the effect for countries with trapezoidal shapes such as U.S. and China, compared
-to Figure \ref{fig:nov6}.
+\begin{figure}[h!]
+    \begin{minipage}{0.49\linewidth}
+        \centering
+        \includegraphics[width=\textwidth]{figs/badcnname.jpg}
+        \caption{A bad design for country label placement.}
+        \label{fig:badcnname}
+    \end{minipage}
+    \hfill\
+    \begin{minipage}{0.49\linewidth}
+        \centering
+        \includegraphics[width=\textwidth]{figs/map.jpg}
+        \caption{Our country label placement scheme.}
+        \label{fig:ourcnname}
+    \end{minipage}
+\end{figure} 
+
+
+\subsubsection{Heat Maps}
+Heat maps are good tools for us to understand the distribution of some statistics like populations.
+In our project, we support three categories of heat maps: population, GDP and religion.
+For population and GDP, we divide the domain into five bins, and color the countries with the corresponding bin.
+For religion map, we color the countries with its major religion.
+A legend for the heat map is drawn in the bottom-left corner of the map.
+
+The design is shown in Figure \ref{fig:heatp} and \ref{fig:heatr}:
+\begin{figure}[h!]
+    \begin{minipage}{0.49\linewidth}
+        \centering
+        \includegraphics[width=\textwidth]{figs/heatmapp.jpg}
+        \caption{Population Heat Map.}
+        \label{fig:heatp}
+    \end{minipage}
+    \hfill\
+    \begin{minipage}{0.49\linewidth}
+        \centering
+        \includegraphics[width=\textwidth]{figs/heatmapr.jpg}
+        \caption{Religion Heat Map.}
+        \label{fig:heatr}
+    \end{minipage}
+\end{figure} 
+
+\subsubsection{Information Panel}
+The information panel is shown when a country is clicked. It can be collapsed and recovered freely.
+There are three tabs which are information, scores and ranking.
+
+In the information tab, we see the basic information of this country, which includes capital, head of state, population and religion information.
+A donut chart is drawn to show the proportions of different religions, as well as the population of that religion.
+When a user move the mouse on a sector, the sector will be enlarged and the data of the corresponding religion will be shown at the center of the donut.
+The design is shown in Figure \ref{fig:info1}.
+
+In the scores tab, we show a radar chart for five aspects of the country. The scores are normalized into range $[0,100]$. The best country has score $100$,
+and other countries have score proportional to the raw data.
+The design is shown in Figure \ref{fig:info2}.
+
+In the ranking tab, we show the ranking of the country in the world. The clicked country is labeled by a marker on a area chart, which represents the data for all countries.
+The detailed information is shown on mouse hovering.
+The design is shown in Figure \ref{fig:info3}.
+
+Finally, we can click the Add to Comparison button to mark the clicked country as selected.
+When the country is already selected, the button become Remove from Comparison.
+The Comparison View will show detailed statistics of the selected country, which will be described below.
+
+\begin{figure}[h!]
+    \begin{minipage}{0.31\linewidth}
+        \centering
+        \includegraphics[width=\textwidth]{figs/info1.jpg}
+        \caption{Information Tab.}
+        \label{fig:info1}
+    \end{minipage}
+    \hfill\
+    \begin{minipage}{0.31\linewidth}
+        \centering
+        \includegraphics[width=\textwidth]{figs/info2.jpg}
+        \caption{Scores Tab.}
+        \label{fig:info2}
+    \end{minipage}
+    \hfill\
+    \begin{minipage}{0.31\linewidth}
+        \centering
+        \includegraphics[width=\textwidth]{figs/info3.jpg}
+        \caption{Ranking Tab.}
+        \label{fig:info3}
+    \end{minipage}
+\end{figure} 
+
+\subsection{Comparison View}
+The Comparison View shows comparison between selected country. Figure \ref{fig:cvoverview} shows an overview of Comparison View. If no country is selected,
+a banner will appear to ask the user to select at least one country.
 
 \begin{figure}[h!]
     \begin{center}
-        \includegraphics[width=\textwidth]{figs/Nov7.jpg}
-        \caption{Current state of our project, Nov 7.}
-        \label{fig:nov7}
+        \includegraphics[width=\textwidth]{figs/cvoverview.jpg}
+        \caption{An overview of Comparison View.}
+        \label{fig:cvoverview}
     \end{center}
 \end{figure}
 
-\newpage
-\paragraph{InfoPanel design} (Nov 8)
+\subsubsection{Range Selection}
+Similar to year selection, we also use a combination of text and slider to choose the range of years.
+The only difference is that now the slider contains two circles so that we can select a range.
 
-For info panel, currently there are eight parts including selected country name, capital, continents the country belongs to, head of state, population, human development index, territory and description from Wiki.
-We retrieved all the data from Wikidata and just put them as original way without any vitualization.
-In this way, we found that some data are redundant so deduplicating is necessary.
-For example, the continents Russia belongs to include Europe, Asia and Eurasia but Eurasia means Europe and Asia.
-In addtion, we decided to label each tile when the mouse hovoring over it since the population data are quite sparse in some areas.
+\subsubsection{Data Table}
+The data tables contains the data of selected countries at the two ends of the year range.
+We can sort them accordingly.
+We use the DataTable plugin to construct the table.
+The design is shown in \ref{fig:datatable}.
 
-For the description from Wiki, we first tried to bind the source of link with the direct search result from Wikidata.
-However, in this way irrelevant infomation takes too much space like the nav bar of Wikipedia. 
-We took into account the limitation of the page size and got rid of these infomation by adding "printable=yes" at the end of the link.
+\subsubsection{Line Charts}
 
-\newpage
-\paragraph{Visualizing the InfoPanel design} (Nov 10)
-
-We were busy these days. The only progress we made in these days is that we tried to visualize the data
-in the information panel. As shown in Figure \ref{fig:nov10}, now the population is shown as a line chart,
-and the HDI is shown as a tile chart.
+The data are illustrated by line charts. Each country is assigned with one color for the line and the points.
+A tip containing the values will shown on mouse hovering, as shown in Figure \ref{fig:cvoverview}.
+Besides, a user can temporarily hide the data for a country by clicking its legend, and add it back by clicking again.
+Figure \ref{fig:hideline} shows an example for that.
 
 \begin{figure}[h!]
     \begin{center}
-        \includegraphics[width=\textwidth]{figs/Nov10.jpg}
-        \caption{Current state of our project, Nov 10.}
-        \label{fig:nov10}
+        \includegraphics[width=\textwidth]{figs/hideline.jpg}
+        \caption{An example of temporarily removing a country.}
+        \label{fig:hideline}
     \end{center}
 \end{figure}
+\subsubsection{Events}
+
+Finally, the Show Events button shows the events above the line chart.
+The events are represented by circles filled by color representing related country.
+They are placed according to their times. A tip containing detailed information will shown on mouse hovering.
+With the events we can exploit the causality behind historical trends.
+The design is shown in \ref{fig:events}.
+
+\begin{figure}[h!]
+    \begin{minipage}{0.49\linewidth}
+        \centering
+        \includegraphics[width=\textwidth]{figs/datatable.jpg}
+        \caption{An example of sorting data on data table.}
+        \label{fig:datatable}
+    \end{minipage}
+    \hfill\
+    \begin{minipage}{0.49\linewidth}
+        \centering
+        \includegraphics[width=\textwidth]{figs/events.jpg}
+        \caption{Showing events.}
+        \label{fig:events}
+    \end{minipage}
+\end{figure} 
+
+\section{Evaluation}
+In our point of view, our project successfully achieve the objectives:
+\begin{itemize}
+    \item Historical world map is shown in the map view.
+
+    \item The basic information and religious composition of a country is shown in the information panel.
+
+    \item The comparison on different aspects of a country is shown in the Score tab in the information panel.
+
+    \item The rankings of a country are shown in the the Ranking tab in the information panel.
+
+    \item The population/GDP/religion distribution of the world is shown in the heatmaps.
+
+    \item The historical statistics of a country is shown in the comparison view.
+
+    \item Comparison between different countries is shown in the comparison view.
+
+    \item The relation between historical events and statistics trends are reflected by the comparison view.
+\end{itemize}
+
+However, due to the time limitation, this project is far from project. We would like to improve it in the following ways:
+\begin{itemize}
+    \item Include more datasets.
+    \item Add a search functionality so that we can select a country that we don't know its location.
+    \item Add smart selection functionality so that we can compare a country with, say, all countries that are in the same area.
+\end{itemize}
 
 \end{document}
