@@ -4,7 +4,7 @@ Project Page URL: https://uvril.github.io/VisProject/
 
 Process Book Page URL: https://uvril.github.io/VisProject/processbook/book.pdf
 
-Demo Video URL: https://www.youtube.com/watch?v=JANFeJbcWX8&feature=youtu.be
+Demo Video URL: https://youtu.be/RU9SZgfiIXg
 
 Motivation
 
