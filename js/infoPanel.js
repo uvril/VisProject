@@ -76,16 +76,21 @@ class InfoPanel {
                 h: 200,
                 maxValue: 100,
                 levels: 5,
-                ExtraWidthX: 150
+                ExtraWidthX: 160
             }
 
             let radarData = window.dataset.radar[wd];
+			let convgdp = queryNewestData(window.dataset.gdp, wd)/185691000000;
+			if (convgdp >= 1.2)
+				convgdp = Math.sqrt(Math.log10(convgdp) * 50)*10;
+			else
+				convgdp = Math.sqrt(convgdp)*10;
             let rd = [
 				{"area":"Military","value":radarData.GFP*100},
                 {"area":"Democracy","value":radarData.EIU*100},
                 {"area":"Development","value":radarData.HDI*100},
                 {"area":"Environment","value":radarData.EPI*100},
-                {"area":"Economy","value":queryNewestData(window.dataset.gdp, wd)/185691000000}
+                {"area":"Economy","value": convgdp}
             ];
 
             RadarChart.draw("#table-radar", [rd], config);
