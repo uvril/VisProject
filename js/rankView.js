@@ -169,9 +169,13 @@ class RankView {
 		textG.attr("x", (d,i)=>maxData[i]!=-1?i*(barHeight+chartPadding)+barHeight/2:0)
 			.attr("y", textPos)
 			.text(function(d, i){
-				if (maxData[i]!=-1) return this.category[i];
+				if (maxData[i]!=-1){
+					if (this.category[i] == "pop") return "Population";
+					else return "GDP";
+				}
 				return "";
 			}.bind(this))
 			.style("text-anchor", "middle")
+			.style("font-weight", "bold");
 	}
 }

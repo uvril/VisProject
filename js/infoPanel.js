@@ -87,7 +87,7 @@ class InfoPanel {
 				convgdp = Math.sqrt(convgdp)*10;
             let rd = [
 				{"area":"Military","value":radarData.GFP*100},
-                {"area":"Democracy","value":radarData.EIU*100},
+                {"area":"Democracy","value":Math.sqrt(radarData.EIU*100)*10},
                 {"area":"Development","value":radarData.HDI*100},
                 {"area":"Environment","value":radarData.EPI*100},
                 {"area":"Economy","value": convgdp}
