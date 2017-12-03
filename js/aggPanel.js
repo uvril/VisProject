@@ -252,9 +252,9 @@ class AggPanel {
                     this.eventtip.transition()
                         .duration(200)
                         .style("opacity", .9);
-                    this.eventtip.html(d.event)
-                        .style("left", (d3.event.pageX) + "px")
-                        .style("top", (d3.event.pageY-28) + "px");
+                    this.eventtip.html("<strong>Time</strong>: "+d.time+"<br>"+"<strong>Event</strong>: "+d.event)
+                        .style("left", (d3.event.pageX+30) + "px")
+                        .style("top", (d3.event.pageY-30) + "px");
 	        	}.bind(this))
 	        	.on("mouseout", function(d, i, n) {
                     if (!this.showEvents) return;
