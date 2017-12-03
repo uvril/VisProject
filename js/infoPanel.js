@@ -233,10 +233,24 @@ class InfoPanel {
 
             d3.select("#add-button")
                 .on("click", function(){
-                    this.aggPanel.insertCountry(oneCountryInfo.NAME, wd);
-                    if (this.mapObj.selectedCountries.indexOf(wd) == -1)
-                        this.mapObj.selectedCountries.push(wd);
+                    if (this.contentObj.select("#add-button").text() === "Add to Comparison") {
+                        this.aggPanel.insertCountry(oneCountryInfo.NAME, wd);
+                        if (this.mapObj.selectedCountries.indexOf(wd) == -1)
+                            this.mapObj.selectedCountries.push(wd);
+                    }
+                    else {
+                        if (this.mapObj.selectedCountries.indexOf(wd) != -1) {
+                            let index = this.mapObj.selectedCountries.indexOf(wd);
+                            this.mapObj.selectedCountries.splice(index, 1);
+                        }
+                    }
                     this.mapObj.updateAddRemove(wd);
+                    this.contentObj.select("#add-button")
+                                    .text(function(){
+                                        if (this.mapObj.selectedCountries.indexOf(+wd) != -1)
+                                            return "Remove from Comparison";
+                                        else return "Add to Comparison";
+                                    }.bind(this))
                 }.bind(this));
             let isShow = d3.select("#sidebar").classed("show");
             if (!isShow) {

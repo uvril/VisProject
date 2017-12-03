@@ -443,6 +443,12 @@ class Map {
                 }(this))
                 .on("click", function(outThis) {
                     return function(d){
+                        d3.select("#add-button")
+                            .text(function(){
+                                if (outThis.selectedCountries.indexOf(+d.properties.wikidata) != -1)
+                                    return "Remove from Comparison";
+                                else return "Add to Comparison";
+                            });
                         if (d.properties.NAME != "unclaimed") {
                             outThis.svgPath.selectAll("path")
                                 .style("fill", function(d1){
@@ -453,7 +459,7 @@ class Map {
                                         return outThis.clickedColor;
                                     }
                                     else if (outThis.selectedCountries.indexOf(+d1.properties.wikidata) != -1) {
-                                        console.log(outThis.selectedCountries.indexOf(d1.properties.wikidata) +"!!!");
+                                        //console.log(outThis.selectedCountries.indexOf(d1.properties.wikidata) +"!!!");
                                         return "yellow";
 
                                     }
