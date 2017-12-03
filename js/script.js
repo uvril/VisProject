@@ -68,6 +68,5 @@ loadData(["pop", "gdp", "cpi", "events", "religion", "radar"], function () {
     let infoPanel = new InfoPanel(aggPanel);
     let rankView = new RankView();
     let map = new Map(infoPanel, rankView, 2016);
-    loadComplete();
 });
 

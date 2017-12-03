@@ -506,6 +506,8 @@ class Map {
             let svgBounds = this.mapContainer.select("#mapSvg").node().getBoundingClientRect();	
             console.log(svgBounds);
             this.mapContainer.select(".svg-container").attr("style","height:"+svgBounds.height+"px");	
+			
+			loadComplete();
 
         }.bind(this));
 
