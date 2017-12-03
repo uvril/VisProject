@@ -47,13 +47,28 @@ between Japan and Singapore, while Eve is curious about the comparison between
 India and Pakistan.  Only with interactive visualizations can one develop the
 knowledge of history with her own interests.
 
-The course project of CS6630 gives us a golden opportunity to learn better
-about history.  In this project, we made a deeper insight into history, by
-constructing an interactive visualization on history. We are very happy to see
-that we successfully achieve our objectives by using what we've learned from this course.
+In this project, our goal was to make a deeper insight into history that will help
+students and others who are interested in history to explore and learn about how countries
+have changed over time) as well as comparison among countries in different dimensions, by constructing
+an interactive visualization on history.
 
 \section{Related Work}
-Chronas
+When searching for project ideas, we found that there are some good vitualizations for history already,
+such as Delicious Visual Map of History(https://waitbutwhy.com/2015/02/delicious-visual-map-history.html), World Population History(http://worldpopulationhistory.org/map/1700/mercator/1.8000000000000005/-1339.8571428571427/-55.971428571428646/), Histography(https://histography.io)
+and so on. However, plenty of them focuses on different aspects (e.g history events, population, empires) of history 
+so it is difficult for users to get an overview.
+What's more, some of them are even static, which means users can not interact with the graph. 
+figure??
+figure??
+figure??
+Among the visualizations, Chronas(http://chronas.org/history) did the best job. It includes many aspects
+and also animations on the process of history over years.
+figure??
+figure??
+However it only focuses on displaying the overviews, without showing any analysis on each single country.
+Besides, some visualizations are too complicated to be understood as figure ?? shows. Therefore, we think
+making a interactive and general visualization on history is crucial.
+
 
 \section{Visualization Objectives}
 The main objective of this project is to interactively visualize the current situation of the world,
@@ -63,40 +78,40 @@ as well as the historical rise and fall. Our visualization is able to show the f
 
     \item Show the historical world map at a specified year.
 
-    \item Show the basic information (e.g. capital) of a country.
+    \item Show the basic information (e.g. capital) of a specified country.
 
-    \item Show the national power of a country in different aspects.
+    \item Show the comparision on different aspects of a specified country.
 
-    \item Show the religion in different countries.
+    \item Show the religious composition of a specified country.
 
-    \item Show the ranking of some statistics of a country.
+    \item Show the rankings of some statistics of a specified country.
 
-    \item Show the population/gdp/religion distribution of the world.
+    \item Show the population/GDP/religion distribution of the world.
 
-    \item Show the historical statistics of a country.
+    \item Show the historical statistics of a specified country.
 
     \item Compare the historical statistics of a set of countries.
 
-    \item Show how historical events related to the historical statistics.
+    \item Show how historical events related to the historical statistics of a set of countries.
 
 \end{itemize}
 
 \section{Data and Resources}
-In our project, we use a very wide range of data and resources. We spent a lot of time on data collection and processing.
-    In our project, all data are processed into json format. Different catagories
-    of data are stored in different files. For example, "pop.json" store all population data.
+In our project, we used a very wide range of data and resources. We spent a lot of time on data collection and processing.
+    All data were processed into json format and different catagories
+    of data are stored in different files. For example, "pop.json" stores all population data.
     If the data file is a historical dataset, then the year attribute is the root attribute, and the country ID is the secondary attribute.
     Otherwise, the country ID is the root attribute.
-In this section, we describe the sources of the data, and how we process the data.
+In following sections, we will describe the sources of the data, and how we process the data.
 \subsection{Country Indexing}
-    A major challenge we encountered when processing the data is the issue of country indexing. Our dataset contains 
-    formal countries that no longer exist, so we can't use any modern country code to index the countries.
-    Moreover, there are countries that have alternative names. For example, "South Korea" and "Republic of Korea" are the same,
+    A major challenge we encountered when processing the data was the issue of country indexing. Our dataset contained 
+    formal countries that no longer exist, so we couldn't use any modern country code to index the countries.
+    Moreover, there are countries that have alternative names. For example, "South Korea" and "Republic of Korea" are the same country,
     but they are used interchangably in different datasets.
-    We have to insure that they point to the same identifier.
-
-    Finally, we decide to use the Wikidata id as the country index. It can uniquely represent any item that appers in wikipedia.
-    Moreover, it helps us to retrieve data from wikidata. In our project, the Capital of a country and Head of State of a country are retrieved by wikidata.
+    Therefore we have to insure that they point to the same identifier.
+    We tried several methods to solve this problem and 
+    finally we decided to use the Wikidata id as the country index. It can uniquely represent any item that appers in wikipedia.
+    Moreover, it helped us to retrieve data from wikidata. In our project, the Capital of a country and Head of State of a country are retrieved by wikidata.
 
     We can use Wikidata queries to convert a country name to its Wikidata ID, using the following query:
 
@@ -111,12 +126,12 @@ In this section, we describe the sources of the data, and how we process the dat
         \end{verbatim}
 
         Figure \ref{} illustrates an example for looking up the wikidata id for United States. From the result we can see that the wikidata id for United States is 30.
-        However, for some countries that have alternative names, we have to manually build the mapping for them.
+        However, for some countries that have alternative names, we had to manually build the mapping for them.
 
         The converted mapping is stored in \textbf{data/wd.csv}.
 
         For non-historical dataset, most of them contains an ISO 3166 country code field to help identify the countries. With the country code,
-        we can easily convert them to wikidata id using the following query:
+        we could convert them to wikidata id using the following query:
 
         \begin{verbatim}
         SELECT ?name WHERE {
@@ -124,13 +139,13 @@ In this section, we describe the sources of the data, and how we process the dat
         }
         \end{verbatim}
         Figure \ref{} illustrates an example for looking up the wikidata id for country with country code "DZA".
-        With the country code, we don't need to worry about the alternative name things. However, as explained above,
+        With the country code, we didn't need to worry about the alternative name things. However, as explained above,
         it works only for non-historical dataset.
         
         The converted mapping is stored in \textbf{data/cc.csv}.
 
 \subsection{GeoJSON Map Data}
-    We collect the GeoJson map data from www.thenmap.net.
+    We collected the GeoJson map data from www.thenmap.net.
     It provides world maps after World War II.
         Although this website doesn't provide the off-the-shelf dataset, one of its
         APIs supports querying for the world map at a specific year. The API
@@ -146,7 +161,7 @@ In this section, we describe the sources of the data, and how we process the dat
 
         Therefore, we wrote a script to automatically download all map data
         from 1946 to 2017 from the website.  To save space, we further did a
-        comparison between data of consecutive years, and remove the latter
+        comparison between data of consecutive years, and removed the latter
         data if the world map doesn't change.
 
         The download script is \textbf{data\_collection/download.py}.
@@ -155,30 +170,31 @@ In this section, we describe the sources of the data, and how we process the dat
 
 \subsection{National Flag Icon Resource}
 
-    We use the national flag icons from https://vathanx.deviantart.com/.
-    The origional icons are of name "flag\_of\_COUNTRYNAME". We use data/wd.csv
+    We used the national flag icons from https://vathanx.deviantart.com/.
+    The origional icons were named "flag\_of\_COUNTRYNAME" respectively. We used data/wd.csv
     to convert them into names "WIKIDATAID.ico". These icons are stored in folder \textbf{icons/}.
 
 
 \subsection{Statistics Data}
-    The statistics data are retrieved from wikidata. Since we use the Wikidata ID as the unique ID of countries,
-    retrieving information from wikidata can be very easy.
+    The statistics data were retrieved from wikidata. Since we used the Wikidata ID as the unique ID of countries,
+    retrieving information from wikidata was very easy.
 
 \subsection{Population, GDP, CPI Historical Data}
-    s
+    
+    We collected the original data from the World Bank and the source links are  https://data.worldbank.org/indicator/SP.POP.TOTL, https://data.worldbank.org/indicator/NY.GDP.MKTP.CD, https://data.worldbank.org/indicator/FP.CPI.TOTL. We extracted the country indexing, year and the statistics and stored them in \textbf{data/pop.json}, \textbf{data/gdp.json}, \textbf{data/cpi.json} respectively.
+
 \subsection{National Power Radar Plot Data}
-    The National Power Radar use five datasets: GDP for economy, HDI for
+    The National Power Radar used five datasets: GDP for economy, HDI for
     development, EIU for democracy, EPI for environment, and GFP for military.
-    Since these datasets have different domains, we scale all data into range
+    Since these datasets have different domains, we scaled all data into range
     $[0,100]$ before plotting them on the screen.
 
     The radar plot dataset is stored in \textbf{data/radar.json}.
 
 \subsection{Religion Data}
-    http://www.thearda.com/Archive/Files/Descriptions/WRDNATL.asp
-
-    The original dataset provides very detailed catagory. To simplify visualization,
-    we only use a coarse granularity of catagory (say, Christianity), instead of detailed catagories (say, Catholics).
+    
+    The original dataset from http://www.thearda.com/Archive/Files/Descriptions/WRDNATL.asp provides very detailed catagory. To simplify visualization,
+    we only used a coarse granularity of catagory (say, Christianity), instead of detailed catagories (say, Catholics).
 
 \section{Design Evolution}
     \subsection{Dataset Change}
