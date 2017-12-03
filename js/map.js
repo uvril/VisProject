@@ -2,6 +2,7 @@ class Map {
 
     constructor(infoPanel, rankView, defaultYear) {
         this.curData = null;
+        this.selectedCountries = [];
         this.wdMap = {};
         this.mapContainer = d3.select("#mapContainer");
         let mapSvg = d3.select("#mapSvg")
@@ -14,6 +15,8 @@ class Map {
         this.path = d3.geoPath()
             .projection(this.projection);		
         this.infoPanel = infoPanel;
+        this.infoPanel.setMapObject(this);
+        this.infoPanel.aggPanel.setMapObject(this);
         this.rankView = rankView;
         this.svgDefs = mapSvg.append("defs");
         this.svgPath = mapSvg.append("g");
@@ -111,6 +114,7 @@ class Map {
                 return function(d){
                     if (d.properties.wikidata === outThis.clickedCountry)
                         return outThis.clickedColor;
+                    if (outThis.selectedCountries.indexOf(+d.properties.wikidata) != -1) return "yellow";
                     //console.log(outThis.data[d.properties.wikidata], d.properties.wikidata, d.properties.NAME);
                     if (d.properties.wikidata in outThis.data)
                         return outThis.colorMap[outThis.data[d.properties.wikidata][0].religion];
@@ -197,6 +201,7 @@ class Map {
                     //console.log(d.properties.NAME, data[d.properties.wikidata], colorScale((+data[d.properties.wikidata])));
                     if (d.properties.wikidata === outThis.clickedCountry)
                         return outThis.clickedColor;
+                    if (outThis.selectedCountries.indexOf(+d.properties.wikidata) != -1) return "yellow";
                     return outThis.colorScale((+outThis.data[d.properties.wikidata]));
                 }
             }(this));
@@ -267,6 +272,29 @@ class Map {
             return false;
         }.bind(this));		
         this.drawText(lCntry);
+    }
+
+    updateAddRemove(wd) {
+        this.svgPath.select("#mapPath"+wd)
+            .style("fill", function(outThis) {
+                return function(d) {
+                    if (+wd === +outThis.clickedCountry) return outThis.clickedColor;
+                    else {
+                        if (outThis.selectedCountries.indexOf(+wd) != -1) return "yellow";
+                        else if (outThis.category != null) {
+                            if (outThis.category != "religion")
+                                return outThis.colorScale(+outThis.data[wd]);
+                            else {
+                                console.log(outThis.data);
+                                if (+wd in outThis.data)
+                                    return outThis.colorMap[outThis.data[wd][0].religion];
+                                else return null;
+                            }
+                        }
+                        else return null;
+                    }
+                }
+            }(this));
     }
 
     drawText(lCntry) {
@@ -351,12 +379,14 @@ class Map {
                 .enter()
                 .append("path")
                 .attr("d", this.path)
+                .attr("id", d=>"mapPath"+d.properties.wikidata)
                 .classed("countries", true)
                 .style("fill", function(outThis) {
                     return function(d) {
                         if (d.properties.wikidata === outThis.clickedCountry) return outThis.clickedColor;
                         else {
-                            if (outThis.category != null) {
+                            if (outThis.selectedCountries.indexOf(+d.properties.wikidata) != -1) return "yellow";
+                            else if (outThis.category != null) {
                                 if (outThis.category != "religion")
                                     return outThis.colorScale(+outThis.data[d.properties.wikidata]);
                                 else {
@@ -390,7 +420,8 @@ class Map {
                             if (d.properties.wikidata != outThis.clickedCountry) {
                                 d3.select(map.currentMouse)
                                     .style("fill", function(d){
-                                        if (outThis.category != null) {
+                                        if (outThis.selectedCountries.indexOf(+d.properties.wikidata) != -1) return "yellow";
+                                        else if (outThis.category != null) {
                                             if (outThis.category != "religion")
                                                 return outThis.colorScale(+outThis.data[d.properties.wikidata]);
                                             else {
@@ -415,9 +446,16 @@ class Map {
                         if (d.properties.NAME != "unclaimed") {
                             outThis.svgPath.selectAll("path")
                                 .style("fill", function(d1){
+                                    //console.log(outThis.selectedCountries, d1.properties.wikidata);
+                                    //console.log(outThis.selectedCountries.indexOf(+d1.properties.wikidata) +"!!!" + d1.properties.wikidata);
                                     if (d1.properties.wikidata === d.properties.wikidata) {
                                         outThis.clickedCountry = d1.properties.wikidata;
                                         return outThis.clickedColor;
+                                    }
+                                    else if (outThis.selectedCountries.indexOf(+d1.properties.wikidata) != -1) {
+                                        console.log(outThis.selectedCountries.indexOf(d1.properties.wikidata) +"!!!");
+                                        return "yellow";
+
                                     }
                                     else if (outThis.category != null) {
                                         if (outThis.category != "religion")

@@ -1,5 +1,6 @@
 class InfoPanel {
     constructor(aggPanel) {
+        this.mapObj = null;
         this.contentObj = d3.select("#infoPanelCard");
         this.infoTable = this.contentObj.select("#basicInfoTable");
         this.aggPanel = aggPanel;
@@ -33,7 +34,10 @@ class InfoPanel {
         $('#sidebar').on('shown.bs.collapse', function() {
             d3.select("#sidebaricon").classed("fa-chevron-right",false).classed("fa-chevron-left",true).style("left","400px");
         });		
+    }
 
+    setMapObject(mapObj) {
+        this.mapObj = mapObj;
     }
 
     collapseIcon() {
@@ -230,6 +234,9 @@ class InfoPanel {
             d3.select("#add-button")
                 .on("click", function(){
                     this.aggPanel.insertCountry(oneCountryInfo.NAME, wd);
+                    if (this.mapObj.selectedCountries.indexOf(wd) == -1)
+                        this.mapObj.selectedCountries.push(wd);
+                    this.mapObj.updateAddRemove(wd);
                 }.bind(this));
             let isShow = d3.select("#sidebar").classed("show");
             if (!isShow) {

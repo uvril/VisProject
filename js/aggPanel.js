@@ -1,5 +1,6 @@
 class AggPanel {
 	constructor	() {
+        this.mapObj = null;
         this.noCntryAlert = d3.select("#noCntryAlert");
         this.trans = d3.transition()
             .duration(1000)
@@ -110,6 +111,9 @@ class AggPanel {
         this.aggList.on("click", 'i', function(outerThis) {
 				return function(d) {
                     let wd = parseInt($(this).attr("data-wd"));
+                    let index = outerThis.mapObj.selectedCountries.indexOf(+wd);
+                    outerThis.mapObj.selectedCountries.splice(index, 1);
+                    console.log(outerThis.mapObj.selectedCountries);
 					outerThis.selectedColor[outerThis.selectedCountry[wd].index] = false;
 					delete outerThis.selectedCountry[wd];
 					//console.log(outerThis.selectedCountry);
@@ -122,10 +126,15 @@ class AggPanel {
 					outerThis.update();
                     if ($.isEmptyObject(outerThis.selectedCountry))
                         outerThis.noCntryAlert.style("display", "block");
+                    outerThis.mapObj.updateAddRemove(wd);
 				}
 			}(this));
 		d3.select("#statisticsViewTab").classed("active", false).classed("show", false);
 	}
+
+    setMapObject(mapObj) {
+        this.mapObj = mapObj;
+    }
 
 	updateYearText(startYear, endYear) {
         this.aggRow.select("#yearRangeStartText").text(startYear);
