@@ -98,6 +98,7 @@ class Map {
         }.bind(this));
         $("#yearSelect").on("slideStop", function(event) {
             this.drawMap(+event.value);
+            d3.select("#yearSelectText").text(event.value);
         }.bind(this));
 
         this.colorMap = {"Judaism": "#1f77b4", "Syncretic religions" : "#ff7f0e", "Islam": "#2ca02c", "Taoism": "#dbdb8d", "Non-religious": "#d62728", 

@@ -71,6 +71,7 @@ class AggPanel {
             this.startYear = +event.value[0];
             this.endYear = +event.value[1];
             this.updateRange(event.value[0], event.value[1]);
+            this.updateYearText(event.value[0], event.value[1]);
         }.bind(this));
         //this.updateRange(1960, 2016);
         this.xAxis = d3.axisBottom();
